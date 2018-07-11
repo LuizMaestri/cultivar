@@ -1,0 +1,1 @@
+docker-compose exec db /bin/bash -c 'mysql -uroot -psecret < /db/ddl.sql'
