@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `cultivar`.`Address` (
   `nm_city` VARCHAR(45) NOT NULL,
   `nm_neighborhood` VARCHAR(45) NOT NULL,
   `nm_street` VARCHAR(100) NOT NULL,
-  `nu_addres` VARCHAR(5) NULL DEFAULT 'S/N',
+  `nu_address` VARCHAR(5) NULL DEFAULT 'S/N',
   PRIMARY KEY (`cod_address`))
 ENGINE = InnoDB;
 
