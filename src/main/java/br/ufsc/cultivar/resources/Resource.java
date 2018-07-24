@@ -15,7 +15,7 @@ import java.util.List;
 public class Resource<T extends AbstractModel<K>,K> {
 
     @Autowired
-    private AbstractService<T,K> service;
+    AbstractService<T,K> service;
 
     @SuppressWarnings("unchecked")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,

@@ -2,9 +2,11 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.models.AbstractModel;
+import br.ufsc.cultivar.models.dto.EventUserDTO;
 import br.ufsc.cultivar.repository.base.AbstractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -50,4 +52,7 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
     abstract String getMessageErrorList();
     abstract Logger getLog();
 
+    public void associate(EventUserDTO dto) {
+        throw new NotImplementedException();
+    }
 }

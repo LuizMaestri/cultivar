@@ -3,9 +3,11 @@ package br.ufsc.cultivar.models;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -20,7 +22,6 @@ import javax.validation.constraints.NotNull;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @JsonDeserialize(builder = Place.PlaceBuilder.class)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@ApiModel("Company/School")
 public class Place extends AbstractModel<String>{
 
     @NotBlank

@@ -1,20 +1,23 @@
 package br.ufsc.cultivar.repository.base;
 
+import br.ufsc.cultivar.models.User;
+import lombok.AllArgsConstructor;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
-import org.springframework.jdbc.support.KeyHolder;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
+
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public abstract class AbstractRepository<T, K> {
 
-    @Autowired
-    NamedParameterJdbcTemplate jdbcTemplate;
+    protected final NamedParameterJdbcTemplate jdbcTemplate;
 
     @SuppressWarnings("unchecked")
     public K insert(final T entity) {
@@ -76,4 +79,8 @@ public abstract class AbstractRepository<T, K> {
     protected abstract String getUpdateQuery();
     protected abstract MapSqlParameterSource getUpdateParams(final K id, final T entity);
     abstract Class<K> getIdClass();
+
+    public List<User> find(List<K> ids) {
+        throw new NotImplementedException();
+    }
 }

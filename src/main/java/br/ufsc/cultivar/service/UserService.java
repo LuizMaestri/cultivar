@@ -4,6 +4,7 @@ import br.ufsc.cultivar.models.User;
 import lombok.extern.java.Log;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 @Log
@@ -23,5 +24,9 @@ public class UserService extends AbstractService<User, String> {
     @Override
     public Logger getLog() {
         return log;
+    }
+
+    List<User> list(List<String> cpfs) {
+        return repository.find(cpfs);
     }
 }

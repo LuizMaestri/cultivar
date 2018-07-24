@@ -4,16 +4,14 @@ import br.ufsc.cultivar.models.Role;
 import br.ufsc.cultivar.models.Status;
 import br.ufsc.cultivar.models.User;
 import br.ufsc.cultivar.repository.base.StringRepository;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 @Repository
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserRepository extends StringRepository<User> {
 
     @Override
@@ -93,5 +91,12 @@ public class UserRepository extends StringRepository<User> {
                 .addValue("nu_phone", entity.getPhone())
                 .addValue("dsc_email", entity.getEmail())
                 .addValue("dsc_password", entity.getPassword());
+    }
+
+    public List<User> find(List<String> ids){
+        return jdbcTemplate.query(
+                getSelectAllQuery() + "WHERE cod_cpf IN(:cpfs)",
+                new MapSqlParameterSource("cpfs", ids),
+                (rs, i) -> this.build(rs));
     }
 }

@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.models.Place;
+import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,10 +13,10 @@ import java.util.logging.Logger;
 
 @Log
 @Service
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PlaceService extends AbstractService<Place, String> {
 
-    @Autowired
-    AddressService addressService;
+    private final AddressService addressService;
 
     @Override
     @Transactional

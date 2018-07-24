@@ -1,9 +1,10 @@
 package br.ufsc.cultivar.repository;
 
-import br.ufsc.cultivar.models.*;
+import br.ufsc.cultivar.models.Address;
+import br.ufsc.cultivar.models.Place;
+import br.ufsc.cultivar.models.Status;
+import br.ufsc.cultivar.models.Volunteer;
 import br.ufsc.cultivar.repository.base.StringRepository;
-import lombok.AccessLevel;
-import lombok.experimental.FieldDefaults;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
@@ -11,7 +12,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 @Repository
-@FieldDefaults(level = AccessLevel.PRIVATE)
 public class VolunteerRepository extends StringRepository<Volunteer> {
 
     @Override
