@@ -4,6 +4,7 @@ import br.ufsc.cultivar.models.Event;
 import br.ufsc.cultivar.models.Place;
 import br.ufsc.cultivar.models.Type;
 import br.ufsc.cultivar.models.User;
+import br.ufsc.cultivar.models.dto.EventUsersDTO;
 import br.ufsc.cultivar.repository.base.LongRepository;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.stream.Collectors;
 
 /**
@@ -52,7 +54,7 @@ public class EventRepository extends LongRepository<Event> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO event (cod_cnpj, dt_occurrence, tp_event)"
+        return "INSERT INTO Event (cod_cnpj, dt_occurrence, tp_event)"
                 + " VALUES (:codCnpj, :dtOccurrence, :tpEvent)";
     }
 
@@ -68,7 +70,7 @@ public class EventRepository extends LongRepository<Event> {
     protected String getSelectAllQuery() {
         return "SELECT * FROM ("
                 + "SELECT e.*, group_concat(eu.cod_cpf SEPARATOR ',') as involved"
-                + " FROM event e NATURAL JOIN event_user eu GROUP BY e.cod_event"
+                + " FROM Event e NATURAL JOIN Event_User eu GROUP BY e.cod_event"
                 + ") x ";
     }
 
@@ -84,12 +86,34 @@ public class EventRepository extends LongRepository<Event> {
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE event SET cod_cnpj=:codCnpj, dt_occurrence=:dtOccurrence, "
+        return "UPDATE Event SET cod_cnpj=:codCnpj, dt_occurrence=:dtOccurrence, "
                 + "tp_event:=tpEvent WHERE cod_event=:" + getIdFieldName();
     }
 
     @Override
     protected MapSqlParameterSource getUpdateParams(Long id, Event entity) {
         return getInsertParams(entity).addValue(getIdFieldName(), id);
+    }
+
+    @Override
+    public void dassociete(Long codEvent){
+        jdbcTemplate.update(
+                "DELETE FROM Event_User WHERE cod_event=:codevent",
+                new MapSqlParameterSource("codEvent", codEvent)
+        );
+    }
+
+    @Override
+    public void associate(List<EventUsersDTO.EventUser> associations) {
+        jdbcTemplate.batchUpdate(
+                "INSERT INTO Event_User (cod_event, cod_cpf) VALUES (:codEvent, :codCpf)",
+                associations.stream()
+                        .map(
+                                eventUser -> new MapSqlParameterSource()
+                                        .addValue("codEvent", eventUser.getCodEvent())
+                                        .addValue("codCpf", eventUser.getCodCpf())
+                        ).collect(Collectors.toList())
+                        .toArray(new MapSqlParameterSource[associations.size()])
+        );
     }
 }

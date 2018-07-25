@@ -47,7 +47,7 @@ public class UserRepository extends StringRepository<User> {
     @Override
     protected String getInsertQuery() {
         return "INSERT INTO Users ("
-                +"cod_cpf, nm_user, nm_role, sta_user, dt_birth, nu_phone, dsc_email, dsc_password"
+                + "cod_cpf, nm_user, nm_role, sta_user, dt_birth, nu_phone, dsc_email, dsc_password"
                 + ") VALUES("
                 + ":cod_cpf, :nm_user, :nm_role, :sta_user, :dt_birth, :nu_phone, :dsc_email, :dsc_password);";
     }
@@ -95,7 +95,7 @@ public class UserRepository extends StringRepository<User> {
 
     public List<User> find(List<String> ids){
         return jdbcTemplate.query(
-                getSelectAllQuery() + "WHERE cod_cpf IN(:cpfs)",
+                getSelectAllQuery().concat("WHERE cod_cpf IN(:cpfs)"),
                 new MapSqlParameterSource("cpfs", ids),
                 (rs, i) -> this.build(rs));
     }

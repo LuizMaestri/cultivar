@@ -2,10 +2,8 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.models.Event;
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.EqualsAndHashCode;
-import lombok.Value;
+import br.ufsc.cultivar.models.dto.EventUsersDTO;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +18,6 @@ import java.util.logging.Logger;
  */
 @Log
 @Service
-@Value
-@EqualsAndHashCode(callSuper = false)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class EventService extends AbstractService<Event, Long> {
@@ -36,6 +32,15 @@ public class EventService extends AbstractService<Event, Long> {
         return event
                 .withPlace(placeService.get(event.getPlace().getId()))
                 .withInvolved(userService.list(event.getInvolvedCpf()));
+    }
+
+    @Override
+    @Transactional
+    public void associate(Long id, EventUsersDTO dto) {
+        if (id.equals(dto.getCodEvent())){
+            repository.dassociete(id);
+            repository.associate(dto.associations());
+        }
     }
 
     @Override

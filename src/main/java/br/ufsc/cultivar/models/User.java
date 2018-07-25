@@ -47,7 +47,7 @@ public class User extends AbstractModel<String>{
     @ApiModelProperty(notes = "User's birthday", required = true)
     Date birth;
     @PastOrPresent
-    @ApiModelProperty(notes = "Date od register creation", required = true)
+    @ApiModelProperty(notes = "Date od register creation")
     Date createAt;
     @NotNull
     @ApiModelProperty(notes = "User's status", required = true,

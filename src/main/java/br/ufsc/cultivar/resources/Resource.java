@@ -49,8 +49,9 @@ public class Resource<T extends AbstractModel<K>,K> {
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@PathVariable final K id, @Valid @RequestBody final T entity){
-        if (id.equals(entity.getId())){
-            service.update(id, entity);
+        if (!id.equals(entity.getId())){
+            throw new IllegalArgumentException();
         }
+        service.update(id, entity);
     }
 }

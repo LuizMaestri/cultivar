@@ -1,8 +1,9 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.models.AbstractModel;
-import br.ufsc.cultivar.models.dto.EventUserDTO;
+import br.ufsc.cultivar.models.dto.EventUsersDTO;
 import br.ufsc.cultivar.repository.base.AbstractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
     @Autowired
     AbstractRepository<T, K> repository;
 
+//    @Transactional
     public K save(final T entity) throws ServiceException{
         return repository.insert(entity);
     }
@@ -26,7 +28,7 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
             return repository.findOne(id);
         } catch (SQLException e) {
             getLog().severe(getMessageErrorFindOne(id));
-            throw new ServiceException(getMessageErrorFindOne(id), e);
+            throw new ServiceException(getMessageErrorFindOne(id), e, Type.NOT_FOUND);
         }
     }
 
@@ -48,11 +50,12 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
         repository.update(id, entity);
     }
 
+    public void associate(Long id, EventUsersDTO dto){
+        throw new NotImplementedException();
+    }
+
     abstract String getMessageErrorFindOne(final K id);
     abstract String getMessageErrorList();
     abstract Logger getLog();
 
-    public void associate(EventUserDTO dto) {
-        throw new NotImplementedException();
-    }
 }

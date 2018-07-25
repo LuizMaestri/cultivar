@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.models.Place;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
@@ -23,7 +24,7 @@ public class PlaceService extends AbstractService<Place, String> {
     public String save(final Place entity) throws ServiceException {
         val address = entity.getAddress();
         if (addressService.isValid(address)){
-            throw new ServiceException("Endreço inválido.", null);
+            throw new ServiceException("Endreço inválido.", null, Type.INVALID);
         }
         val codAddress = addressService.save(address);
         return super.save(

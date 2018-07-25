@@ -1,7 +1,7 @@
 package br.ufsc.cultivar.repository.base;
 
 import br.ufsc.cultivar.models.User;
-import lombok.AllArgsConstructor;
+import br.ufsc.cultivar.models.dto.EventUsersDTO;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -12,29 +12,24 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
-
-@AllArgsConstructor(onConstructor = @__(@Autowired))
 public abstract class AbstractRepository<T, K> {
 
-    protected final NamedParameterJdbcTemplate jdbcTemplate;
+    @Autowired
+    protected NamedParameterJdbcTemplate jdbcTemplate;
 
     @SuppressWarnings("unchecked")
     public K insert(final T entity) {
         val sql = getInsertQuery();
         val params = getInsertParams(entity);
         val keyHolder = new GeneratedKeyHolder();
-        int countRows = jdbcTemplate.update(sql, params, keyHolder);
-        if (countRows > 0){
-            Number key = keyHolder.getKey();
-            if (key != null) {
-                Long newId = key.longValue();
-                if (newId.getClass().equals(this.getIdClass())) {
-                    return (K) key;
-                }
-            }
-        }
-        return null;
+        jdbcTemplate.update(sql, params, keyHolder);
+        return (K) Optional.of(keyHolder)
+                .map(GeneratedKeyHolder::getKey)
+                .map(Number::longValue)
+                .filter(newId -> newId.getClass().equals(this.getIdClass()))
+                .orElse(null);
     }
 
     public List<T> findAll() throws SQLException{
@@ -81,6 +76,14 @@ public abstract class AbstractRepository<T, K> {
     abstract Class<K> getIdClass();
 
     public List<User> find(List<K> ids) {
+        throw new NotImplementedException();
+    }
+
+    public void associate(List<EventUsersDTO.EventUser> associations) {
+        throw new NotImplementedException();
+    }
+
+    public void dassociete(Long codEvent){
         throw new NotImplementedException();
     }
 }
