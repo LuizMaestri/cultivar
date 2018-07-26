@@ -2,7 +2,9 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.models.Status;
 import br.ufsc.cultivar.models.Volunteer;
+import br.ufsc.cultivar.models.dto.FileDTO;
 import lombok.AllArgsConstructor;
 import lombok.extern.java.Log;
 import lombok.val;
@@ -10,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLException;
 import java.util.logging.Logger;
 
 @Log
@@ -32,6 +35,42 @@ public class VolunteerService extends AbstractService<Volunteer, String> {
                         address.withId(codAddress)
                 )
         );
+    }
+
+    @Override
+    @Transactional
+    public void associate(String id, Object dto) throws ServiceException {
+        if (dto instanceof String){
+            try {
+                Volunteer volunteer = repository.findOne(id);
+                if (volunteer.getStatus().in(Status.WAIT_TV, Status.WAIT_TR)) {
+                    String fileName = dto.toString();
+                    String type = fileName.substring(
+                            fileName.lastIndexOf("/"),
+                            fileName.lastIndexOf(".")
+                    );
+                    repository.associate(
+                            new FileDTO<>(id, fileName, type)
+                    );
+                    switch (type) {
+                        case "tv": {
+                            repository.update(id, volunteer.withStatus(Status.WAIT_RECOMMEND));
+                            break;
+                        }
+                        case "tr": {
+                            repository.update(id, volunteer.withStatus(Status.WAIT_TV));
+                            break;
+                        }
+                        default: throw new ServiceException(getMessageErrorFindOne(id), null, Type.INVALID);
+                    }
+                } else {
+                    throw new ServiceException(getMessageErrorFindOne(id), null, Type.INVALID);
+                }
+
+            } catch (SQLException e) {
+                throw new ServiceException(getMessageErrorFindOne(id), e, Type.NOT_FOUND);
+            }
+        }
     }
 
     @Override

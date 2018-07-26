@@ -3,7 +3,6 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.models.AbstractModel;
-import br.ufsc.cultivar.models.dto.EventUsersDTO;
 import br.ufsc.cultivar.repository.base.AbstractRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -50,7 +49,7 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
         repository.update(id, entity);
     }
 
-    public void associate(Long id, EventUsersDTO dto){
+    public void associate(final K id, Object dto) throws ServiceException{
         throw new NotImplementedException();
     }
 

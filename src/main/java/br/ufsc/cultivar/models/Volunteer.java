@@ -56,7 +56,10 @@ public class Volunteer extends AbstractModel<String>{
     @NotNull
     @ApiModelProperty(notes = "Volunteer's company", required = true)
     Place company;
-
+    @ApiModelProperty(notes = "Path to volunteer's TV")
+    String pathTV;
+    @ApiModelProperty(notes = "Path to volunteer's TR")
+    String pathTR;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class VolunteerBuilder {

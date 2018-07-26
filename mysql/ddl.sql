@@ -68,6 +68,8 @@ CREATE TABLE IF NOT EXISTS `cultivar`.`Users` (
   `cod_address` INT,
   `cod_cnpj` VARCHAR(14),
   `dt_create` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dsc_path_tv` VARCHAR(255),
+  `dsc_path_tr` VARCHAR(255),
   PRIMARY KEY (`cod_cpf`),
   INDEX `fk_User_Address_idx` (`cod_address` ASC),
   UNIQUE INDEX `dsc_email_UNIQUE` (`dsc_email` ASC),

@@ -4,6 +4,7 @@ import br.ufsc.cultivar.models.Address;
 import br.ufsc.cultivar.models.Place;
 import br.ufsc.cultivar.models.Status;
 import br.ufsc.cultivar.models.Volunteer;
+import br.ufsc.cultivar.models.dto.FileDTO;
 import br.ufsc.cultivar.repository.base.StringRepository;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
@@ -43,6 +44,8 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
                                     .id(rs.getString("cod_cnpj"))
                                     .build()
                     )
+                    .pathTV(rs.getString("dsc_path_tv"))
+                    .pathTR(rs.getString("dsc_path_tr"))
                     .build();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -98,5 +101,15 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
                 .addValue("dsc_password", entity.getPassword())
                 .addValue("cod_address", entity.getAddress().getId())
                 .addValue("cod_cnpj", entity.getCompany().getId());
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public void associate(Object associations) {
+        if (associations instanceof FileDTO){
+            FileDTO<String> fileDTO = (FileDTO<String>) associations;
+            String sql = String.format("UPDATE users SET dsc_path_%s=:path", fileDTO.getType());
+            jdbcTemplate.update(sql, new MapSqlParameterSource("path", fileDTO.getFilename()));
+        }
     }
 }

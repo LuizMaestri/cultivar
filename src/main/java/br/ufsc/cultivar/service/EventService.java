@@ -3,6 +3,7 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.models.Event;
 import br.ufsc.cultivar.models.dto.EventUsersDTO;
+import br.ufsc.cultivar.models.dto.FileDTO;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.java.Log;
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 /**
@@ -36,10 +38,20 @@ public class EventService extends AbstractService<Event, Long> {
 
     @Override
     @Transactional
-    public void associate(Long id, EventUsersDTO dto) {
-        if (id.equals(dto.getCodEvent())){
-            repository.dassociete(id);
-            repository.associate(dto.associations());
+    @SuppressWarnings("unchecked")
+    public void associate(Long id, Object dto) throws ServiceException {
+        if(dto instanceof EventUsersDTO) {
+            EventUsersDTO associations = (EventUsersDTO) dto;
+            if (id.equals(associations.getCodEvent())) {
+                repository.dissociate(id);
+                repository.associate(associations.associations());
+                return;
+            }
+            throw new ServiceException("", null);
+        }
+        if (dto instanceof List){
+            List<String> list = (List<String>) dto;
+            repository.associate(list.stream().map(filename -> new FileDTO(id, filename, null)));
         }
     }
 

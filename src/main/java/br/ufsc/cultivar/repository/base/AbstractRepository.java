@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.repository.base;
 
 import br.ufsc.cultivar.models.User;
-import br.ufsc.cultivar.models.dto.EventUsersDTO;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -79,11 +78,11 @@ public abstract class AbstractRepository<T, K> {
         throw new NotImplementedException();
     }
 
-    public void associate(List<EventUsersDTO.EventUser> associations) {
+    public void associate(Object associations) {
         throw new NotImplementedException();
     }
 
-    public void dassociete(Long codEvent){
+    public void dissociate(K id){
         throw new NotImplementedException();
     }
 }

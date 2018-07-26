@@ -96,7 +96,7 @@ public class EventRepository extends LongRepository<Event> {
     }
 
     @Override
-    public void dassociete(Long codEvent){
+    public void dissociate(Long codEvent){
         jdbcTemplate.update(
                 "DELETE FROM Event_User WHERE cod_event=:codevent",
                 new MapSqlParameterSource("codEvent", codEvent)
@@ -104,16 +104,21 @@ public class EventRepository extends LongRepository<Event> {
     }
 
     @Override
-    public void associate(List<EventUsersDTO.EventUser> associations) {
-        jdbcTemplate.batchUpdate(
-                "INSERT INTO Event_User (cod_event, cod_cpf) VALUES (:codEvent, :codCpf)",
-                associations.stream()
-                        .map(
-                                eventUser -> new MapSqlParameterSource()
-                                        .addValue("codEvent", eventUser.getCodEvent())
-                                        .addValue("codCpf", eventUser.getCodCpf())
-                        ).collect(Collectors.toList())
-                        .toArray(new MapSqlParameterSource[associations.size()])
-        );
+    @SuppressWarnings("unchecked")
+    public void associate(Object associations) {
+        if (associations instanceof List) {
+
+            List<EventUsersDTO.EventUser> list = (List) associations;
+            jdbcTemplate.batchUpdate(
+                    "INSERT INTO Event_User (cod_event, cod_cpf) VALUES (:codEvent, :codCpf)",
+                    list.stream()
+                            .map(
+                                    eventUser -> new MapSqlParameterSource()
+                                            .addValue("codEvent", eventUser.getCodEvent())
+                                            .addValue("codCpf", eventUser.getCodCpf())
+                            ).collect(Collectors.toList())
+                            .toArray(new MapSqlParameterSource[list.size()])
+            );
+        }
     }
 }

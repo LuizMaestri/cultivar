@@ -1,9 +1,16 @@
 package br.ufsc.cultivar.models;
 
+import java.util.Arrays;
+import java.util.stream.Collectors;
+
 public enum Status {
     APPROVED,
-    WAIT_RECOMMEN,
+    WAIT_RECOMMEND,
     RECOMMEND,
-    WAIT_RT,
-    WAIT_VT;
+    WAIT_TR,
+    WAIT_TV;
+
+    public boolean in(Status... statuses){
+        return !Arrays.stream(statuses).filter(this::equals).collect(Collectors.toList()).isEmpty();
+    }
 }
