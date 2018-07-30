@@ -14,7 +14,8 @@ import lombok.experimental.Wither;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Value
 @Wither
@@ -45,10 +46,10 @@ public class User extends AbstractModel<String>{
     @NotNull
     @Past
     @ApiModelProperty(notes = "User's birthday", required = true)
-    Date birth;
+    LocalDate birth;
     @PastOrPresent
     @ApiModelProperty(notes = "Date od register creation")
-    Date createAt;
+    LocalDateTime createAt;
     @NotNull
     @ApiModelProperty(notes = "User's status", required = true,
             allowableValues = "APPROVED, WAIT_RECOMMEND, RECOMMEND, WAIT_RT, WAIT_VT")

@@ -10,6 +10,7 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 public abstract class AbstractService<T extends AbstractModel<K>, K> {
@@ -34,6 +35,15 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
     public List<T> list() throws ServiceException{
         try {
             return repository.findAll();
+        } catch (SQLException e) {
+            getLog().severe(this::getMessageErrorList);
+            throw new ServiceException(getMessageErrorList(), e);
+        }
+    }
+
+    public List<T> list(Map<String, Object> map) throws ServiceException{
+        try {
+            return repository.findWithFilter(map);
         } catch (SQLException e) {
             getLog().severe(this::getMessageErrorList);
             throw new ServiceException(getMessageErrorList(), e);

@@ -5,13 +5,17 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 import org.hibernate.validator.constraints.br.CPF;
 
 import javax.validation.constraints.*;
-import java.util.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Value
 @Wither
@@ -42,10 +46,10 @@ public class Volunteer extends AbstractModel<String>{
     @NotNull
     @Past
     @ApiModelProperty(notes = "Volunteer's birthday", required = true)
-    Date birth;
+    LocalDate birth;
     @PastOrPresent
     @ApiModelProperty(notes = "Date od register creation", required = true)
-    Date createAt;
+    LocalDateTime createAt;
     @NotNull
     @ApiModelProperty(notes = "Volunteer's status", required = true,
             allowableValues = "APPROVED, WAIT_RECOMMEND, RECOMMEND, WAIT_RT, WAIT_VT")

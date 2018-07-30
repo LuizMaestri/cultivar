@@ -12,6 +12,7 @@ import lombok.experimental.Wither;
 import org.springframework.util.CollectionUtils;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -34,9 +35,9 @@ public class Event extends AbstractModel<Long>{
     @NotNull
     Place place;
     List<User> involved;
-    Date createdAt;
+    LocalDateTime createdAt;
     @NotNull
-    Date occurrence;
+    LocalDateTime occurrence;
     @NotNull
     Type type;
 

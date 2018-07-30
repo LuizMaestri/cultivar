@@ -6,6 +6,7 @@ import br.ufsc.cultivar.models.Type;
 import br.ufsc.cultivar.models.User;
 import br.ufsc.cultivar.models.dto.EventUsersDTO;
 import br.ufsc.cultivar.repository.base.LongRepository;
+import br.ufsc.cultivar.utils.DateUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
@@ -29,11 +30,15 @@ public class EventRepository extends LongRepository<Event> {
             }
             return Event.builder()
                     .id(rs.getLong("cod_event"))
-                    .createdAt(rs.getDate("dt_create"))
+                    .createdAt(
+                            DateUtils.toLocalDateTime(rs.getDate("dt_create"))
+                    )
                     .type(
                             Type.valueOf(rs.getString("tp_event"))
                     )
-                    .occurrence(rs.getDate("dt_occurrence"))
+                    .occurrence(
+                            DateUtils.toLocalDateTime(rs.getDate("dt_occurrence"))
+                    )
                     .place(
                             Place.builder()
                                     .id(rs.getString("cod_cpnj"))

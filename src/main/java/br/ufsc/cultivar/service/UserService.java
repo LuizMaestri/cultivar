@@ -27,6 +27,6 @@ public class UserService extends AbstractService<User, String> {
     }
 
     List<User> list(List<String> cpfs) {
-        return repository.find(cpfs);
+        return repository.findIds(cpfs);
     }
 }

@@ -10,7 +10,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public abstract class AbstractRepository<T, K> {
@@ -32,21 +34,15 @@ public abstract class AbstractRepository<T, K> {
     }
 
     public List<T> findAll() throws SQLException{
-        try {
-            return jdbcTemplate.query(getSelectAllQuery(), (rs, i) -> this.build(rs));
-        } catch (RuntimeException e){
-            throw (SQLException) e.getCause();
-        }
+        return findWithFilter(null);
     }
 
     public T findOne(final K id) throws SQLException {
-        val sql = getSelectOneQuery();
-        val params = new MapSqlParameterSource("id", id);
-        try {
-            return jdbcTemplate.query(sql, params, this::build);
-        } catch (RuntimeException e){
-            throw (SQLException) e.getCause();
-        }
+        val filter = new HashMap<String, Object>();
+        filter.put(getIdFieldName(), id);
+        val users = findWithFilter(filter);
+        if (!users.isEmpty()) return users.get(0);
+        throw new SQLException();
     }
 
     public void delete(final K id) {
@@ -60,8 +56,24 @@ public abstract class AbstractRepository<T, K> {
         jdbcTemplate.update(sql, params);
     }
 
-    private String getSelectOneQuery() {
-        return getSelectAllQuery() + "WHERE " + getIdFieldName() + "=:id";
+    public List<T> findWithFilter(final Map<String, Object> filter) throws SQLException {
+        return find(Optional.ofNullable(filter));
+    }
+
+    private List<T> find(final Optional<Map<String, Object>> filter) throws SQLException {
+        try {
+            val builder = new StringBuilder(getSelectAllQuery()).append(" WHERE 1=1 ");
+            val params = new MapSqlParameterSource();
+            filter.ifPresent(map ->
+                map.forEach((key, value) -> {
+                    builder.append(" AND ").append(key).append("=:").append(key);
+                    params.addValue(key, value);
+                })
+            );
+            return jdbcTemplate.query(builder.toString(), params, (rs, i) -> this.build(rs));
+        } catch (RuntimeException e){
+            throw (SQLException) e.getCause();
+        }
     }
 
     protected abstract T build(final ResultSet rs);
@@ -74,7 +86,7 @@ public abstract class AbstractRepository<T, K> {
     protected abstract MapSqlParameterSource getUpdateParams(final K id, final T entity);
     abstract Class<K> getIdClass();
 
-    public List<User> find(List<K> ids) {
+    public List<User> findIds(List<K> ids) {
         throw new NotImplementedException();
     }
 

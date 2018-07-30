@@ -4,11 +4,13 @@ import br.ufsc.cultivar.models.Role;
 import br.ufsc.cultivar.models.Status;
 import br.ufsc.cultivar.models.User;
 import br.ufsc.cultivar.repository.base.StringRepository;
+import br.ufsc.cultivar.utils.DateUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.ZoneId;
 import java.util.List;
 
 @Repository
@@ -26,8 +28,12 @@ public class UserRepository extends StringRepository<User> {
                     .email(rs.getString("dsc_email"))
                     .password(rs.getString("dsc_password"))
                     .phone(rs.getString("nu_phone"))
-                    .birth(rs.getDate("dt_birth"))
-                    .createAt(rs.getDate("dt_create"))
+                    .birth(
+                            DateUtils.toLocaldate(rs.getDate("dt_birth"))
+                    )
+                    .createAt(
+                            DateUtils.toLocalDateTime(rs.getDate("dt_create"))
+                    )
                     .role(
                             Role.valueOf(
                                     rs.getString("nm_role")
@@ -93,7 +99,7 @@ public class UserRepository extends StringRepository<User> {
                 .addValue("dsc_password", entity.getPassword());
     }
 
-    public List<User> find(List<String> ids){
+    public List<User> findIds(List<String> ids){
         return jdbcTemplate.query(
                 getSelectAllQuery().concat("WHERE cod_cpf IN(:cpfs)"),
                 new MapSqlParameterSource("cpfs", ids),

@@ -6,6 +6,7 @@ import br.ufsc.cultivar.models.Status;
 import br.ufsc.cultivar.models.Volunteer;
 import br.ufsc.cultivar.models.dto.FileDTO;
 import br.ufsc.cultivar.repository.base.StringRepository;
+import br.ufsc.cultivar.utils.DateUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.stereotype.Repository;
 
@@ -27,8 +28,12 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
                     .email(rs.getString("dsc_email"))
                     .password(rs.getString("dsc_password"))
                     .phone(rs.getString("nu_phone"))
-                    .birth(rs.getDate("dt_birth"))
-                    .createAt(rs.getDate("dt_create"))
+                    .birth(
+                            DateUtils.toLocaldate(rs.getDate("dt_birth"))
+                    )
+                    .createAt(
+                            DateUtils.toLocalDateTime(rs.getDate("dt_create"))
+                    )
                     .status(
                             Status.valueOf(
                                     rs.getString("sta_user")
