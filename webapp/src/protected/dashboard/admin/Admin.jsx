@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
 import VolunteerItem from '../components/volunteer';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 
 const request = 
@@ -73,7 +74,9 @@ export default class AdminDashboard extends Component{
                                                 (element, index) => index < 5 ? getTag(key, element) : null
                                             ) : null
                                         }
-                                        <ListGroupItem action>Mais...</ListGroupItem>
+                                        <ListGroupItem tag="button" action>
+                                            <Link className="no-undeline" to={ routes[key] }>Mais...</Link>
+                                        </ListGroupItem>
                                     </ListGroup>
                                 </Col>
                             );
