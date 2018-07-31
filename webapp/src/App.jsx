@@ -1,20 +1,21 @@
 // @flow
 import React, { Component } from 'react';
-import { Header } from './components';
+import { Header, Footer } from './components';
 import Login from './login';
 import Dashboard from './protected/dashboard';
-import { Container } from 'reactstrap';
+import { Container, Row, Col } from 'reactstrap';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom'
 import { getAsObject } from './storage';
 import { Roles } from './model';
 import './App.css';
 
-const redirectOpt = (props, path) => ({
-  pathname: path,
-  state: {
-    from: props.location
-  }
-});
+const RedirectRoute = ({ component, redirect, to, ...rest }) => (
+  <Route {...rest} render={props => redirect ? component : <Redirect to={to} />}/>
+);
+
+const PrivateRoute = ({ component, logged, ...rest }) => (
+  <RedirectRoute {...rest} redirect={logged} component={component} to="/login"/>
+);
 
 export default class App extends Component {
   constructor(){
@@ -29,29 +30,28 @@ export default class App extends Component {
   }
 
   render() {
+    const { logged } = this.state;
     return (
       <div>
         <Header/>
-        <BrowserRouter>
           <Container fluid>
-            <br/>
-            <Route exact path='/'
-              render={props => this.state.logged ? 
-                (<Redirect to={redirectOpt(props, '/dashboard')} />) :
-                (<Redirect to={redirectOpt(props, '/login') }/>)
-              }/>
-            <Route exact path='/login' 
-              render={props => this.state.logged ? 
-                (<Redirect to={redirectOpt(props, '/dashboard') } />) :
-                (<Login onAuthenticate={ this.handlerLogin.bind(this) }/>)
-              }/>
-              <Route path="/dashboard"
-              render={props => this.state.logged ?
-                (<Dashboard role={Roles.ADMIN} />) :
-                (<Redirect to={redirectOpt(props, '/login')} />)
-              }/>
+              <BrowserRouter>
+                <Row>
+                  <Col>
+                    <PrivateRoute exact path="/" logged={logged} component={(<Redirect to="/dashboard"/>)}/>
+                    <RedirectRoute path="/login" redirect={!logged} component={(<Login onAuthenticate={this.handlerLogin.bind(this)} />)} to="/dashboard"/>
+                    <PrivateRoute path="/dashboard" logged={logged} component={(<Dashboard role={Roles.ADMIN} />)} />
+                    <PrivateRoute path="/voluntarios" logged={logged} component={(<Redirect to="/dashboard"/>)} />
+                    <PrivateRoute path="/escolas" logged={logged} component={(<Redirect to="/dashboard"/>)} />
+                    <PrivateRoute path="/empresas" logged={logged} component={(<Redirect to="/dashboard"/>)} />
+                    <PrivateRoute path="/usuarios" logged={logged} component={(<Redirect to="/dashboard"/>)} />
+                    <PrivateRoute path="/profile" logged={logged} component={(<Redirect to="/dashboard"/>)} />
+                    <Route render={props => (<Redirect to="/dashboard" />)}/>
+                  </Col>
+                </Row>
+              </BrowserRouter>
           </Container>
-        </BrowserRouter>
+        <Footer/>
       </div>
     );
   }
