@@ -24,6 +24,12 @@ const listTitles = {
     volunteers: 'Mentores Voluntários'
 };
 
+const routes = {
+    schools: '/escolas',
+    companies: '/empresas',
+    volunteers: '/voluntarios'
+}
+
 const getTag = (key, element) => {
     return {
         schools: (null),
@@ -51,29 +57,28 @@ export default class AdminDashboard extends Component{
             name: 'luiz',
             grade: 100
         })
-        let lists = [];
-        for (const key in state) {
-            if (state.hasOwnProperty(key)) {
-                const elements = state[key];
-                let list = elements ? elements.map(
-                    (element, index) => index < 5 ? getTag(key, element) : null
-                ) : null;
-                lists.push((
-                    <Col md="3 offset-1" key={ key }>
-                        <CardTitle>{ listTitles[key] }</CardTitle>
-                        <ListGroup>
-                            { list }
-                            <ListGroupItem action>Mais...</ListGroupItem>
-                        </ListGroup>
-                    </Col>
-                ));
-            }
-        }
         return (
             <div>
                 <Row></Row>
                 <Row>
-                    {lists}
+                    {
+                        ['companies', 'volunteers', 'schools'].map(key => {
+                            const elements = state[key];
+                            return (
+                                <Col md="3 offset-1" key={key}>
+                                    <CardTitle>{listTitles[key]}</CardTitle>
+                                    <ListGroup>
+                                        {
+                                            elements ? elements.map(
+                                                (element, index) => index < 5 ? getTag(key, element) : null
+                                            ) : null
+                                        }
+                                        <ListGroupItem action>Mais...</ListGroupItem>
+                                    </ListGroup>
+                                </Col>
+                            );
+                        })
+                    }
                 </Row>
                 <Row></Row>
             </div>

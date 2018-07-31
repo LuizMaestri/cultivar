@@ -1,2 +1,6 @@
 import Header from './header/Header.jsx';
-export { Header };
+import Footer from './footer/Footer.jsx';
+export {
+    Header,
+    Footer
+};
