@@ -4,10 +4,9 @@ import { Header, Footer } from './components';
 import { BrowserRouter } from 'react-router-dom'
 import { RedirectRoute, PrivateRoute, MissingRoute } from './components/route';
 import { Container, Row, Col } from 'reactstrap';
-import { getAsObject } from './storage';
+import { getAsObject } from './utils/storage';
 import { Roles } from './model';
-import Login from './login';
-import Dashboard from './protected/dashboard';
+import { Dashboard, Login, VolunterList } from './pages';
 import './App.css';
 
 export default class App extends Component {
@@ -39,7 +38,7 @@ export default class App extends Component {
 									<Dashboard role={Roles.ADMIN} />
 								</PrivateRoute>
 								<PrivateRoute path="/voluntarios" logged={logged}>
-									{null}
+									<VolunterList/>
 								</PrivateRoute>
 								<PrivateRoute path="/escolas" logged={logged} component={(null)}>
 									{null}

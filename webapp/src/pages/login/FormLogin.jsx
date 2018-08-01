@@ -1,11 +1,10 @@
 // @flow
 import React, { Component } from 'react'
-import PropTypes from 'prop-types';
-import InputMask from 'react-input-mask';
 import { Button, Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
-import { saveObject, save } from '../storage';
-import { baseHeader } from '../http';
-import axios from 'axios';
+import InputMask from 'react-input-mask';
+import PropTypes from 'prop-types';
+import { saveObject, save } from '../../utils/storage';
+import { setHeaders, postRequest } from '../../utils/http';
 
 class FormLogin extends Component {
     constructor(){
@@ -60,26 +59,27 @@ class FormLogin extends Component {
             this.setState({ err });
             return;
         }
-        axios.post('auth', user)
-            .then(res => {
+        postRequest('auth', user,
+            res => {
                 if (res.status !== 200) {
                     const { err } = this.state;
                     err.loginErr = true;
                     this.setState({ err });
                 } else {
                     let { user, token } = res.data;
-                    axios.defaults.headers.common = { ...baseHeader, 'Authorization': token };
+                    setHeaders();
                     save('token', token);
                     saveObject('user', user);
                     save('authenticated', true);
                     this.props.onSubmit();
                 }
-            })
-            .catch(() => {
+            },
+            () => {
                 const { err } = this.state;
                 err.loginErr = true;
                 this.setState({ err });
-            });
+            }
+        );
     }
 
     render() {

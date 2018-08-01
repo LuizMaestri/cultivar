@@ -39,6 +39,10 @@ const getTag = (key, element) => {
     }[key]
 };
 
+const pointer = {
+    cursor: 'pointer'
+};
+
 export default class AdminDashboard extends Component{
     constructor(){
         super()
@@ -68,15 +72,17 @@ export default class AdminDashboard extends Component{
                             return (
                                 <Col md="3 offset-1" key={key}>
                                     <CardTitle>{listTitles[key]}</CardTitle>
-                                    <ListGroup>
+                                    <ListGroup style={pointer}>
                                         {
                                             elements ? elements.map(
                                                 (element, index) => index < 5 ? getTag(key, element) : null
                                             ) : null
                                         }
-                                        <ListGroupItem tag="button" action>
-                                            <Link className="no-undeline" to={ routes[key] }>Mais...</Link>
-                                        </ListGroupItem>
+                                        <Link className="no-undeline" to={ routes[key] }>
+                                            <ListGroupItem tag="button" style={pointer} action>
+                                                Mais...
+                                            </ListGroupItem>
+                                        </Link>
                                     </ListGroup>
                                 </Col>
                             );

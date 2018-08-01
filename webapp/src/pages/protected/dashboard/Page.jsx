@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { Roles } from '../../model';
+import { Roles } from '../../../model';
 import { Row, Col } from 'reactstrap';
 import AdminDashboard from './admin';
 
