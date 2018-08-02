@@ -1,22 +1,18 @@
-import React, { Component } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types';
-import FormLogin from './FormLogin';
 import { Row, Col } from 'reactstrap';
+import Form from './Form.jsx';
 
-class Login extends Component{
-    static propTypes = {
-        onAuthenticate: PropTypes.func
-    };
+const Login = props => (
+    <Row>
+        <Col md="4 offset-4">
+            <Form onSubmit={() => this.props.onAuthenticate()} />
+        </Col>
+    </Row>
+);
 
-    render(){
-        return(
-            <Row>
-                <Col md="4 offset-4">
-                    <FormLogin onSubmit={() => this.props.onAuthenticate()}/>
-                </Col>
-            </Row>
-        );
-    }
-}
+Login.propTypes = {
+    onAuthenticate: PropTypes.func
+};
 
 export default Login;

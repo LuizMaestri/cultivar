@@ -1,12 +1,12 @@
 // @flow
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 import { Button, Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 import InputMask from 'react-input-mask';
 import PropTypes from 'prop-types';
 import { saveObject, save } from '../../../utils/storage';
 import { setHeaders, postRequest } from '../../../utils/http';
 
-class FormLogin extends Component {
+export default class extends Component {
     constructor(){
         super();
         this.state = {
@@ -105,5 +105,3 @@ class FormLogin extends Component {
         );
     }
 }
-
-export default FormLogin;
