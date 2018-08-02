@@ -2,13 +2,10 @@ import React, { Component } from 'react';
 import { Row, Col, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
 import VolunteerItem from '../components/volunteer';
 import { Link } from 'react-router-dom';
+import { getRequest } from '../../../../utils/http';
 import axios from 'axios';
 
-const request = 
-    url => axios
-        .get(url)
-        .then(res => res.data)
-        .catch(() => []);
+const request = url => getRequest(url, res => res.data, () => [])
 
 const createState = 
     (schools, companies, volunteers) => {
@@ -52,16 +49,11 @@ export default class AdminDashboard extends Component{
     componentWillMount(){
         axios
             .all([request('/volunteer'), request('/place/company'), request('/place/school')])
-            .then((res) => this.setState(createState(...res)));
+            .then(res => this.setState(createState(...res)));
     }
 
     render(){
         const { state } = this;
-        state.volunteers.push({
-            id: '05002013902',
-            name: 'luiz',
-            grade: 100
-        })
         return (
             <div>
                 <Row></Row>
@@ -80,7 +72,7 @@ export default class AdminDashboard extends Component{
                                         }
                                         <Link className="no-undeline" to={ routes[key] }>
                                             <ListGroupItem tag="button" style={pointer} action>
-                                                Mais...
+                                                    Mais...
                                             </ListGroupItem>
                                         </Link>
                                     </ListGroup>
