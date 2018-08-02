@@ -1,12 +1,6 @@
-const Roles = {
-    ADMIN: 'ADMIN',
-    VOLUNTEER: 'VOLUNTEER',
-    COMPANY_ADMIN: 'COMPANY_ADMIN',
-    SCHOOL_ADMIN: 'SCHOOL_ADMIN',
-    values: () => [Roles.ADMIN, Roles.VOLUNTEER, Roles.COMPANY_ADMIN, Roles.SCHOOL_ADMIN]
-};
-
-
-export {
-    Roles
-}
+export { default as Roles } from './role';
+export { default as User } from './user';
+export { default as Status } from './status';
+export { default as Volunteer } from './Volunteer';
+export { default as Place } from './place';
+export { default as Address } from './address';
