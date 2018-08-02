@@ -1,6 +1,15 @@
 import React, { Component } from 'react';
-import { Row, Col } from 'reactstrap';
-import { ListHeader } from '../../../components';
+import { ListPage } from '../../../components';
+import { getRequest } from '../../../utils/http';
+import Line from './Line.jsx';
+
+const headers = ['CPF', 'Nome', 'Status']
+const mapping = {
+    CPF: 'id',
+    Nome:'name',
+    Status: 'status'
+}
+
 
 export default class VolunterList extends Component{
 
@@ -11,20 +20,19 @@ export default class VolunterList extends Component{
         }
     }
 
-    componentWillMount(){}
+    componentWillMount(){
+        getRequest(
+            'volunteer',
+            res => this.setState({ volunteers: res.data}),
+            () => {}
+        )
+    }
 
     render(){
         return (
-            <div>
-                <ListHeader title="Mentores Voluntários" onclick={()=>{}} />
-                <Row>
-                    <Col>
-                        {
-
-                        }
-                    </Col>
-                </Row>
-            </div>
+            <ListPage title="Mentores Voluntários" elements={this.state.volunteers} 
+                headers={headers} mapping={mapping} addOnClick={console.log}
+                noneMessage="Nenhum Voluntário encontrado." component={Line}/>
         );
     }
 }
