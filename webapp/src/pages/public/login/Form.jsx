@@ -1,10 +1,10 @@
 // @flow
 import React, { Component } from 'react';
-import { Button, Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
-import InputMask from 'react-input-mask';
-import PropTypes from 'prop-types';
-import { saveObject, save } from '../../../utils/storage';
 import { setHeaders, postRequest } from '../../../utils/http';
+import { saveObject, save } from '../../../utils/storage';
+import PropTypes from 'prop-types';
+import { Button, Form, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
+import { Mask } from '../../../components';
 
 export default class extends Component {
     constructor(){
@@ -30,7 +30,7 @@ export default class extends Component {
         const { user, err } = this.state;
         err.cpfErr = {};
         err.loginErr = false;
-        user.cpf = event.target.value.replace(/-\./g, '');
+        user.cpf = event.target.value.replace(/[-\.]/g, '');
         this.setState({ user });
     }
 
@@ -86,13 +86,8 @@ export default class extends Component {
         const { err } = this.state;
         return (
             <Form onSubmit={this.handlerSubmit.bind(this)}>
-                <FormGroup>
-                    <Label for="cpf">CPF</Label>
-                    <InputMask id="cpf" onChange={this.handlerCpf.bind(this)} mask="999.999.999-99" maskChar="_" >
-                        {(props) => <Input { ...props } type="tel" placeholder="CPF - ###.###.###-##" { ...err.cpfErr } />}
-                    </InputMask>
-                    <FormFeedback tooltip>CPF inválido</FormFeedback>
-                </FormGroup>
+                <Mask id="cpf" label="CPF" onChange={this.handlerCpf.bind(this)} mask="999.999.999-99" type="tel" placeholder="CPF - ###.###.###-##"
+                    err={err.cpfErr} errMessage="CPF inválido" />
                 <FormGroup>
                     <Label for="password">Senha</Label>
                     <Input id="password" type="password" placeholder="Senha" onChange={this.handlerPassword.bind(this)} { ...err.passwordErr }/>
