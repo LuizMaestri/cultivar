@@ -1,8 +1,4 @@
-import Header from './header/Header.jsx';
-import Footer from './footer/Footer.jsx';
-import ListPage from './listPage';
-export {
-    Header,
-    Footer,
-    ListPage
-};
+export { default as Header } from './header/Header.jsx';
+export { default as Footer } from './footer/Footer.jsx';
+export { default as ListPage } from './listPage';
+export { Mask, DatePicker } from './form';
