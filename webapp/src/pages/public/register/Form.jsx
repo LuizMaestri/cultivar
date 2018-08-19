@@ -36,7 +36,7 @@ export default class extends Component{
 
     handlerCpf(event){
         const { user, err } = this.state;
-        user.id = event.target.value.replace(/[-\.]/g, '');
+        user.id = event.target.value.replace(/[-.]/g, '');
         err.cpfErr = { invalid: !user.id};
         this.setState({ user, err });
     }
@@ -89,7 +89,7 @@ export default class extends Component{
 
     handlerEmail(event){
         const { user, err } = this.state;
-        let re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        let re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         user.email = event.target.value;
         err.emailErr = { invalid: !re.test(user.email) }
         this.setState({ user, err });

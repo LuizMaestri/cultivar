@@ -30,7 +30,7 @@ export default class extends Component {
         const { user, err } = this.state;
         err.cpfErr = {};
         err.loginErr = false;
-        user.cpf = event.target.value.replace(/[-\.]/g, '');
+        user.cpf = event.target.value.replace(/[-.]/g, '');
         this.setState({ user });
     }
 
