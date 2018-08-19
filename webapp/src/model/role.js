@@ -9,7 +9,7 @@ const Roles = {
         Roles.COMPANY_ADMIN,
         Roles.SCHOOL_ADMIN
     ],
-    has: role => Roles.values().includes(roles)
+    has: role => Roles.values().includes(role)
 };
 
 export default Roles;

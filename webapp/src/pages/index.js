@@ -4,5 +4,5 @@ export {
     Login,
     RegisterPage,
     Dashboard,
-     VolunterList
+    VolunterList
 };

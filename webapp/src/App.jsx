@@ -3,10 +3,11 @@ import React, { Component } from 'react';
 import { Header, Footer } from './components';
 import { BrowserRouter } from 'react-router-dom'
 import { RedirectRoute, PrivateRoute, MissingRoute } from './components/route';
+import { Route } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap';
 import { getAsObject } from './utils/storage';
 import { Roles } from './model';
-import { Dashboard, Login, VolunterList } from './pages';
+import { Dashboard, Login, VolunterList, RegisterPage } from './pages';
 import './App.css';
 
 export default class App extends Component {
@@ -52,6 +53,7 @@ export default class App extends Component {
 								<PrivateRoute path="/profile" logged={logged} component={(null)}>
 									{null}
 								</PrivateRoute>
+								<Route path="/cadastro" component={RegisterPage}/>
 								<MissingRoute logged={logged}/>
 							</Col>
 						</Row>
