@@ -37,7 +37,7 @@ export default class extends Component{
                             elements.map(element => (<LineTag element={element} onClick={onClick} headers={headers} mapping={mapping} key={element.id}/>)) :
                             (
                                 <tr>
-                                    <td colspan={headers.length + 1} style={ { width:'100%' } }>
+                                    <td colSpan={headers.length + 1} style={ { width:'100%' } }>
                                         {noneMessage}
                                     </td>
                                 </tr>

@@ -7,7 +7,7 @@ import { Route } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap';
 import { getAsObject } from './utils/storage';
 import { Roles } from './model';
-import { Dashboard, Login, VolunterList, RegisterPage } from './pages';
+import { Dashboard, Login, VolunterList, CompanyList, RegisterPage } from './pages';
 import './App.css';
 
 export default class App extends Component {
@@ -19,7 +19,7 @@ export default class App extends Component {
   	}
 
 	handlerLogin(){
-		this.setState({logged: getAsObject('authenticated')});
+		this.setState({logged: true});
 	}
 
 	render() {
@@ -45,7 +45,7 @@ export default class App extends Component {
 									{null}
 								</PrivateRoute>
 								<PrivateRoute path="/empresas" logged={logged} component={(null)}>
-									{null}
+									<CompanyList/>
 								</PrivateRoute>
 								<PrivateRoute path="/usuarios" logged={logged} component={(null)}>
 									{null}

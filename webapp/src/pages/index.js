@@ -1,8 +1,9 @@
 import { Login, RegisterPage } from './public';
-import { Dashboard, VolunterList } from './protected';
+import { Dashboard, VolunterList, CompanyList } from './protected';
 export {
     Login,
     RegisterPage,
     Dashboard,
-    VolunterList
+    VolunterList,
+    CompanyList
 };
