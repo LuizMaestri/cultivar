@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { ListPage } from '../../../components';
+import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { getRequest } from '../../../utils/http';
 import Line from './Line.jsx';
+import Form from './Form.jsx'
 
 const headers = ['CNPJ', 'Nome', 'Status']
 const mapping = {
@@ -16,23 +18,39 @@ export default class CompanyList extends Component {
     constructor() {
         super();
         this.state = {
-            companies: []
-        }
+            companies: [],
+            open: false
+        };
+        this.toggle = this.toggle.bind(this);
     }
 
     componentWillMount() {
         getRequest(
-            'volunteer',
+            '/place/company',
             res => this.setState({ companies: res.data }),
             () => { }
         )
     }
 
+    toggle() {
+        this.setState({
+            open: !this.state.open
+        });
+    }
+
     render() {
         return (
-            <ListPage title="Empresas Envolvidas" elements={this.state.companies}
-                headers={headers} mapping={mapping} addOnClick={console.log}
-                noneMessage="Nenhum Voluntário encontrado." component={Line} />
+            <div>
+                <ListPage title="Empresas Envolvidas" elements={this.state.companies}
+                    headers={headers} mapping={mapping} addOnClick={this.toggle}
+                    noneMessage="Nenhuma Empresa encontrada." component={Line} />
+                <Modal isOpen={this.state.open} toggle={this.toggle}>
+                    <ModalHeader toggle={this.toggle}>Cadastrar Empresa</ModalHeader>
+                    <ModalBody>
+                        <Form toggle={this.toggle}/>
+                    </ModalBody>
+                </Modal>
+            </div>
         );
     }
 }
