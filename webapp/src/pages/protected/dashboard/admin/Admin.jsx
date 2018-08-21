@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, CardTitle, ListGroup, ListGroupItem } from 'reactstrap';
 import VolunteerItem from '../components/volunteer';
+import PlaceItem from '../components/place';
 import { Link } from 'react-router-dom';
 import { getRequest } from '../../../../utils/http';
 import axios from 'axios';
@@ -8,7 +9,7 @@ import axios from 'axios';
 const request = url => getRequest(url, res => res.data, () => [])
 
 const createState = 
-    (schools, companies, volunteers) => {
+    (volunteers, companies, schools) => {
         return { 
             schools,
             companies,
@@ -30,8 +31,8 @@ const routes = {
 
 const getTag = (key, element) => {
     return {
-        schools: (null),
-        companies: (null),
+        schools: (<PlaceItem place={element} key={element.id} />),
+        companies: (<PlaceItem place={element} key={element.id} />),
         volunteers: (<VolunteerItem volunteer={element} key={element.id}/>)
     }[key]
 };
