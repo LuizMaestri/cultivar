@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { Place } from '../../../model';
-import { Wizard } from '../../../components';
-import { Mask, DatePicker } from '../../../components';
+import neighborhoods from '../../../utils/neighborhoods';
+import { postRequest } from '../../../utils/http';
+import { Wizard, Mask, DatePicker } from '../../../components';
 import { Row, Col, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
 
 const Required = () => (<span className="text-danger">*</span>);
@@ -17,7 +18,7 @@ export default class Form extends Component {
                 phoneErr:{},
                 cpfErr: {},
                 passwordErr: {},
-                nascErr: {},
+                birthErr: {},
                 nameResponsibleErr: {},
                 companyErr: {},
                 jobErr: {},
@@ -25,17 +26,13 @@ export default class Form extends Component {
                 cityErr: {},
                 streetErr: {}
             },
+            confirmPassword: '',
             cities: [
                 'Florianópolis',
                 'Palhoça',
                 'São José'
             ],
-            neighborhoods: {
-                'Florianópolis': [],
-                'Palhoça': [],
-                'São José': []
-            },
-            confirmPassword: '',
+            neighborhoods,
         }
     }
 
@@ -56,7 +53,8 @@ export default class Form extends Component {
 
     handlerPhone(event){
         const { company, err } = this.state;
-        company.phone = event.target.value;
+        company.phone = event.target.value.replace(/[-()]/g, '')
+        company.responsible.phone = company.phone;
         err.phoneErr = { invalid: !company.phone };
         this.setState({ company, err });
     }
@@ -71,7 +69,7 @@ export default class Form extends Component {
         this.setState({ company, err });
     }
 
-    handlerName(event) {
+    handlerResponsibleName(event) {
         const { company, err } = this.state;
         const user = company.responsible;
         user.name = event.target.value;
@@ -108,6 +106,17 @@ export default class Form extends Component {
         this.setState({ company, err });
     }
 
+    handlerBirth(event){
+        const { company, err } = this.state;
+        const user = company.responsible;
+        const { value } = event.target;
+        user.birth = value ? new Date(value).toISOString() : value;
+        company.responsible = user;
+        err.birthErr = { invalid: !user.birth }
+        this.setState({ company, err });
+    }
+
+    // Address
     handlerCity(event){
         const { company, err } = this.state;
         const { address } = company;
@@ -141,11 +150,55 @@ export default class Form extends Component {
         this.setState({ company }); 
     }
 
+    validate(step){
+        const { company, err, confirmPassword } = this.state;
+        for (const key in err) {
+            if (err.hasOwnProperty(key)) {
+                const element = err[key];
+                if(element.hasOwnProperty('invalid')){
+                    if (element.invalid){
+                        return false;
+                    }
+                } 
+            }
+        }
+        switch(step.id){
+            case 'step-0': {
+                return company.name && company.id && company.phone;
+            }
+            case 'step-1': {
+                const { responsible } = company;
+                return responsible.id && responsible.email && responsible.birth && responsible.name && responsible.password && confirmPassword
+            } 
+            case 'step-2': {
+                const { address } = company;
+                return address.city && address.neighborhood && address.street
+            }
+            default: return true;
+        }
+
+    }
+
+    handlerSubmit(){
+        console.log(this.state.company);
+        if (this.validate({id: 'step-2'})){
+            postRequest(
+                '/place',
+                this.state.company,
+                () => {
+                    alert('Empresa cadastrada com sucesso');
+                    this.props.toggle()
+                },
+                res => alert(res.message)
+            );
+        }
+    }
+
     render(){
         const { err, cities, neighborhoods, company} = this.state;
         const { address } = company;
         return (
-            <Wizard onSubmit={() => { }} onBackClick={this.props.toggle} submitTitle="Cadastrar">
+            <Wizard onSubmit={this.handlerSubmit.bind(this)} onNext={this.validate.bind(this)} onBackClick={this.props.toggle} submitTitle="Cadastrar">
                 <div>
                     <h3 className="text-align-center">Dados da Empresa</h3>
                     <FormGroup>
@@ -157,17 +210,17 @@ export default class Form extends Component {
                     </FormGroup>
                     <Mask id="cnpj" label="CNPJ" onChange={this.handlerCnpj.bind(this)} mask="99.999.999/9999-9" type="tel" placeholder="##.###.###/####-#"
                         err={err.cnpjErr} errMessage="CNPJ inválido" />
-                    <Mask id="phone" label="Número p/ Contato" onChange={this.handlerPhone.bind(this)} mask="9999999999" type="tel" err={err.phoneErr} 
+                    <Mask id="phone" label="Número p/ Contato" onChange={this.handlerPhone.bind(this)} mask="(99)9999-9999" placeholder="(##)####-####" type="tel" err={err.phoneErr} 
                         errMessage="Número p/ Contato é Obrigatório" />
                 </div>
                 <div>
                     <h3 className="text-align-center">Dados da Responsável</h3>
                     <FormGroup>
                         <Label for="name">Nome Responsável</Label>
-                        <Input id="name" onChange={this.handlerName.bind(this)} {...err.nameResponsibleErr} />
+                        <Input id="name" onChange={this.handlerResponsibleName.bind(this)} {...err.nameResponsibleErr} />
                         <FormFeedback tooltip>Nome do Responsável é Obrigatório.</FormFeedback>
                     </FormGroup>
-                    <DatePicker id="date" label="Nascimento" errMessage="Data inválida" err={err.nascErr} />
+                    <DatePicker id="date" label="Nascimento" errMessage="Data inválida" onChange={this.handlerBirth.bind(this)} err={err.birthErr} />
                     <Mask id="cpf" label="CPF" onChange={this.handlerCpf.bind(this)} mask="999.999.999-99" type="tel" placeholder="###.###.###-##"
                         err={err.cpfErr} errMessage="CPF inválido" />
                     <FormGroup>
@@ -195,7 +248,7 @@ export default class Form extends Component {
                         <Label for="city">Cidade <Required/></Label>
                         <Input type="select" name="city" id="city" onChange={this.handlerCity.bind(this)} {...err.cityErr}>
                             <option value="">Selecione</option>
-                            {cities.length ? cities.map(city => (<option value={city}>{city}</option>)) : null}
+                            {cities.length ? cities.map(city => (<option key={city} value={city}>{city}</option>)) : null}
                         </Input>
                         <FormFeedback tooltip>Cidade é Obrigatório</FormFeedback>
                     </FormGroup>
@@ -205,7 +258,7 @@ export default class Form extends Component {
                             <option value="">Selecione</option>
                             {
                                 neighborhoods.hasOwnProperty(address.city) && neighborhoods[address.city].length ? 
-                                    neighborhoods.map(neighborhood => (<option value={neighborhood}>{neighborhood}</option>)) : null
+                                    neighborhoods[address.city].map(neighborhood => (<option key={neighborhood} value={neighborhood}>{neighborhood}</option>)) : null
                             }
                         </Input>
                         <FormFeedback tooltip>Bairro é Obrigatório</FormFeedback>
@@ -220,8 +273,8 @@ export default class Form extends Component {
                         </Col>
                         <Col md={2}>
                             <FormGroup>
-                                <Label for="street">Número</Label>
-                                <Input id="street" onChange={this.handlerNumber.bind(this)} disabled={!address.neighborhood} />
+                                <Label for="number">Número</Label>
+                                <Input id="number" onChange={this.handlerNumber.bind(this)} disabled={!address.neighborhood} />
                             </FormGroup>
                         </Col>
                     </Row>

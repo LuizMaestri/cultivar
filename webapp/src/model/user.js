@@ -3,7 +3,7 @@ import Status from './status';
 
 export default class{
     constructor(id= '', name='', role=Roles.VOLUNTEER, status=Status.WAIT_TV, email='',
-            password='', phone = '', birth = new Date(), createAt = new Date()) {
+            password = '', phone = '', birth = '', createAt = new Date().toISOString()) {
         this.id = id;
         if (Roles.has(role)) {
             this.role = role;
