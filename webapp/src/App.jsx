@@ -7,7 +7,7 @@ import { Route } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap';
 import { getAsObject } from './utils/storage';
 import { Roles } from './model';
-import { Dashboard, Login, VolunterList, CompanyList, RegisterPage } from './pages';
+import { Dashboard, Login, VolunterList, CompanyList, SchoolList, RegisterPage } from './pages';
 import './App.css';
 
 export default class App extends Component {
@@ -42,7 +42,7 @@ export default class App extends Component {
 									<VolunterList/>
 								</PrivateRoute>
 								<PrivateRoute path="/escolas" logged={logged} component={(null)}>
-									{null}
+									<SchoolList/>
 								</PrivateRoute>
 								<PrivateRoute path="/empresas" logged={logged} component={(null)}>
 									<CompanyList/>
