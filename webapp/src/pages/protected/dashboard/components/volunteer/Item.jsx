@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import VolunteerModal from './Modal.jsx';
 import Item from '../Item.jsx'
 
-export default class VolunterItem extends Component{
+export default class VolunteerItem extends Component{
     static propTypes = {
         volunteer: PropTypes.object.isRequired
     };
