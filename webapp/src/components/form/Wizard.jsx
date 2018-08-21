@@ -28,7 +28,9 @@ const Navigation = props => (
                 {
                     steps.indexOf(step) < steps.length - 1 && (
                         <Col>
-                            <Button id="next" type="button" color="primary" className="float-right" onClick={next}>
+                            <Button id="next" type="button" color="primary" className="float-right" onClick={()=>{
+                                    props.onNext && props.onNext(step) &&  next();
+                                }}>
                                 Próximo
                             </Button>
                         </Col>
@@ -71,7 +73,8 @@ const WizardForm = props => {
 WizardForm.propTypes = {
     onSubmit : PropTypes.func.isRequired,
     onBackClick: PropTypes.func.isRequired,
-    submitTitle: PropTypes.string.isRequired
+    submitTitle: PropTypes.string.isRequired,
+    onNext: PropTypes.func
 }
 
 export default WizardForm;

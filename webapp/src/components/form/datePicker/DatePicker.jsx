@@ -7,7 +7,7 @@ const Picker = props => (
     <FormGroup>
         <Label for={props.id}>{props.label}</Label>
         <Input id={props.id} type="date" max={new Date().toISOString().substr(0, 10)} 
-            placeholder={props.placeholder ? props.placeholder : "DD/MM/AAAA"} onChange={event => props.onchange } {...props.err} />
+            placeholder={props.placeholder ? props.placeholder : "DD/MM/AAAA"} onChange={props.onChange} {...props.err} />
         <FormFeedback>{props.errMessage}</FormFeedback>
     </FormGroup>
 );
