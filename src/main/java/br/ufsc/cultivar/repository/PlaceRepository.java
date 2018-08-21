@@ -41,7 +41,7 @@ public class PlaceRepository extends StringRepository<Place> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Place ("
+        return "INSERT INTO place ("
                 + "cod_cnpj, nm_company, nu_phone, fl_school, cod_address, cod_cpf"
                 + ") VALUES ("
                 + ":cod_cnpj, :nm_company, :nu_phone, :fl_school, :cod_address, :cod_cpf);";
@@ -55,7 +55,7 @@ public class PlaceRepository extends StringRepository<Place> {
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT * FROM Place ";
+        return "SELECT * FROM place ";
     }
 
     @Override
@@ -65,12 +65,12 @@ public class PlaceRepository extends StringRepository<Place> {
 
     @Override
     protected String getDeleteQuery() {
-        return "DELETE FROM Place WHERE cod_cnpj=:cod_cnpj";
+        return "DELETE FROM place WHERE cod_cnpj=:cod_cnpj";
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE Place SET nm_company:=nm_company, nu_phone:=nu_phone, "
+        return "UPDATE place SET nm_company:=nm_company, nu_phone:=nu_phone, "
                 + "fl_school:=fl_school, cod_cpf=:cod_cpf WHERE cod_cnpj=:cod_cnpj";
     }
 

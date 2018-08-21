@@ -59,7 +59,7 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Users ("
+        return "INSERT INTO users ("
                 + "cod_cpf, nm_user, nm_role, sta_user, dt_birth, nu_phone, "
                 + "dsc_email, dsc_password, cod_address, cod_cnpj"
                 + ") VALUES("
@@ -74,7 +74,7 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT * FROM (SELECT * FROM Users WHERE nm_role = 'VOLUNTEER') as v ";
+        return "SELECT * FROM (SELECT * FROM users WHERE nm_role = 'VOLUNTEER') as v ";
     }
 
     @Override
@@ -84,12 +84,12 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
 
     @Override
     protected String getDeleteQuery() {
-        return "DELETE FROM Users WHERE cod_cpf=:cod_cpf";
+        return "DELETE FROM users WHERE cod_cpf=:cod_cpf";
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE Users SET "
+        return "UPDATE users SET "
                 + "nm_user=:nm_user, sta_user=:sta_user, dt_birth=:dt_birth, nu_phone=:nu_phone, dsc_email=:dsc_email, "
                 + "dsc_password=:dsc_password, cod_address=:cod_address, cod_cnpj=:cod_cnpj WHERE cod_cpf=:cod_cpf;";
     }

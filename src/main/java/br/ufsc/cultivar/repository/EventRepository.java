@@ -59,7 +59,7 @@ public class EventRepository extends LongRepository<Event> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Event (cod_cnpj, dt_occurrence, tp_event)"
+        return "INSERT INTO event (cod_cnpj, dt_occurrence, tp_event)"
                 + " VALUES (:codCnpj, :dtOccurrence, :tpEvent)";
     }
 
@@ -75,7 +75,7 @@ public class EventRepository extends LongRepository<Event> {
     protected String getSelectAllQuery() {
         return "SELECT * FROM ("
                 + "SELECT e.*, group_concat(eu.cod_cpf SEPARATOR ',') as involved"
-                + " FROM Event e NATURAL JOIN Event_User eu GROUP BY e.cod_event"
+                + " FROM event e NATURAL JOIN event_user eu GROUP BY e.cod_event"
                 + ") x ";
     }
 
@@ -91,7 +91,7 @@ public class EventRepository extends LongRepository<Event> {
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE Event SET cod_cnpj=:codCnpj, dt_occurrence=:dtOccurrence, "
+        return "UPDATE event SET cod_cnpj=:codCnpj, dt_occurrence=:dtOccurrence, "
                 + "tp_event:=tpEvent WHERE cod_event=:" + getIdFieldName();
     }
 
@@ -103,7 +103,7 @@ public class EventRepository extends LongRepository<Event> {
     @Override
     public void dissociate(Long codEvent){
         jdbcTemplate.update(
-                "DELETE FROM Event_User WHERE cod_event=:codevent",
+                "DELETE FROM event_user WHERE cod_event=:codevent",
                 new MapSqlParameterSource("codEvent", codEvent)
         );
     }
@@ -115,7 +115,7 @@ public class EventRepository extends LongRepository<Event> {
 
             List<EventUsersDTO.EventUser> list = (List) associations;
             jdbcTemplate.batchUpdate(
-                    "INSERT INTO Event_User (cod_event, cod_cpf) VALUES (:codEvent, :codCpf)",
+                    "INSERT INTO event_user (cod_event, cod_cpf) VALUES (:codEvent, :codCpf)",
                     list.stream()
                             .map(
                                     eventUser -> new MapSqlParameterSource()

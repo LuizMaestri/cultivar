@@ -27,7 +27,7 @@ public class AddressRepository extends LongRepository<Address> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Address ("
+        return "INSERT INTO address ("
                 + "nm_city, nm_neighborhood, nm_street, nu_address"
                 + ") VALUES("
                 + ":nm_city, :nm_neighborhood, :nm_street, :nu_address);";
@@ -44,7 +44,7 @@ public class AddressRepository extends LongRepository<Address> {
 
     @Override
     protected String getSelectAllQuery() {
-        return "SELECT * FROM Address ";
+        return "SELECT * FROM address ";
     }
 
     @Override
@@ -54,12 +54,12 @@ public class AddressRepository extends LongRepository<Address> {
 
     @Override
     protected String getDeleteQuery() {
-        return "DELETE FROM Address WHERE cod_address=:" + getIdFieldName();
+        return "DELETE FROM address WHERE cod_address=:" + getIdFieldName();
     }
 
     @Override
     protected String getUpdateQuery() {
-        return "UPDATE Address SET nm_city=:nm_city nm_neighborhood=:nm_neighborhood, "
+        return "UPDATE address SET nm_city=:nm_city nm_neighborhood=:nm_neighborhood, "
                 + "nm_street=:nm_street, nu_address=:nu_address WHERE cod_address=:cod_address";
     }
 

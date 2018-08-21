@@ -10,7 +10,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.time.ZoneId;
 import java.util.List;
 
 @Repository
@@ -32,7 +31,7 @@ public class UserRepository extends StringRepository<User> {
                             DateUtils.toLocaldate(rs.getDate("dt_birth"))
                     )
                     .createAt(
-                            DateUtils.toLocalDateTime(rs.getDate("dt_create"))
+                            DateUtils.toZonedDateTime(rs.getTimestamp("dt_create"))
                     )
                     .role(
                             Role.valueOf(
@@ -52,7 +51,7 @@ public class UserRepository extends StringRepository<User> {
 
     @Override
     protected String getInsertQuery() {
-        return "INSERT INTO Users ("
+        return "INSERT INTO users ("
                 + "cod_cpf, nm_user, nm_role, sta_user, dt_birth, nu_phone, dsc_email, dsc_password"
                 + ") VALUES("
                 + ":cod_cpf, :nm_user, :nm_role, :sta_user, :dt_birth, :nu_phone, :dsc_email, :dsc_password);";
@@ -66,7 +65,7 @@ public class UserRepository extends StringRepository<User> {
     @Override
     protected String getSelectAllQuery() {
         return "SELECT cod_cpf, nm_user, nm_role, sta_user, dt_birth, "
-                + "nu_phone, dsc_email, dsc_password, dt_create FROM Users ";
+                + "nu_phone, dsc_email, dsc_password, dt_create FROM users ";
     }
 
     @Override
