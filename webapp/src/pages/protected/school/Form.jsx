@@ -210,7 +210,7 @@ export default class Form extends Component {
                         <Input id="name" onChange={this.handlerName.bind(this)} {...err.nameErr} />
                         <FormFeedback tooltip>Nome é Obrigatório.</FormFeedback>
                     </FormGroup>
-                    <Mask id="cnpj" label="CNPJ" onChange={this.handlerCnpj.bind(this)} mask="99.999.999/9999-9" type="tel" placeholder="##.###.###/####-#"
+                    <Mask id="cnpj" label="CNPJ" onChange={this.handlerCnpj.bind(this)} mask="99.999.999/9999-99" type="tel" placeholder="##.###.###/####-##"
                         err={err.cnpjErr} errMessage="CNPJ inválido" />
                     <Mask id="phone" label="Número p/ Contato" onChange={this.handlerPhone.bind(this)} mask="(99)9999-9999" placeholder="(##)####-####" type="tel" err={err.phoneErr} 
                         errMessage="Número p/ Contato é Obrigatório" />
