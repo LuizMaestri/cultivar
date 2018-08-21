@@ -3,11 +3,14 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.models.AbstractModel;
+import br.ufsc.cultivar.models.User;
 import br.ufsc.cultivar.repository.base.AbstractRepository;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+import javax.validation.Validation;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +64,13 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
 
     public void associate(final K id, Object dto) throws ServiceException{
         throw new NotImplementedException();
+    }
+
+    Boolean isValid(T entity){
+        val factory = Validation.buildDefaultValidatorFactory();
+        val validator = factory.getValidator();
+        val validate = validator.validate(entity);
+        return validate.isEmpty();
     }
 
     abstract String getMessageErrorFindOne(final K id);

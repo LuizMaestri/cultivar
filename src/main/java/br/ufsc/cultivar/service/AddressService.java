@@ -12,13 +12,6 @@ import java.util.logging.Logger;
 @Service
 public class AddressService extends AbstractService<Address, Long> {
 
-    Boolean isValid(Address address){
-        val factory = Validation.buildDefaultValidatorFactory();
-        val validator = factory.getValidator();
-        val validate = validator.validate(address);
-        return validate.isEmpty();
-    }
-
     @Override
     String getMessageErrorFindOne(final Long id) {
         return "Não foi possível encontrar o endereço solicitado.";

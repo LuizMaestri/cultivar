@@ -13,13 +13,6 @@ import java.util.logging.Logger;
 @Service
 public class UserService extends AbstractService<User, String> {
 
-    Boolean isValid(User user){
-        val factory = Validation.buildDefaultValidatorFactory();
-        val validator = factory.getValidator();
-        val validate = validator.validate(user);
-        return validate.isEmpty();
-    }
-
     @Override
     String getMessageErrorFindOne(final String id) {
         return "Não foi possível encontrar o usuário com cpf: " + id + ".";
