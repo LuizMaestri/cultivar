@@ -16,7 +16,7 @@ public class AddressService extends AbstractService<Address, Long> {
         val factory = Validation.buildDefaultValidatorFactory();
         val validator = factory.getValidator();
         val validate = validator.validate(address);
-        return !validate.isEmpty();
+        return validate.isEmpty();
     }
 
     @Override
