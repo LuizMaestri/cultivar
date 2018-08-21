@@ -10,7 +10,9 @@ export default class extends Component{
         noneMessage: PropTypes.string.isRequired,
         headers: PropTypes.array.isRequired,
         mapping: PropTypes.object.isRequired,
-        onClick: PropTypes.func
+        onClick: PropTypes.func,
+        onDelete: PropTypes.func,
+        onEdit: PropTypes.func
     };
 
     render(){
@@ -19,7 +21,9 @@ export default class extends Component{
             mapping,
             onClick,
             elements,
-            noneMessage
+            noneMessage,
+            onDelete,
+            onEdit
         } = this.props;
         const LineTag = this.props.component;
 
@@ -34,7 +38,7 @@ export default class extends Component{
                 <tbody>
                     {
                         elements.length > 0 ?
-                            elements.map(element => (<LineTag element={element} onClick={onClick} headers={headers} mapping={mapping} key={element.id}/>)) :
+                            elements.map(element => (<LineTag element={element} onClick={onClick} headers={headers} mapping={mapping} key={element.id} onDelete={onDelete} onEdit={onEdit}/>)) :
                             (
                                 <tr>
                                     <td colSpan={headers.length + 1} style={ { width:'100%' } }>

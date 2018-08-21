@@ -3,7 +3,7 @@ import { Row, Col, Button } from 'reactstrap';
 import { FaPlus } from 'react-icons/fa';
 import PropTypes from 'prop-types';
 
-const ListHeader = ({title, onClick}) => (
+const ListHeader = ({ title, onClick, noAddButton}) => (
     <Row>
         <Col md="5" />
         <Col md="4">
@@ -11,7 +11,11 @@ const ListHeader = ({title, onClick}) => (
         </Col>
         <Col md="2" />
         <Col md="1">
-            <Button color="primary" size="lg" onClick={ onClick }><FaPlus /></Button>
+            {
+                !noAddButton && (
+                    <Button color="primary" size="lg" onClick={onClick}><FaPlus /></Button>
+                )
+            }
         </Col>
     </Row>
 );

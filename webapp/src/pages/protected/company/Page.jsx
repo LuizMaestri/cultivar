@@ -43,7 +43,7 @@ export default class CompanyList extends Component {
             <div>
                 <ListPage title="Empresas Envolvidas" elements={this.state.companies}
                     headers={headers} mapping={mapping} addOnClick={this.toggle}
-                    noneMessage="Nenhuma Empresa encontrada." component={Line} />
+                    noneMessage="Nenhuma Empresa encontrada." component={Line} onDelete={this.componentWillMount.bind(this)}/>
                 <Modal isOpen={this.state.open} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>Cadastrar Empresa</ModalHeader>
                     <ModalBody>

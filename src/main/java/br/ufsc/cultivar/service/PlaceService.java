@@ -42,6 +42,14 @@ public class PlaceService extends AbstractService<Place, String> {
     }
 
     @Override
+    public void delete(String id) throws ServiceException{
+        Place place = get(id);
+        super.delete(id);
+        addressService.delete(place.getAddress().getId());
+        userService.delete(place.getResponsible().getId());
+    }
+
+    @Override
     String getMessageErrorFindOne(final String id) {
         return "Não foi possível encontrar a empresa/escola com cnpj: " + id + ".";
     }

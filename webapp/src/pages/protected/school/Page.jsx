@@ -43,7 +43,7 @@ export default class SchoolList extends Component {
             <div>
                 <ListPage title="Escolas Benificiadas" elements={this.state.schools}
                     headers={headers} mapping={mapping} addOnClick={this.toggle}
-                    noneMessage="Nenhuma Escola encontrada." component={Line} />
+                    noneMessage="Nenhuma Escola encontrada." component={Line} onDelete={this.componentWillMount.bind(this)}/>
                 <Modal isOpen={this.state.open} toggle={this.toggle}>
                     <ModalHeader toggle={this.toggle}>Cadastrar Escola</ModalHeader>
                     <ModalBody>

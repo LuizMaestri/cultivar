@@ -3,7 +3,6 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.models.AbstractModel;
-import br.ufsc.cultivar.models.User;
 import br.ufsc.cultivar.repository.base.AbstractRepository;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +52,7 @@ public abstract class AbstractService<T extends AbstractModel<K>, K> {
         }
     }
 
-    public void delete(final K id) {
+    public void delete(final K id) throws ServiceException{
         repository.delete(id);
     }
 

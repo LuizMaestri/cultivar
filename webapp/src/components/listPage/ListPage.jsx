@@ -14,14 +14,15 @@ export default class ListPage extends Component{
         component: PropTypes.any.isRequired,
         mapping: PropTypes.object.isRequired,
         noneMessage: PropTypes.string.isRequired,
+        noAddButton: PropTypes.bool,
         onclick: PropTypes.func
     };
 
     render(){
-        const { title, addOnClick } = this.props;
+        const { title, addOnClick, noAddButton } = this.props;
         return(
             <div>
-                <ListHeader title={title} onClick={addOnClick} />
+                <ListHeader title={title} onClick={addOnClick} noAddButton={noAddButton}/>
                 <br/>
                 <Row>
                     <Col md="10 offset-1">

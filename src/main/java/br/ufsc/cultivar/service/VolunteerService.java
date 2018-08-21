@@ -38,6 +38,13 @@ public class VolunteerService extends AbstractService<Volunteer, String> {
     }
 
     @Override
+    public void delete(String id) throws ServiceException {
+        Volunteer volunteer = get(id);
+        super.delete(id);
+        addressService.delete(volunteer.getAddress().getId());
+    }
+
+    @Override
     @Transactional
     public void associate(String id, Object dto) throws ServiceException {
         if (dto instanceof String){

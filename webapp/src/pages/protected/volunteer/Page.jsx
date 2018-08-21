@@ -31,8 +31,8 @@ export default class VolunterList extends Component{
     render(){
         return (
             <ListPage title="Mentores Voluntários" elements={this.state.volunteers} 
-                headers={headers} mapping={mapping} addOnClick={console.log}
-                noneMessage="Nenhum Voluntário encontrado." component={Line}/>
+                headers={headers} mapping={mapping} addOnClick={console.log} noAddButton
+                noneMessage="Nenhum Voluntário encontrado." component={Line} onDelete={this.componentWillMount.bind(this)}/>
         );
     }
 }
