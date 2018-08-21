@@ -10,7 +10,6 @@ import lombok.extern.java.Log;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.logging.Logger;
 
@@ -24,7 +23,6 @@ public class PlaceService extends AbstractService<Place, String> {
     UserService userService;
 
     @Override
-    @Transactional
     public String save(final Place entity) throws ServiceException {
         val address = entity.getAddress();
         if (!addressService.isValid(address)){
