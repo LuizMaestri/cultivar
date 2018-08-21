@@ -11,26 +11,30 @@ const getColor = grade => {
 };
 
 export default class Item extends Component{
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
         this.state = {
-            isOpen: false
+            isOpen: false,
+            element: props.element
         }
         this.toggle = this.toggle.bind(this);
     }
 
     static propTypes = {
         element: PropTypes.object.isRequired,
-        modal: PropTypes.func.isRequired
+        modal: PropTypes.func.isRequired,
+        beforeToggle: PropTypes.func
     }
 
     toggle() {
-        this.setState({ isOpen: !this.state.isOpen });
+        const { element, isOpen } = this.state;
+        this.props.beforeToggle && this.props.beforeToggle(isOpen, element);
+        this.setState({ isOpen: !isOpen, element });
     }
 
     render() {
-        const { element, modal } = this.props;
-        const { isOpen } = this.state;
+        const { modal } = this.props;
+        const { element, isOpen } = this.state;
         const Modal = modal;
         return (
             <div>
