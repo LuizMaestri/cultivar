@@ -33,7 +33,7 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
                             DateUtils.toLocaldate(rs.getDate("dt_birth"))
                     )
                     .createAt(
-                            DateUtils.toLocalDateTime(rs.getDate("dt_create"))
+                            DateUtils.toZonedDateTime(rs.getTimestamp("dt_create"))
                     )
                     .status(
                             Status.valueOf(
@@ -65,7 +65,7 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
                 + "dsc_email, dsc_password, cod_address, cod_cnpj, dsc_job"
                 + ") VALUES("
                 + ":cod_cpf, :nm_user, 'VOLUNTEER', :sta_user, :dt_birth, :nu_phone, "
-                + ":dsc_email, :dsc_password, :cod_address, :cod_cnpj, dsc_job);";
+                + ":dsc_email, :dsc_password, :cod_address, :cod_cnpj, :dsc_job);";
     }
 
     @Override

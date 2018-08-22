@@ -26,7 +26,7 @@ public class VolunteerService extends AbstractService<Volunteer, String> {
     @Transactional
     public String save(final Volunteer entity) throws ServiceException{
         val address = entity.getAddress();
-        if (addressService.isValid(address)){
+        if (!addressService.isValid(address)){
             throw new ServiceException("Endreço inválido.", null, Type.INVALID);
         }
         val codAddress = addressService.save(address);

@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.br.CPF;
 import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 @Value
 @Wither
@@ -49,7 +50,7 @@ public class Volunteer extends AbstractModel<String>{
     LocalDate birth;
     @PastOrPresent
     @ApiModelProperty(notes = "Date od register creation", required = true)
-    LocalDateTime createAt;
+    ZonedDateTime createAt;
     @NotNull
     @ApiModelProperty(notes = "Volunteer's status", required = true,
             allowableValues = "APPROVED, WAIT_RECOMMEND, RECOMMEND, WAIT_RT, WAIT_VT")
