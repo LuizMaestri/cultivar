@@ -39,7 +39,7 @@ const Navigation = props => (
                 {
                     steps.indexOf(step) === steps.length - 1 && (
                         <Col>
-                            <Button id="next" type="submit" color="primary" className="float-right">
+                            <Button id="next" type="button" color="primary" className="float-right" onClick={this.props.onSubmit}>
                                 {props.submitTitle}
                             </Button>
                         </Col>
@@ -52,7 +52,7 @@ const Navigation = props => (
 
 const WizardForm = props => {
     return (
-            <Form onSubmit={props.onSubmit}>
+            <Form>
                 <Wizard>
                     <Steps>
                         { 
