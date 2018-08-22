@@ -28,6 +28,7 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
                     .email(rs.getString("dsc_email"))
                     .password(rs.getString("dsc_password"))
                     .phone(rs.getString("nu_phone"))
+                    .job(rs.getString("dsc_job"))
                     .birth(
                             DateUtils.toLocaldate(rs.getDate("dt_birth"))
                     )
@@ -61,10 +62,10 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
     protected String getInsertQuery() {
         return "INSERT INTO users ("
                 + "cod_cpf, nm_user, nm_role, sta_user, dt_birth, nu_phone, "
-                + "dsc_email, dsc_password, cod_address, cod_cnpj"
+                + "dsc_email, dsc_password, cod_address, cod_cnpj, dsc_job"
                 + ") VALUES("
                 + ":cod_cpf, :nm_user, 'VOLUNTEER', :sta_user, :dt_birth, :nu_phone, "
-                + ":dsc_email, :dsc_password, :cod_address, :cod_cnpj);";
+                + ":dsc_email, :dsc_password, :cod_address, :cod_cnpj, dsc_job);";
     }
 
     @Override
@@ -91,7 +92,7 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
     protected String getUpdateQuery() {
         return "UPDATE users SET "
                 + "nm_user=:nm_user, sta_user=:sta_user, dt_birth=:dt_birth, nu_phone=:nu_phone, dsc_email=:dsc_email, "
-                + "dsc_password=:dsc_password, cod_address=:cod_address, cod_cnpj=:cod_cnpj WHERE cod_cpf=:cod_cpf;";
+                + "dsc_password=:dsc_password, cod_address=:cod_address, cod_cnpj=:cod_cnpj, dsc_job=:dsc_job WHERE cod_cpf=:cod_cpf;";
     }
 
     @Override
@@ -105,7 +106,8 @@ public class VolunteerRepository extends StringRepository<Volunteer> {
                 .addValue("dsc_email", entity.getEmail())
                 .addValue("dsc_password", entity.getPassword())
                 .addValue("cod_address", entity.getAddress().getId())
-                .addValue("cod_cnpj", entity.getCompany().getId());
+                .addValue("cod_cnpj", entity.getCompany().getId())
+                .addValue("dsc_job", entity.getJob());
     }
 
     @Override

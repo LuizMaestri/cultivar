@@ -60,6 +60,9 @@ public class Volunteer extends AbstractModel<String>{
     @NotNull
     @ApiModelProperty(notes = "Volunteer's company", required = true)
     Place company;
+    @NotNull
+    @ApiModelProperty(notes = "Volunteer's job on company", required = true)
+    String job;
     @ApiModelProperty(notes = "Path to volunteer's TV")
     String pathTV;
     @ApiModelProperty(notes = "Path to volunteer's TR")
