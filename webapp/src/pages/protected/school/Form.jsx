@@ -2,10 +2,8 @@ import React, { Component } from 'react';
 import { Place } from '../../../model';
 import neighborhoods from '../../../utils/neighborhoods';
 import { postRequest } from '../../../utils/http';
-import { Wizard, Mask, DatePicker } from '../../../components';
+import { Wizard, Mask, DatePicker, Required } from '../../../components';
 import { Row, Col, FormGroup, Label, Input, FormFeedback } from 'reactstrap';
-
-const Required = () => (<span className="text-danger">*</span>);
 
 export default class Form extends Component {
     constructor(){
@@ -25,6 +23,7 @@ export default class Form extends Component {
                 jobErr: {},
                 emailErr: {},
                 cityErr: {},
+                neighborhoodErr: {},
                 streetErr: {}
             },
             confirmPassword: '',
