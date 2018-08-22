@@ -41,7 +41,7 @@ public class Resource<T extends AbstractModel<K>,K> {
 
     @DeleteMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable final K id){
+    public void delete(@PathVariable final K id) throws ServiceException {
         service.delete(id);
     }
 
