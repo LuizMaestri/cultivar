@@ -67,6 +67,7 @@ CREATE TABLE IF NOT EXISTS `cultivar`.`users` (
   `dsc_password` VARCHAR(255) NOT NULL,
   `cod_address` INT,
   `cod_cnpj` VARCHAR(14),
+  `dsc_job` VARCHAR(255),
   `dt_create` DATETIME DEFAULT CURRENT_TIMESTAMP,
   `dsc_path_tv` VARCHAR(255),
   `dsc_path_tr` VARCHAR(255),
