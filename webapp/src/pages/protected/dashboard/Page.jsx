@@ -3,27 +3,30 @@ import PropTypes from 'prop-types';
 import { Roles } from '../../../model';
 import { Row, Col } from 'reactstrap';
 import AdminDashboard from './admin';
+import VolunteerDashboard from './volunteer'
 
-let dashboards = {};
-dashboards[Roles.ADMIN] = (<AdminDashboard/>);
-dashboards[Roles.VOLUNTEER] = (null);
-dashboards[Roles.SCHOOL_ADMIN] = (null);
-dashboards[Roles.COMPANY_ADMIN] = (null);
+export default class extends Component{
 
-class Dashboard extends Component{
+    static propTypes = {
+        user: PropTypes.object
+    };
+
+    getDashboards(user) {
+        let dashboards = {};
+        dashboards[Roles.ADMIN] = (<AdminDashboard />);
+        dashboards[Roles.VOLUNTEER] = (<VolunteerDashboard user={user} />);
+        dashboards[Roles.SCHOOL_ADMIN] = (null);
+        dashboards[Roles.COMPANY_ADMIN] = (null);
+        return user ? dashboards[user.role] : null;
+    }
+
     render(){
         return (
             <Row>
                 <Col>
-                    {dashboards[this.props.role]}
+                    {this.getDashboards(this.props.user)}
                 </Col>
             </Row>
         );
     }
 }
-
-Dashboard.propTypes = {
-    role: PropTypes.oneOf(Roles.values())
-}
-
-export default Dashboard;
