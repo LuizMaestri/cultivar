@@ -12,8 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.validation.constraints.NotNull;
 import java.sql.SQLException;
 import java.util.logging.Logger;
+
+import static br.ufsc.cultivar.models.Status.*;
+import static br.ufsc.cultivar.models.Status.WAIT_TV;
 
 @Log
 @Service
@@ -50,20 +54,16 @@ public class VolunteerService extends AbstractService<Volunteer, String> {
         if (dto instanceof String){
             try {
                 Volunteer volunteer = repository.findOne(id);
-                if (volunteer.getStatus().in(Status.WAIT_TV, Status.WAIT_TR)) {
-                    switch (dto.toString()) {
-                        case "tv": {
-                            repository.update(id, volunteer.withStatus(Status.WAIT_RECOMMEND));
-                            break;
-                        }
-                        case "tr": {
-                            repository.update(id, volunteer.withStatus(Status.WAIT_TV));
-                            break;
-                        }
-                        default: throw new ServiceException(getMessageErrorFindOne(id), null, Type.INVALID);
+                switch (volunteer.getStatus()) {
+                    case WAIT_TV: {
+                        repository.update(id, volunteer.withStatus(RECOMMEND));
+                        break;
                     }
-                } else {
-                    throw new ServiceException(getMessageErrorFindOne(id), null, Type.INVALID);
+                    case WAIT_TR: {
+                        repository.update(id, volunteer.withStatus(WAIT_TV));
+                        break;
+                    }
+                    default: throw new ServiceException(getMessageErrorFindOne(id), null, Type.INVALID);
                 }
 
             } catch (SQLException e) {
