@@ -85,7 +85,7 @@ export default class extends Component {
     render() {
         const { err } = this.state;
         return (
-            <Form onSubmit={this.handlerSubmit.bind(this)}>
+            <Form>
                 <Mask id="cpf" label="CPF" onChange={this.handlerCpf.bind(this)} mask="999.999.999-99" type="tel" placeholder="CPF - ###.###.###-##"
                     err={err.cpfErr} errMessage="CPF inválido" />
                 <FormGroup>
@@ -93,7 +93,7 @@ export default class extends Component {
                     <Input id="password" type="password" placeholder="Senha" onChange={this.handlerPassword.bind(this)} { ...err.passwordErr }/>
                     <FormFeedback tooltip>Senha obrigatória</FormFeedback>
                 </FormGroup>
-                <Button color="primary" size="lg" block>
+                <Button color="primary" size="lg" block onClick={this.handlerSubmit.bind(this)}>
                     Login
                 </Button>
             </Form>
