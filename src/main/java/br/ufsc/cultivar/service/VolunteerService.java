@@ -51,15 +51,7 @@ public class VolunteerService extends AbstractService<Volunteer, String> {
             try {
                 Volunteer volunteer = repository.findOne(id);
                 if (volunteer.getStatus().in(Status.WAIT_TV, Status.WAIT_TR)) {
-                    String fileName = dto.toString();
-                    String type = fileName.substring(
-                            fileName.lastIndexOf("/"),
-                            fileName.lastIndexOf(".")
-                    );
-                    repository.associate(
-                            new FileDTO<>(id, fileName, type)
-                    );
-                    switch (type) {
+                    switch (dto.toString()) {
                         case "tv": {
                             repository.update(id, volunteer.withStatus(Status.WAIT_RECOMMEND));
                             break;
