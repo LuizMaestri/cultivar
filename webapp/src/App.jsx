@@ -14,16 +14,18 @@ export default class App extends Component {
 	constructor(){
 		super();
 		this.state = {
-			logged: getAsObject('authenticated')
+			logged: getAsObject('authenticated'),
+			user: getAsObject('user')
 		};
   	}
 
 	handlerLogin(){
+		debugger;
 		this.setState({logged: true});
 	}
 
 	render() {
-		const { logged } = this.state;
+		const { logged, user } = this.state;
 		return (
 			<BrowserRouter>
 				<div>
@@ -33,10 +35,10 @@ export default class App extends Component {
 						<Row>
 							<Col>
 								<RedirectRoute path="/login" forward={!logged} to="/dashboard">
-									<Login onAuthenticate={this.handlerLogin.bind(this)} />
+									<Login onAuthenticate={() => this.setState({ logged: true })} />
 								</RedirectRoute>
 								<PrivateRoute path="/dashboard" logged={logged}>
-									<Dashboard role={Roles.ADMIN} />
+									<Dashboard user={user} role={user.role} />
 								</PrivateRoute>
 								<PrivateRoute path="/voluntarios" logged={logged}>
 									<VolunterList/>
