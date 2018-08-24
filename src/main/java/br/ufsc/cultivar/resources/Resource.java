@@ -10,7 +10,9 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Resource<T extends AbstractModel<K>,K> {
 
@@ -30,8 +32,8 @@ public class Resource<T extends AbstractModel<K>,K> {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<T> list() throws ServiceException {
-        return service.list();
+    public List<T> list(@RequestParam Map<String, String> queryParameters) throws ServiceException {
+        return service.list(new HashMap<>(queryParameters));
     }
 
     @GetMapping(value = "/{id}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
