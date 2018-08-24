@@ -38,7 +38,7 @@ export default class App extends Component {
 									<Login onAuthenticate={() => this.setState({ logged: true })} />
 								</RedirectRoute>
 								<PrivateRoute path="/dashboard" logged={logged}>
-									<Dashboard user={user} role={user.role} />
+									<Dashboard user={user} role={user ? user.role: null} />
 								</PrivateRoute>
 								<PrivateRoute path="/voluntarios" logged={logged}>
 									<VolunterList/>
