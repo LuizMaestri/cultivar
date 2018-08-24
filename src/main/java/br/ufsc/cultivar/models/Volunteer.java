@@ -37,7 +37,7 @@ public class Volunteer extends AbstractModel<String>{
     @Email
     @ApiModelProperty(notes = "Volunteer's email", required = true)
     String email;
-    @JsonIgnore
+//    @JsonIgnore
     @NotBlank
     @ApiModelProperty(notes = "Volunteer's password", required = true)
     String password;
