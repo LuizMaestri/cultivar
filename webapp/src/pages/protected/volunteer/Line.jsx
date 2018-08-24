@@ -11,13 +11,13 @@ export default class extends Component {
                 .catch(() => alert('Problemas ao deletar registro: ' + id));
     }
     render() {
-        const { element, mapping, headers } = this.props;
+        const { element, mapping, headers, onClick } = this.props;
         return (
             <tr style={{ cursor: 'pointer' }}>
                 {
                     headers.map(
                         header => (
-                            <td key={header} onClick={() => alert(element)}>
+                            <td key={header} onClick={onClick}>
                                 {element[mapping[header]]}
                             </td>
                         )
