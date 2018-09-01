@@ -1,21 +1,20 @@
-import Roles from './role';
-import Status from './status';
+import Address from './address';
 
 export default class{
-    constructor(id= '', name='', role=Roles.VOLUNTEER, status=Status.WAIT_TV, email='',
-            password = '', phone = '', birth = '', createAt = new Date().toISOString()) {
-        this.id = id;
-        if (Roles.has(role)) {
-            this.role = role;
-        }
+    constructor(cpf, name, email, password, role, status, birth, job, phone, company, school, answers, ratings, address=new Address() ) {
+        this.cpf = cpf;
         this.name = name;
-        if(Status.has(status)){
-            this.status = status;
-        }
         this.email = email;
         this.password = password;
-        this.phone = phone;
+        this.role = role;
+        this.status = status;
         this.birth = birth;
-        this.createAt = createAt;
+        this.job = job;
+        this.phone = phone;
+        this.company = company;
+        this.school = school;
+        this.answers = answers;
+        this.ratings = ratings;
+        this.address = address;
     }
 }

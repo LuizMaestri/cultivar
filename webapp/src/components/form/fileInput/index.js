@@ -1,2 +1,2 @@
-import FileInput from './FileInput.jsx';
+import FileInput from './FileInput';
 export default FileInput;
