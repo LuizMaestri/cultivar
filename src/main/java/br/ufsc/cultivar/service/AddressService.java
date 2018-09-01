@@ -1,29 +1,31 @@
 package br.ufsc.cultivar.service;
 
-import br.ufsc.cultivar.models.Address;
-import lombok.extern.java.Log;
-import lombok.val;
+import br.ufsc.cultivar.model.Address;
+import br.ufsc.cultivar.repository.AddressRepository;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Validation;
-import java.util.logging.Logger;
-
-@Log
 @Service
-public class AddressService extends AbstractService<Address, Long> {
+@AllArgsConstructor(onConstructor = @__(@Autowired))
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class AddressService {
 
-    @Override
-    String getMessageErrorFindOne(final Long id) {
-        return "Não foi possível encontrar o endereço solicitado.";
+    AddressRepository repository;
+
+    public Address create(final Address address) {
+        return address.withCodAddress(
+            repository.create(address)
+        );
     }
 
-    @Override
-    String getMessageErrorList() {
-        return "Não foi possível recuperar a lista de endereços.";
+    public Address get(Long codAddress) {
+        return repository.get(codAddress);
     }
 
-    @Override
-    Logger getLog() {
-        return log;
+    public void update(Address address) {
+        repository.update(address);
     }
 }

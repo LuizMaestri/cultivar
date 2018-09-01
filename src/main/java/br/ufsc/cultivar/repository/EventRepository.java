@@ -1,129 +1,114 @@
 package br.ufsc.cultivar.repository;
 
-import br.ufsc.cultivar.models.Event;
-import br.ufsc.cultivar.models.Place;
-import br.ufsc.cultivar.models.Type;
-import br.ufsc.cultivar.models.User;
-import br.ufsc.cultivar.models.dto.EventUsersDTO;
-import br.ufsc.cultivar.repository.base.LongRepository;
+import br.ufsc.cultivar.model.Address;
+import br.ufsc.cultivar.model.Event;
+import br.ufsc.cultivar.model.TypeEvent;
 import br.ufsc.cultivar.utils.DateUtils;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.Optional;
 
-/**
- * @author luiz.maestri
- * @since 24/07/2018
- */
 @Repository
-public class EventRepository extends LongRepository<Event> {
-    @Override
-    protected Event build(ResultSet rs) {
-        try {
-            if (rs.isBeforeFirst()) {
-                rs.first();
-            }
-            return Event.builder()
-                    .id(rs.getLong("cod_event"))
-                    .createdAt(
-                            DateUtils.toLocalDateTime(rs.getDate("dt_create"))
-                    )
-                    .type(
-                            Type.valueOf(rs.getString("tp_event"))
-                    )
-                    .occurrence(
-                            DateUtils.toLocalDateTime(rs.getDate("dt_occurrence"))
-                    )
-                    .place(
-                            Place.builder()
-                                    .id(rs.getString("cod_cpnj"))
-                                    .build()
-                    )
-                    .involved(
-                            Arrays.stream(
-                                    rs.getString("involved").split(",")
-                            ).map(
-                                    cpf -> User.builder().id(cpf).build()
-                            ).collect(Collectors.toList())
-                    )
-                    .build();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+@AllArgsConstructor(onConstructor = @__(@Autowired))
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class EventRepository {
+
+    NamedParameterJdbcTemplate jdbcTemplate;
+
+    public Long create(final Event event) {
+        return new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("event")
+                .usingGeneratedKeyColumns("cod_event")
+                .usingColumns("dt_start_occurrence", "dt_end_occurrence", "fl_all_day", "tp_event", "cod_address")
+                .executeAndReturnKey(getParams(event))
+                .longValue();
     }
 
-    @Override
-    protected String getInsertQuery() {
-        return "INSERT INTO event (cod_cnpj, dt_occurrence, tp_event)"
-                + " VALUES (:codCnpj, :dtOccurrence, :tpEvent)";
-    }
-
-    @Override
-    protected MapSqlParameterSource getInsertParams(Event entity) {
-        return new MapSqlParameterSource()
-                .addValue("codCnpj", entity.getPlace().getId())
-                .addValue("dtOccurrence", entity.getOccurrence())
-                .addValue("tpEvent", entity.getType());
-    }
-
-    @Override
-    protected String getSelectAllQuery() {
-        return "SELECT * FROM ("
-                + "SELECT e.*, group_concat(eu.cod_cpf SEPARATOR ',') as involved"
-                + " FROM event e NATURAL JOIN event_user eu GROUP BY e.cod_event"
-                + ") x ";
-    }
-
-    @Override
-    protected String getIdFieldName() {
-        return "cod_event";
-    }
-
-    @Override
-    protected String getDeleteQuery() {
-        return "DELETE FROM event WHERE cod_event=:cod_event";
-    }
-
-    @Override
-    protected String getUpdateQuery() {
-        return "UPDATE event SET cod_cnpj=:codCnpj, dt_occurrence=:dtOccurrence, "
-                + "tp_event:=tpEvent WHERE cod_event=:" + getIdFieldName();
-    }
-
-    @Override
-    protected MapSqlParameterSource getUpdateParams(Long id, Event entity) {
-        return getInsertParams(entity).addValue(getIdFieldName(), id);
-    }
-
-    @Override
-    public void dissociate(Long codEvent){
-        jdbcTemplate.update(
-                "DELETE FROM event_user WHERE cod_event=:codevent",
-                new MapSqlParameterSource("codEvent", codEvent)
+    public List<Event> get(final Map<String, Object> filter) {
+        val sql = new StringBuilder("select * from event where 1=1");
+        val params = new MapSqlParameterSource();
+        Optional.ofNullable(filter)
+                .ifPresent(
+                        map -> map.forEach(
+                                (key, value) -> {
+                                    sql.append(" and ")
+                                            .append(key)
+                                            .append("=:")
+                                            .append(key);
+                                    params.addValue(key, value);
+                                }
+                        )
+                );
+        return jdbcTemplate.query(
+                sql.toString(),
+                params,
+                (rs, i) -> this.build(rs)
         );
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void associate(Object associations) {
-        if (associations instanceof List) {
+    public Event get(final Long codEvent) {
+        return jdbcTemplate.query(
+                "select * from event where cod_event=:cod_event",
+                new MapSqlParameterSource("cod_event", codEvent),
+                this::build
+        );
+    }
 
-            List<EventUsersDTO.EventUser> list = (List) associations;
-            jdbcTemplate.batchUpdate(
-                    "INSERT INTO event_user (cod_event, cod_cpf) VALUES (:codEvent, :codCpf)",
-                    list.stream()
-                            .map(
-                                    eventUser -> new MapSqlParameterSource()
-                                            .addValue("codEvent", eventUser.getCodEvent())
-                                            .addValue("codCpf", eventUser.getCodCpf())
-                            ).collect(Collectors.toList())
-                            .toArray(new MapSqlParameterSource[list.size()])
-            );
+    public void delete(final Long codEvent) {
+        jdbcTemplate.update(
+                "delete from event where cod_event=:cod_event",
+                new MapSqlParameterSource("cod_event", codEvent)
+        );
+    }
+
+    public void update(final Event event) {
+        jdbcTemplate.update(
+                "update event set dt_start_occurrence=:dt_start_occurrence, dt_end_occurrence=:dt_end_occurrence," +
+                        "tp_event=:tp_event, fl_all_day=:fl_all_day, cod_address=:cod_address where cod_event=:cod_event",
+                getParams(event)
+        );
+    }
+
+    private Event build(final ResultSet rs) throws SQLException {
+        if (rs.isBeforeFirst()){
+            rs.first();
         }
+        return Event.builder()
+                .codEvent(rs.getLong("cod_event"))
+                .startOccurrence(DateUtils.toDate(rs.getTimestamp("dt_start_occurrence")))
+                .endOccurrence(DateUtils.toDate(rs.getTimestamp("dt_end_occurrence")))
+                .allDay(rs.getBoolean("fl_all_day"))
+                .createAt(DateUtils.toDate(rs.getTimestamp("dt_create")))
+                .type(
+                        TypeEvent.valueOf(rs.getString("tp_event"))
+                )
+                .address(
+                        Address.builder()
+                                .codAddress(rs.getLong("cod_address"))
+                                .build()
+                ).build();
+    }
+
+    private MapSqlParameterSource getParams(final Event event) {
+        return new MapSqlParameterSource()
+                .addValue("dt_start_occurrence", event.getStartOccurrence())
+                .addValue("dt_end_occurrence",  event.getEndOccurrence())
+                .addValue("fl_all_day", event.getAllDay())
+                .addValue("tp_event", event.getType().name())
+                .addValue("cod_address", event.getAddress().getCodAddress())
+                .addValue("cod_event", event.getCodEvent());
     }
 }

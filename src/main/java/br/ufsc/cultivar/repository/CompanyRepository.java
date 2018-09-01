@@ -1,9 +1,8 @@
 package br.ufsc.cultivar.repository;
 
+import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.Company;
-import br.ufsc.cultivar.model.Schooling;
 import br.ufsc.cultivar.model.User;
-import br.ufsc.cultivar.model.Volunteer;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -11,6 +10,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
@@ -23,18 +23,18 @@ import java.util.Optional;
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class VolunteerRepository {
+public class CompanyRepository {
 
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void create(Volunteer volunteer) {
+    public void create(final Company company) {
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
-                .withTableName("volunteer")
-                .execute(getParams(volunteer));
+                .withTableName("company")
+                .execute(getParams(company));
     }
 
-    public List<Volunteer> get(Map<String, Object> filter) {
-        val sql = new StringBuilder("select * from volunteer where 1=1");
+    public List<Company> get(final Map<String, Object> filter) {
+        val sql = new StringBuilder("select * from company where 1=1");
         val params = new MapSqlParameterSource();
         Optional.ofNullable(filter)
                 .ifPresent(
@@ -55,58 +55,56 @@ public class VolunteerRepository {
         );
     }
 
-    public Volunteer get(String cpf) {
+    public Company get(final String cnpj) {
         return jdbcTemplate.query(
-                "select * from volunteer where cod_cpf=:cod_cpf",
-                new MapSqlParameterSource("cod_cpf", cpf),
+                "select * from company where cod_cnpj=:cod_cnpj",
+                new MapSqlParameterSource("cod_cnpj", cnpj),
                 this::build
         );
     }
 
-    public void delete(String cpf) {
+    public void delete(final String cnpj) {
         jdbcTemplate.update(
-                "delete from volunteer where cod_cpf=:cod_cpf",
-                new MapSqlParameterSource("cod_cpf", cpf)
+                "delete from company where cod_cnpj=:cod_cnpj",
+                new MapSqlParameterSource("cod_cnpj", cnpj)
         );
     }
 
-    public void update(Volunteer volunteer) {
+    public void update(final Company company) {
         jdbcTemplate.update(
-                "update volunteer set dsc_schooling=:dsc_schooling, fl_conclusion=:fl_conclusion, " +
-                        "cod_rg=:cod_rg where cod_cpf=:cod_cpf",
-                getParams(volunteer)
+                "update company set nm_company=:nm_company, dsc_phone=:dsc_phone, cod_address=:cod_address," +
+                        "cod_cpf=:cod_cpf where cod_cnpj=:cod_cnpj",
+                getParams(company)
         );
     }
 
-    private MapSqlParameterSource getParams(Volunteer volunteer) {
+    private SqlParameterSource getParams(final Company company) {
         return new MapSqlParameterSource()
-                .addValue("cod_cpf", volunteer.getUser().getCpf())
-                .addValue("cod_cnpj", volunteer.getCompany().getCnpj())
-                .addValue("dsc_schooling", volunteer.getSchooling().name())
-                .addValue("fl_conclusion", volunteer.getConclusion())
-                .addValue("cod_rg", volunteer.getRg());
+                .addValue("cod_cnpj", company.getCnpj())
+                .addValue("nm_company", company.getName())
+                .addValue("dsc_phone", company.getPhone())
+                .addValue("cod_address", company.getAddress().getCodAddress())
+                .addValue("cod_cpf", company.getResponsible().getCpf());
     }
 
-    private Volunteer build(ResultSet rs) throws SQLException {
-        if (rs.isBeforeFirst()){
+    private Company build(final ResultSet rs) throws SQLException {
+        if(rs.isBeforeFirst()){
             rs.first();
         }
-        return Volunteer.builder()
-                .user(
+        return Company.builder()
+                .cnpj(rs.getString("cod_cnpj"))
+                .name(rs.getString("nm_company"))
+                .phone(rs.getString("dsc_phone"))
+                .address(
+                        Address.builder()
+                                .codAddress(rs.getLong("cod_address"))
+                                .build()
+                )
+                .responsible(
                         User.builder()
                                 .cpf(rs.getString("cod_cpf"))
                                 .build()
                 )
-                .company(
-                        Company.builder()
-                                .cnpj(rs.getString("cod_cnpj"))
-                                .build()
-                )
-                .schooling(
-                        Schooling.valueOf(rs.getString("dsc_schooling"))
-                )
-                .conclusion(rs.getBoolean("fl_conclusion"))
-                .rg(rs.getString("cod_rg"))
                 .build();
     }
 }

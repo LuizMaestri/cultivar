@@ -1,7 +1,5 @@
-package br.ufsc.cultivar.security;
+package br.ufsc.cultivar.model;
 
-import br.ufsc.cultivar.model.User;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AccessLevel;
@@ -10,16 +8,29 @@ import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
+import java.util.Date;
+
 @Value
 @Wither
 @Builder(builderClassName = "Builder")
+@JsonDeserialize(builder = User.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-@JsonDeserialize(builder = AuthResponseDTO.Builder.class)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-class AuthResponseDTO {
-    User user;
-    String token;
+public class User {
+    String cpf;
+    String name;
+    String email;
+    String password;
+    Role role;
+    Status status;
+    Date birth;
+    String job;
+    String phone;
+    Address address;
+    Company company;
+    School school;
 
     @JsonPOJOBuilder(withPrefix = "")
-    static class Builder{}
+    public static class Builder{
+        public Builder(){}
+    }
 }
