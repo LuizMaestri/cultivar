@@ -4,32 +4,38 @@ import { Header, Footer } from './components';
 import { BrowserRouter } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap';
-import { Dashboard } from './pages';
-import { Roles } from './model';
+import { Dashboard, Login } from './pages';
+import { User } from './model';
 import './App.css';
 
 export default class App extends Component {
 	constructor(){
 		super();
-		this.state = {};
+		this.state = {
+			logged: false,
+			user: new User()
+		};
   	}
 
-	handlerLogin(){}
+	handlerLogin(){
+		this.setState({ logged: true });
+	}
 
 	render() {
+		const { logged, user } = this.state;
 		return (
 			<BrowserRouter>
 				<div>
 					<Header/>
-					<br/>
-					<Container fluid>
+					<Container style={{ margin: '3% 0' }} fluid>
 						<Row>
 							<Col>
-								<Dashboard role={Roles.ADMIN}/>
+								<Route path="/dashboard" render={() => (<Dashboard role={user.role}/>)}/>
+								<Route path="/login" render={() => <Login logged={logged} afterLogin={this.handlerLogin}/>}/>
+								<Route path="/cadastrar" render={() => null}/>
 							</Col>
 						</Row>
 					</Container>
-					<br/>
 					<Footer/>
 				</div>
 			</BrowserRouter>
