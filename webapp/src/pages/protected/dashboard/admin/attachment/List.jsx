@@ -39,7 +39,7 @@ export default class extends Component{
         deleteRequest(
             `/attachment/${codAttachment}`,
             () => getRequest(
-                '/attachemnt',
+                '/attachment',
                 res => this.setState({
                     attachments: res.data
                 })
@@ -68,14 +68,14 @@ export default class extends Component{
     }
 
     render(){
-        const { attachments } = this.state;
+        const { attachments, newAttachment } = this.state;
         return (
             <div>
                 <Row>
                     <Col>
                         <Form inline>
-                            <Input id="newAttachment" label="Anexo" invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerAttatchment} required />
-                            <Input id="isREquired" type="checkbox" label="Obrigatório" invalidMessage="Campo Obrigatório" onChange={this.handlerRequired}/>
+                            <Input id="newAttachment" label="Anexo" value={newAttachment.name} invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerAttatchment} required />
+                            <Input id="isRequired" type="checkbox"  label="Obrigatório" value={newAttachment.isRequired} invalidMessage="Campo Obrigatório" onChange={this.handlerRequired}/>
                             <Button type="button" color="primary" onClick={this.handlerSubmit}>Cadastrar</Button>
                         </Form>
                     </Col>
