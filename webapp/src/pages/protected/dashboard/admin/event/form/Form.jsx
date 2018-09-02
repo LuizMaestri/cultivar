@@ -81,9 +81,9 @@ export default class extends Component {
         const { event, users } = this.state;
         let participants = [], opt, participant;
 
-        for (let i = 0; opt = userEvent.target.options[i++];) {
+        for (let i = 0; !!(opt = userEvent.target.options[i++]);) {
             if (opt.selected) {
-                for (let j = 0; participant = users[j++];)
+                for (let j = 0; !!(participant = users[j++]);)
                 if (opt.value === participant.cpf){
                     participants.push(participant);
                     break;

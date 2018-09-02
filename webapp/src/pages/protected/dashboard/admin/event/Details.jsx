@@ -80,7 +80,30 @@ export default class extends Component{
                         </Row>
                         <Row>
                             <Col>
-                                {participants.map((participant, index) => JSON.stringify(participant))}
+                                {
+                                    participants.map(
+                                        (participant, index) => {
+                                            if (index % 3 === 1){
+                                                const participant2 = participants[++index];
+                                                const participant3 = participants[++index];
+                                                return (
+                                                    <Row>
+                                                        <Col>
+                                                            {participant.cpf} - {participant.name}
+                                                        </Col>
+                                                        <Col>
+                                                            {participant2 ? participant2.cpf + '-' + participant2.name : ''}
+                                                        </Col>
+                                                        <Col>
+                                                            {participant3 ? participant3.cpf + '-' + participant3.name : ''}
+                                                        </Col>
+                                                    </Row>
+                                                )
+                                            }
+                                            return null;
+                                        }
+                                    )
+                                }
                             </Col>
                         </Row>
                         <br />

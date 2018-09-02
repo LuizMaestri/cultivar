@@ -36,7 +36,7 @@ export default class extends Component {
                     <ModalBody>
                         <Row>
                             <Col md={1}>
-                                <img src={pic} className="rounded-circle" width="75px" />
+                                <img src={pic} alt="" className="rounded-circle" width="75px" />
                             </Col>
                             <Col md="2" />
                             <Col>
