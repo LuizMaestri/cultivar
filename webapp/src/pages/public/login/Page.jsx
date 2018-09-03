@@ -38,8 +38,8 @@ export default class extends Component{
                     <Row>
                         <Col>
                             <Form>
-                                <Input id="login" label="Usuário" onChenge={this.handlerUsername}/>
-                                <Input id="password" label="Senha" type="password" onChenge={this.handlerPassword}/>
+                                <Input id="login" label="Usuário" onChange={this.handlerUsername}/>
+                                <Input id="password" label="Senha" type="password" onChange={this.handlerPassword}/>
                                 <Button type="button" color="primary" size="lg" onClick={this.handlerSubmit} block>Entrar</Button>
                             </Form>
                         </Col>
