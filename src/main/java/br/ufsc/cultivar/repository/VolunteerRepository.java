@@ -79,8 +79,10 @@ public class VolunteerRepository {
     }
 
     private MapSqlParameterSource getParams(Volunteer volunteer) {
+        val user = volunteer.getUser();
         return new MapSqlParameterSource()
-                .addValue("cod_cpf", volunteer.getUser().getCpf())
+                .addValue("cod_cpf", user.getCpf())
+                .addValue("nm_volunteer", user.getName())
                 .addValue("cod_cnpj", volunteer.getCompany().getCnpj())
                 .addValue("dsc_schooling", volunteer.getSchooling().name())
                 .addValue("fl_conclusion", volunteer.getConclusion())
