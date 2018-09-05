@@ -1,2 +1,2 @@
 export {Dashboard} from './protected';
-export {Login} from './public';
+export {Login, Register} from './public';

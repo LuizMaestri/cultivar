@@ -4,7 +4,7 @@ import { Header, Footer } from './components';
 import { BrowserRouter } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap';
-import { Dashboard, Login } from './pages';
+import { Dashboard, Login, Register } from './pages';
 import { User } from './model';
 import './App.css';
 
@@ -15,10 +15,11 @@ export default class App extends Component {
 			logged: false,
 			user: new User()
 		};
+		this.handlerLogin = this.handlerLogin.bind(this);
   	}
 
-	handlerLogin(){
-		this.setState({ logged: true });
+	handlerLogin(user){
+		this.setState({ logged: true, user });
 	}
 
 	render() {
@@ -32,7 +33,7 @@ export default class App extends Component {
 							<Col>
 								<Route path="/dashboard" render={() => (<Dashboard role={user.role}/>)}/>
 								<Route path="/login" render={() => <Login logged={logged} afterLogin={this.handlerLogin}/>}/>
-								<Route path="/cadastrar" render={() => null}/>
+								<Route path="/cadastrar" render={() => <Register afterSubmit={this.handlerLogin}/>}/>
 							</Col>
 						</Row>
 					</Container>

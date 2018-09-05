@@ -25,8 +25,7 @@ export default class extends Component{
     }
 
     handlerSubmit(){
-        const { afterSubmit } = this.props;
-        postRequest('/auth', this.state, afterSubmit);
+        postRequest('/auth', this.state, res => this.props.afterLogin(res.data.user));
     }
 
     render(){

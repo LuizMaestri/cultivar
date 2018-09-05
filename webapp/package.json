@@ -8,6 +8,7 @@
     "form-data": "^2.3.2",
     "moment": "^2.22.2",
     "prop-types": "^15.6.2",
+    "rc-switch": "^1.7.0",
     "react": "^16.4.1",
     "react-albus": "^2.0.0",
     "react-big-calendar": "^0.19.2",
