@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import Address  from '../../../../../model/address';
+import { Address, SchoolType }  from '../../../../../model';
 import { getRequest } from '../../../../../utils/http';
 import formatter from '../../../../../utils/formatter';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
@@ -32,7 +32,20 @@ export default class extends Component {
             Object.assign(address, school.address);
             return (
                 <Modal toggle={close} isOpen={isOpen} >
-                    <ModalHeader toggle={close}>{school.name}</ModalHeader>
+                    <ModalHeader toggle={close}>
+                        <Row>
+                            <Col>
+                                {school.name}
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <small>
+                                    <strong>Escola {SchoolType.translate(school.type)}</strong>
+                                </small>
+                            </Col>
+                        </Row>
+                    </ModalHeader>
                     <ModalBody>
                         <Row>
                             <Col md={1}>

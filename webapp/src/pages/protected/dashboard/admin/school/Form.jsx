@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import School from '../../../../../model/school';
+import { School, SchoolType } from '../../../../../model';
 import PropTypes from 'prop-types';
 import { postRequest } from '../../../../../utils/http';
 import { Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
@@ -14,6 +14,7 @@ export default class extends Component{
         };
         this.handlerName = this.handlerName.bind(this);
         this.handlerPhone = this.handlerPhone.bind(this);
+        this.handlerType = this.handlerType.bind(this);
         this.handlerNameResponsible = this.handlerNameResponsible.bind(this);
         this.handlerCpf = this.handlerCpf.bind(this);
         this.handlerPhoneResponsible = this.handlerPhoneResponsible.bind(this);
@@ -46,6 +47,12 @@ export default class extends Component{
     handlerPhone(event){
         const { school } = this.state;
         school.phone = event.target.value.replace(/[()-]/g, '');
+        this.setState({ school });
+    }
+
+    handlerType(event) {
+        const { school } = this.state;
+        school.type = event.target.value;
         this.setState({ school });
     }
 
@@ -175,6 +182,14 @@ export default class extends Component{
                             <h3>Dados da Escola</h3>
                             <Input id="nameCompany" label="Nome da Escola" invalidMessage="Nome da Escola é obrigatório" onChange={this.handlerName} required/>
                             <MaskInput id="phone" label="Contato da Empresa" invalidMessage="Contato da Escola é obrigatório" mask="(99)9999-9999" onChange={this.handlerPhone} required/>
+                            <Input id="schoolType" type="select" label="???" invalidMessage="??? é obrigatório" onChange={this.handlerType} required >
+                                <option value="">Selecione</option>
+                                {
+                                    SchoolType.values().map(
+                                        type => <option key={type} value={type}>{SchoolType.translate(type)}</option>
+                                    )
+                                }
+                            </Input>
                             <hr className="row"/>
                         </div>
                         <div>

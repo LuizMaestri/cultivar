@@ -19,6 +19,7 @@ public class School {
     String phone;
     Address address;
     User responsible;
+    SchoolType type;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{

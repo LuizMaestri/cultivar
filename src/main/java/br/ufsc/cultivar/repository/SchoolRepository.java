@@ -2,6 +2,7 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.School;
+import br.ufsc.cultivar.model.SchoolType;
 import br.ufsc.cultivar.model.User;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -84,7 +85,8 @@ public class SchoolRepository {
                 .addValue("nm_school", school.getName())
                 .addValue("dsc_phone", school.getPhone())
                 .addValue("cod_address", school.getAddress().getCodAddress())
-                .addValue("cod_cpf", school.getResponsible().getCpf());
+                .addValue("cod_cpf", school.getResponsible().getCpf())
+                .addValue("tp_school", school.getType().name());
     }
 
     private School build(final ResultSet rs) throws SQLException {
@@ -95,7 +97,9 @@ public class SchoolRepository {
                 .codSchool(rs.getLong("cod_school"))
                 .name(rs.getString("nm_school"))
                 .phone(rs.getString("dsc_phone"))
-                .address(
+                .type(
+                        SchoolType.valueOf(rs.getString("tp_school"))
+                ).address(
                         Address.builder()
                                 .codAddress(rs.getLong("cod_address"))
                                 .build()
