@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Question from '../../../../../model/question';
+import { Question, Roles } from '../../../../../model';
 import { getRequest, postRequest, deleteRequest } from '../../../../../utils/http';
-import { Row, Col, Form, Button, ListGroup, ListGroupItem } from 'reactstrap';
+import { Row, Col, Form, Button, Table } from 'reactstrap';
 import { Input } from '../../../../../components';
 import { FaTrash } from 'react-icons/fa';
 
@@ -14,6 +14,7 @@ export default class extends Component{
             invalid: false
         }
         this.handlerQuestion = this.handlerQuestion.bind(this);
+        this.handlerResponds = this.handlerResponds.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
         this.handlerDelete = this.handlerDelete.bind(this);
     }
@@ -25,6 +26,12 @@ export default class extends Component{
     handlerQuestion(event){
         const { newQuestion } = this.state;
         newQuestion.question = event.target.value;
+        this.setState({ newQuestion, invalid: false });
+    }
+
+    handlerResponds(event){
+        const { newQuestion } = this.state;
+        newQuestion.responds = event.target.value;
         this.setState({ newQuestion, invalid: false });
     }
 
@@ -42,7 +49,7 @@ export default class extends Component{
 
     handlerSubmit(){
         const { newQuestion } = this.state;
-        if(!newQuestion.question){
+        if(!newQuestion.question || !newQuestion.responds){
             this.setState({invalid : true})
             return;
         }
@@ -66,41 +73,69 @@ export default class extends Component{
             <div>
                 <Row>
                     <Col>
-                        <Form inline>
-                            <Input id="newQuestion" label="Questão" invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerQuestion} required/>
-                            <Button type="button" color="primary" onClick={this.handlerSubmit}>Cadastrar</Button>
+                        <Form>
+                            <Row>
+                                <Col md="5">
+                                    <Input id="newQuestion" label="Questão" invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerQuestion} required/>
+                                </Col>
+                                <Col md="4">
+                                    <Input id="destiny" type="select" label="Destinada" invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerResponds} required>
+                                        <option>Selecione</option>
+                                        <option value={Roles.VOLUNTEER}>{Roles.translate(Roles.VOLUNTEER)}</option>
+                                        <option value={Roles.COMPANY_ADMIN}>{Roles.translate(Roles.COMPANY_ADMIN)}</option>
+                                    </Input>
+                                </Col>
+                                <Col style={{paddingTop: '4%'}}>
+                                    <Button type="button" color="primary" onClick={this.handlerSubmit} style={{marginTop: '3%'}}>
+                                        Cadastrar
+                                    </Button>
+                                </Col>
+                            </Row>
                         </Form>
                     </Col>
                 </Row>
                 <br/>
                 <Row>
                     <Col>
-                        <ListGroup>
-                            {
-                                questions.length ?
-                                    questions.map(
-                                        question => (
-                                            <ListGroupItem key={question.codQuestion}>
-                                                <Row>
-                                                    <Col md="11">
+                        <Table striped>
+                            <thead>
+                                <tr>
+                                    <td>
+                                        Questão
+                                    </td>
+                                    <td>
+                                        Destinada
+                                    </td>
+                                    <td/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    questions.length ? 
+                                        questions.map(
+                                            question => (
+                                                <tr>
+                                                    <td>
                                                         {question.question}
-                                                    </Col>
-                                                    <br/>
-                                                    <Col>
+                                                    </td>
+                                                    <td>
+                                                        {Roles.translate(question.responds)}
+                                                    </td>
+                                                    <td>
                                                         <FaTrash style={{cursor: 'pointer'}} color="red" onClick={() => this.handlerDelete(question.codQuestion)}/>
-                                                    </Col>
-                                                </Row>
-                                            </ListGroupItem>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="3">
+                                                    Nenhuma Questão cadastrada Cadastrada
+                                                </td>
+                                            </tr>
                                         )
-                                    ) : (
-                                        <ListGroupItem>
-                                            <strong>
-                                                Nenhuma Questão cadastrada Cadastrada
-                                            </strong>
-                                        </ListGroupItem>
-                                    )
-                            }
-                        </ListGroup>
+                                }
+                            </tbody>
+                        </Table>
                     </Col>
                 </Row>
             </div>

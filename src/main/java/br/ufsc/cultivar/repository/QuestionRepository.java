@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
 
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -27,7 +26,10 @@ public class QuestionRepository {
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("question")
                 .usingGeneratedKeyColumns("cod_question")
-                .execute(new MapSqlParameterSource("dsc_question", question.getQuestion()));
+                .execute(
+                        new MapSqlParameterSource("dsc_question", question.getQuestion())
+                            .addValue("dsc_responds", question.getResponds().name())
+                );
     }
 
     public List<Question> get() {

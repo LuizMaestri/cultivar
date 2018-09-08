@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, Form, Label } from 'reactstrap';
 import { Input, Wizard, DatePicker, MaskInput, Option, Switch, Required } from '../../../components';
-import { Volunteer, Schooling, Answer } from '../../../model';
+import { Volunteer, Schooling, Answer, Roles } from '../../../model';
 import { getRequest, postRequest } from '../../../utils/http';
 import axios from 'axios';
 
@@ -38,7 +38,7 @@ export default class extends Component{
 
     componentWillMount(){
         axios.all([
-            getRequest('/question', res => res.data),
+            getRequest(`/question/${Roles.VOLUNTEER}`, res => res.data),
             getRequest('/company', res => res.data )
         ]).then(res => {
             const { volunteer } = this.state;
