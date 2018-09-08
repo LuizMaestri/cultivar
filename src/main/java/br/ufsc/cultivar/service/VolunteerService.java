@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -45,7 +46,21 @@ public class VolunteerService {
     }
 
     public List<Volunteer> get(Map<String, Object> filter) throws ServiceException {
-        return repository.get(filter);
+        try {
+            return repository.get(filter)
+                    .stream()
+                    .map(volunteer -> {
+                        try {
+                            return volunteer.withUser(
+                                    userService.get(volunteer.getUser().getCpf())
+                            );
+                        } catch (ServiceException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).collect(Collectors.toList());
+        } catch (RuntimeException e){
+            throw new ServiceException(null, null, null);
+        }
     }
 
     public Volunteer get(String cpf) throws ServiceException {
