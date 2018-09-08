@@ -19,6 +19,7 @@ export default class extends Component{
         this.handlerRg = this.handlerRg.bind(this);
         this.handlerPhone = this.handlerPhone.bind(this);
         this.handlerComplete = this.handlerComplete.bind(this)
+        this.handlerCourse = this.handlerCourse.bind(this)
         this.handlerSchooling = this.handlerSchooling.bind(this)
         this.handlerJob = this.handlerJob.bind(this);
         this.handlerCompany = this.handlerCompany.bind(this);
