@@ -92,6 +92,9 @@ public class VolunteerService {
             throw new ServiceException(null, null, null);
         }
         userService.update(user, cpf);
+        answerService.delete(cpf);
+        volunteer.getAnswers()
+                .forEach(answer -> answerService.create(answer, cpf));
         repository.update(volunteer);
     }
 }

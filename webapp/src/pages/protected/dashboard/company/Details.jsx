@@ -3,7 +3,7 @@ import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 're
 import Recommend from './Recommend.jsx'
 import { getRequest } from '../../../../utils/http';
 import formatter from '../../../../utils/formatter';
-import { Address, Schooling } from '../../../../model';
+import { Address, Schooling, Status } from '../../../../model';
 import pic from './pic.jpeg';
 
 export default class extends Component{
@@ -107,7 +107,13 @@ export default class extends Component{
                                 <Button color="danger" onClick={this.handlerDelete}>Excluir</Button>
                             </Col>
                             <Col>
-                                <Button color="info" className="float-right" onClick={closeRecommend}>Recomendar</Button>
+                                {
+                                    user.status === Status.WAIT_COMPANY? (
+                                        <Button color="info" className="float-right" onClick={closeRecommend}>Recomendar</Button>
+                                    ) : (
+                                        <Button color="default" className="float-right" onClick={close}>Fechar</Button>
+                                    )
+                                }
                                 {
                                     openForm && (
                                         <Recommend close={closeRecommend} cpf={user.cpf} isOpen={true} />

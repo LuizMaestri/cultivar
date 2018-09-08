@@ -309,7 +309,7 @@ export default class extends Component{
                                                 <strong>{question.question}</strong>
                                             </Col>
                                             <Col md="2">
-                                                <Switch id={question.codQuestion} label="Resposta" onChange={(value) => this.handlerAnswer(value, question.codQuestion)}/>
+                                                <Switch id={`question-${question.codQuestion}`} label="Resposta" onChange={(value) => this.handlerAnswer(value, question.codQuestion)}/>
                                             </Col>
                                             <Col>
                                                 <textarea id={`details-${question.codQuestion}`} cols="30" rows="3" onChange={(event)=> this.handlerAnswerComment(event, question.codQuestion)}/>

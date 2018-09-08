@@ -46,4 +46,8 @@ public class AnswerService {
             throw e;
         }
     }
+
+    public void delete(String cpf) {
+        repository.delete(cpf);
+    }
 }

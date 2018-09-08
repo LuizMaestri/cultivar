@@ -47,4 +47,11 @@ public class AnswerRepository {
                         .build()
         );
     }
+
+    public void delete(String cpf) {
+        jdbcTemplate.update(
+                "delete from answer where cod_cpf=:cod_cpf",
+                new MapSqlParameterSource("cod_cpf", cpf)
+        );
+    }
 }

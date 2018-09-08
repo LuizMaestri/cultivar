@@ -36,7 +36,7 @@ export default class extends Component{
     }
 
     render(){
-        const { volunteer } = this.props;
+        const { volunteer, afterDelete } = this.props;
         const { user } = volunteer;
         const { openDetails, openForm } = this.state;
         return (
@@ -44,7 +44,7 @@ export default class extends Component{
                 <td style={ {width: '15%'}}>{ formatter.cpf(user.cpf) }</td>
                 <td style={{ maxWidth: '130px' }}>{ user.name }</td>
                 <td style={{ maxWidth: '115px' }}>
-                    <Label className="btn btn-warning" style={{ color: 'white', cursor: 'default', whiteSpace: 'unset'}}>
+                    <Label className={`btn btn-${user.status === Status.WAIT_COMPANY ? 'warning': 'info'}`} style={{ color: 'white', cursor: 'default', whiteSpace: 'unset'}}>
                         { Status.translate(user.status) }
                     </Label>
                 </td>
@@ -67,7 +67,7 @@ export default class extends Component{
                                 </Button>
                                 {
                                     openForm && (
-                                        <Recommend close={this.toggleRecommend} cpf={user.cpf} isOpen={true}/>
+                                        <Recommend close={this.toggleRecommend} cpf={user.cpf} isOpen={true} afterSubmit={afterDelete}/>
                                     )
                                 }
                             </div>
