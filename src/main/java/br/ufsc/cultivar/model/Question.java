@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 public class Question {
     Long codQuestion;
     String question;
+    Role responds;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{

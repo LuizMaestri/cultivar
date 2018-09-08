@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Question;
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.repository.QuestionRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -25,6 +27,10 @@ public class QuestionService {
 
     public List<Question> get() throws ServiceException {
         return repository.get();
+    }
+
+    public List<Question> get(Role responds) throws ServiceException {
+        return repository.get(responds);
     }
 
     public Question get(final Long codQuestion) throws ServiceException {

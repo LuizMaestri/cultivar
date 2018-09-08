@@ -1,6 +1,7 @@
 export default class{
-    constructor(codQuestion, question){
+    constructor(codQuestion, question, responds){
         this.codQuestion = codQuestion;
         this.question = question;
+        this.responds = responds;
     }
 }

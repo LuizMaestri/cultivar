@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Question;
+import br.ufsc.cultivar.model.Role;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -35,10 +37,18 @@ public class QuestionRepository {
         );
     }
 
+    public List<Question> get(final Role responds) {
+        return jdbcTemplate.query(
+                "select * from question where dsc_responds=:dsc_responds",
+                new MapSqlParameterSource("dsc_responds", responds.name()),
+                (rs, i) -> this.build(rs)
+        );
+    }
+
     public Question get(final Long codQuestion) {
         return jdbcTemplate.query(
-                "select * from question",
-                new MapSqlParameterSource("dsc_question", codQuestion),
+                "select * from question where cod_question=:cod_question",
+                new MapSqlParameterSource("cod_question", codQuestion),
                 this::build
         );
     }
@@ -65,6 +75,9 @@ public class QuestionRepository {
         return Question.builder()
                 .codQuestion(rs.getLong("cod_question"))
                 .question(rs.getString("dsc_question"))
+                .responds(
+                        Role.valueOf(rs.getString("dsc_responds"))
+                )
                 .build();
     }
 }
