@@ -72,9 +72,11 @@ public class VolunteerService {
     }
 
     public void update(Volunteer volunteer, String cpf) throws ServiceException {
-        if (!volunteer.getUser().getCpf().equals(cpf)){
+        val user = volunteer.getUser();
+        if (!user.getCpf().equals(cpf)){
             throw new ServiceException(null, null, null);
         }
+        userService.update(user, cpf);
         repository.update(volunteer);
     }
 }

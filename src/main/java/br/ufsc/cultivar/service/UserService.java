@@ -65,7 +65,7 @@ public class UserService {
     }
 
     public void update(final User user, final String cpf) throws ServiceException {
-        if (user.getCpf().equals(cpf)) {
+        if (!user.getCpf().equals(cpf)) {
             throw new ServiceException(null, null, null);
         }
         if (!get(cpf).getStatus().isValid(user.getStatus())){

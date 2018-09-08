@@ -125,6 +125,12 @@ export default class extends Component{
         this.setState({ volunteer });
     }
 
+    handlerCourse(event){
+        const { volunteer } = this.state;
+        volunteer.course = event.target.value;
+        this.setState({ volunteer });
+    }
+
     handlerPassword(event){
         const { volunteer } = this.state;
         const { user } = volunteer;
@@ -259,7 +265,7 @@ export default class extends Component{
                                                 <Row>
                                                     <Col>
                                                         <Form inline>
-                                                            <Input id="course" label="Curso" invalidMessage="Curso é obrigatório" onChange={this.handlerJob} required/>
+                                                                <Input id="course" label="Curso" invalidMessage="Curso é obrigatório" onChange={this.handlerCourse} required/>
                                                         </Form>
                                                     </Col>
                                                 </Row>

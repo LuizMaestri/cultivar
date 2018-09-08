@@ -2,7 +2,7 @@ package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.*;
-import br.ufsc.cultivar.service.FileService;
+import br.ufsc.cultivar.service.DispatchService;
 import br.ufsc.cultivar.service.RatingService;
 import br.ufsc.cultivar.service.VolunteerService;
 import lombok.AccessLevel;
@@ -24,8 +24,8 @@ import java.util.Map;
 public class VolunteerResource {
 
     VolunteerService volunteerService;
-    FileService fileService;
     RatingService ratingService;
+    DispatchService dispatchService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -55,11 +55,16 @@ public class VolunteerResource {
         volunteerService.update(volunteer, cpf);
     }
 
+    @GetMapping(path = "/{cpf}/attachment/{codAttachment}")
+    public Dispatch getDispatch(@PathVariable String cpf, @PathVariable Long codAttachment){
+        return dispatchService.get(cpf, codAttachment);
+    }
+
     @PostMapping(path="/{cpf}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Dispatch upload(@RequestPart final Attachment attachment, @RequestPart final MultipartFile file,
+    public void upload(@RequestPart final Attachment attachment, @RequestPart final MultipartFile file,
                            @PathVariable final String cpf) throws ServiceException {
-        return fileService.save(attachment, file, cpf);
+        dispatchService.save(attachment, file, cpf);
     }
     
     @PutMapping(path = "/{cpf}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

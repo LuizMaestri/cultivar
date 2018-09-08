@@ -18,6 +18,7 @@
     "react-input-mask": "^2.0.2",
     "react-required-if": "^1.0.3",
     "react-router-dom": "^4.3.1",
+    "react-spinners": "^0.4.5",
     "reactstrap": "^6.3.1"
   },
   "scripts": {
