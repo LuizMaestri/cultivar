@@ -19,6 +19,12 @@ export default class extends Component{
         this.handlerFile = this.handlerFile.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
     }
+    
+    static propTypes = {
+        afterSubmit: PropTypes.func.isRequired,
+        isOpen: PropTypes.bool.isRequired,
+        close: PropTypes.func.isRequired
+    }
 
     handlerAttatchment(event){
         const { attachment } = this.state;

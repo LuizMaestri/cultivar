@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import Attachment from '../../../../../model/attachment';
-import { getRequest, postRequest } from '../../../../../utils/http';
+import { getRequest } from '../../../../../utils/http';
 import { Row, Col, Table } from 'reactstrap';
 import ListItem from './ListItem.jsx';
 import Add from './Add.jsx';
