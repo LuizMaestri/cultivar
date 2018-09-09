@@ -73,6 +73,9 @@ public class AttachmentRepository {
         return Attachment.builder()
                 .codAttachment(rs.getLong("cod_attachment"))
                 .name(rs.getString("nm_attachment"))
+                .status(
+                        Status.valueOf(rs.getString("sta_user"))
+                )
                 .required(rs.getBoolean("fl_required"))
                 .download(rs.getBoolean("fl_download"))
                 .build();

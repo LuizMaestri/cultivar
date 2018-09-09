@@ -1,22 +1,21 @@
 import React, { Component } from 'react';
 import Attachment from '../../../../../model/attachment';
-import { getRequest, postRequest, deleteRequest } from '../../../../../utils/http';
-import { Row, Col, Form, Button, Table } from 'reactstrap';
-import { Input } from '../../../../../components';
-import { FaTrash } from 'react-icons/fa';
+import { getRequest, postRequest } from '../../../../../utils/http';
+import { Row, Col, Table } from 'reactstrap';
+import ListItem from './ListItem.jsx';
+import Add from './Add.jsx';
 
 export default class extends Component{
     constructor(){
         super();
         this.state = {
             attachments: [],
-            newAttachment: new Attachment(),
             invalid: false
         };
+        this.componentWillMount = this.componentWillMount.bind(this);
         this.handlerAttatchment = this.handlerAttatchment.bind(this)
         this.handlerRequired = this.handlerRequired.bind(this)
         this.handlerSubmit = this.handlerSubmit.bind(this);
-        this.handlerDelete = this.handlerDelete.bind(this);
     }
 
     componentWillMount(){
@@ -33,18 +32,6 @@ export default class extends Component{
         const { newAttachment } = this.state;
         newAttachment.required = !newAttachment.required;
         this.setState({ newAttachment });
-    }
-
-    handlerDelete(codAttachment) {
-        deleteRequest(
-            `/attachment/${codAttachment}`,
-            () => getRequest(
-                '/attachment',
-                res => this.setState({
-                    attachments: res.data
-                })
-            )
-        );
     }
 
     handlerSubmit(){
@@ -73,11 +60,12 @@ export default class extends Component{
             <div>
                 <Row>
                     <Col>
-                        <Form inline>
-                            <Input id="newAttachment" label="Anexo" value={newAttachment.name} invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerAttatchment} required />
-                            <Input id="isRequired" type="checkbox"  label="Obrigatório" value={newAttachment.isRequired} invalidMessage="Campo Obrigatório" onChange={this.handlerRequired}/>
-                            <Button type="button" color="primary" onClick={this.handlerSubmit}>Cadastrar</Button>
-                        </Form>
+                        <h3>
+                            Anexos
+                        </h3>
+                    </Col>
+                    <Col md="2">
+                        <Add afterSubmit={this.componentWillMount.bind(this)}/>
                     </Col>
                 </Row>
                 <br/>
@@ -96,24 +84,9 @@ export default class extends Component{
                                     attachments.length ? 
                                         attachments.map(
                                             attachment => (
-                                                <tr key={attachment.codAttachment}>
-                                                    <td>
-                                                        <strong>
-                                                            {attachment.name}
-                                                        </strong>
-                                                    </td>
-                                                    <td>
-                                                        <strong>
-                                                            {attachment.required ? "Sim" : "Não"}
-                                                        </strong>
-                                                    </td>
-                                                    <td>
-                                                        <FaTrash style={{ cursor: 'pointer' }} color="red" onClick={() => this.handlerDelete(attachment.codAttachment)} />
-                                                    </td>
-                                                </tr>
+                                                <ListItem key={attachment.codAttachment} attachment={attachment} afterDelete={this.componentWillMount}/>
                                             )
-                                        ) : 
-                                        (
+                                        ) : (
                                             <tr>
                                                 <td colSpan="3">
                                                     <strong>
