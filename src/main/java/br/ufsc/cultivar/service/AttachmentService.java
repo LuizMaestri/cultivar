@@ -10,8 +10,10 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -19,9 +21,16 @@ import java.util.List;
 public class AttachmentService {
 
     AttachmentRepository repository;
+    FileService fileService;
 
-    public void create(final Attachment attachment) throws ServiceException {
-        repository.create(attachment);
+    public void create(final Attachment attachment, final MultipartFile file) throws ServiceException {
+        if(attachment.getDownload() && Objects.isNull(file)){
+            throw new ServiceException(null, null, null);
+        }
+        val codAttachment = repository.create(attachment);
+        if (attachment.getDownload()){
+            fileService.saveAttachment(file, codAttachment);
+        }
     }
 
     public List<Attachment> get() throws ServiceException {

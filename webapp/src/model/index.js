@@ -10,3 +10,4 @@ export { default as SchoolType } from './schoolType';
 export { default as School } from './school';
 export { default as Event } from './event';
 export { default as EventType } from './eventType';
+export { default as Attachment } from './attachment';

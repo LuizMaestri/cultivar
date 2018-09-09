@@ -9,53 +9,17 @@ export default class extends Component{
     constructor(){
         super();
         this.state = {
-            attachments: [],
-            invalid: false
+            attachments: []
         };
         this.componentWillMount = this.componentWillMount.bind(this);
-        this.handlerAttatchment = this.handlerAttatchment.bind(this)
-        this.handlerRequired = this.handlerRequired.bind(this)
-        this.handlerSubmit = this.handlerSubmit.bind(this);
     }
 
     componentWillMount(){
         getRequest('/attachment', res => this.setState({ attachments: res.data }));
     }
 
-    handlerAttatchment(event){
-        const { newAttachment } = this.state;
-        newAttachment.name = event.target.value;
-        this.setState({ newAttachment });
-    }
-
-    handlerRequired(){
-        const { newAttachment } = this.state;
-        newAttachment.required = !newAttachment.required;
-        this.setState({ newAttachment });
-    }
-
-    handlerSubmit(){
-        const { newAttachment } = this.state;
-        if (!newAttachment.name) {
-            this.setState({ invalid: true })
-            return;
-        }
-        postRequest(
-            '/attachment',
-            newAttachment,
-            () =>
-                getRequest(
-                    '/attachment',
-                    res => this.setState({
-                        attachments: res.data,
-                        newAttachment: new Attachment()
-                    })
-                )
-        );
-    }
-
     render(){
-        const { attachments, newAttachment } = this.state;
+        const { attachments} = this.state;
         return (
             <div>
                 <Row>
@@ -65,7 +29,7 @@ export default class extends Component{
                         </h3>
                     </Col>
                     <Col md="2">
-                        <Add afterSubmit={this.componentWillMount.bind(this)}/>
+                        <Add afterSubmit={this.componentWillMount}/>
                     </Col>
                 </Row>
                 <br/>

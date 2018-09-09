@@ -22,11 +22,12 @@ public class AttachmentRepository {
 
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void create(final Attachment attachment) {
-        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+    public long create(final Attachment attachment) {
+        return new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("attachment")
                 .usingGeneratedKeyColumns("cod_attachment")
-                .execute(getParams(attachment));
+                .executeAndReturnKey(getParams(attachment))
+                .longValue();
     }
 
     public List<Attachment> get() {

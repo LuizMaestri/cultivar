@@ -29,7 +29,7 @@ public class FileService {
         return Dispatch.builder().attachment(attachment).send(true).build();
     }
 
-    public String save(MultipartFile multipartFile, Long codEvent) throws ServiceException {
+    public String save(final MultipartFile multipartFile, final Long codEvent) throws ServiceException {
         val path = String.format(
                 "./files/events/%d/attachments/%d.pdf",
                 codEvent,
@@ -38,7 +38,15 @@ public class FileService {
         return save(new File(path), multipartFile);
     }
 
-    private String save(File file, MultipartFile multipart) throws ServiceException{
+    public String saveAttachment(final MultipartFile multipartFile, final Long codAttachment) throws ServiceException {
+        val path = String.format(
+                "./files/attachments/%d.pdf",
+                codAttachment
+        );
+        return save(new File(path), multipartFile);
+    }
+
+    private String save(final File file, final MultipartFile multipart) throws ServiceException{
         try {
             if (file.getParentFile().mkdirs()){
                 log.info("create dir: " + file.getParent());
