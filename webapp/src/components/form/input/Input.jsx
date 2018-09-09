@@ -21,7 +21,7 @@ FormInput.propTypes = {
     type: PropTypes.string,
     placeholder: PropTypes.string,
     required: PropTypes.bool,
-    children: requiredIf(PropTypes.element, props => props.type==='select')
+    children: requiredIf(PropTypes.node, props => props.type==='select')
 };
 
 FormInput.defaultProps ={
