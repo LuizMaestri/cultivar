@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { postRequest, getRequest } from '../../../../../../utils/http';
 import formatter from '../../../../../../utils/formatter';
-import Event from '../../../../../../model/event';
-import EventType from '../../../../../../model/eventType';
+import { Event, EventType, School } from '../../../../../../model';
 import { Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Wizard, Input } from '../../../../../../components';
 import './form.css';
@@ -13,7 +12,8 @@ export default class extends Component {
         super(props);
         this.state = {
             event: props.event,
-            users: []
+            users: [],
+            schools: []
         };
         this.handlerType = this.handlerType.bind(this);
         this.handlerCity = this.handlerCity.bind(this);
@@ -21,6 +21,7 @@ export default class extends Component {
         this.handlerStreet = this.handlerStreet.bind(this);
         this.handlerNumber = this.handlerNumber.bind(this);
         this.handlerParticipants = this.handlerParticipants.bind(this);
+        this.handlerSelectSchool = this.handlerSelectSchool.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
     }
 
@@ -34,7 +35,10 @@ export default class extends Component {
     componentWillMount(){
         const { event } = this.state;
         event.allDay = event.startOccurrence === event.endOccurrence;
-        getRequest('/user', res => this.setState({event, users: res.data}));
+        getRequest('/school', res => this.setState({
+                event,
+                schools: res.data
+        }));
     }
 
     handlerType(userEvent){
@@ -77,6 +81,24 @@ export default class extends Component {
     }
 
     //participants
+    handlerSelectSchool(userEvent){
+        const { value } = userEvent.target;
+        const { event, schools } = this.state
+        event.school = new School()
+        for(const school of schools){
+            if(school.codSchool === value){
+                event.school = school;
+            }
+        }
+        if(value){
+            getRequest(
+                `/volunteer?cod_school=${value}`,
+                res => this.setState({users: res.data, event})
+            );
+        } else{
+            this.setState({users: [], event});
+        }
+    }
     handlerParticipants(userEvent){
         const { event, users } = this.state;
         let participants = [], opt, participant;
@@ -91,7 +113,6 @@ export default class extends Component {
             }
         }
         event.participants = participants;
-        console.log(event);
         this.setState({ event });
     }
 
@@ -111,10 +132,11 @@ export default class extends Component {
 
     render(){
         const { isOpen, close } = this.props;
-        const { event, users } = this.state;
+        const { event, users, schools } = this.state;
         const dateTitle = event.allDay ? 
             event.startOccurrence.toLocaleString() : 
-            event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString()
+            event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
+        const { codSchool } = event.school;
         return (
             <Modal isOpen={isOpen} toggle={close} style={{width: 'max-content'}}>
                 <ModalHeader toggle={close}>Novo Evento - {dateTitle}</ModalHeader>
@@ -144,8 +166,14 @@ export default class extends Component {
                             <hr className="row" />
                         </div>
                         <div>
+                            <Input id="filter" type="select" label="Escola" onChange={this.handlerSelectSchool}>
+                                <option>Selecione</option>
+                                {
+                                    schools.map(school => <option key={school.codSchool} value={school.codSchool}>{school.name}</option>)
+                                }
+                            </Input>
                             <h3>Participantes</h3>
-                            <Input id="type" type="select" label="Selecione" invalidMessage="Tipo de Evento é obrigatório" onChange={this.handlerParticipants} style={{ height: '500px'}} multiple required >
+                            <Input id="type" type="select" label="Selecione" invalidMessage="Tipo de Evento é obrigatório" onChange={this.handlerParticipants} style={{ height: '500px'}} multiple required disabled={!codSchool} >
                                 {
                                     users.map(
                                         user => <option key={user.cpf} value={user.cpf}>{formatter.cpf(user.cpf)} - {user.name}</option>
