@@ -7,12 +7,7 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
-import lombok.val;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,13 +26,14 @@ public class Event {
     TypeEvent type;
     Boolean allDay;
     Address address;
+    School school;
     List<Training> trainings;
     List<User> participants;
     List<Rating> ratings;
 
     public Double getRating() {
         return Optional.ofNullable(ratings)
-                .orElse(new ArrayList<>())
+                .orElseGet(ArrayList::new)
                 .stream()
                 .mapToInt(Rating::getGrade)
                 .average()

@@ -1,9 +1,6 @@
 package br.ufsc.cultivar.repository;
 
-import br.ufsc.cultivar.model.Company;
-import br.ufsc.cultivar.model.Schooling;
-import br.ufsc.cultivar.model.User;
-import br.ufsc.cultivar.model.Volunteer;
+import br.ufsc.cultivar.model.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -80,10 +78,12 @@ public class VolunteerRepository {
 
     private MapSqlParameterSource getParams(Volunteer volunteer) {
         val user = volunteer.getUser();
+        val school = volunteer.getSchool();
         return new MapSqlParameterSource()
                 .addValue("cod_cpf", user.getCpf())
                 .addValue("nm_volunteer", user.getName())
                 .addValue("cod_cnpj", volunteer.getCompany().getCnpj())
+                .addValue("cod_school", Objects.nonNull(school) ? school.getCodSchool() : null)
                 .addValue("dsc_schooling", volunteer.getSchooling().name())
                 .addValue("fl_conclusion", volunteer.getConclusion())
                 .addValue("cod_rg", volunteer.getRg());
@@ -103,11 +103,13 @@ public class VolunteerRepository {
                         Company.builder()
                                 .cnpj(rs.getString("cod_cnpj"))
                                 .build()
-                )
-                .schooling(
+                ).school(
+                        School.builder()
+                                .codSchool(rs.getLong("cod_school"))
+                                .build()
+                ).schooling(
                         Schooling.valueOf(rs.getString("dsc_schooling"))
-                )
-                .conclusion(rs.getBoolean("fl_conclusion"))
+                ).conclusion(rs.getBoolean("fl_conclusion"))
                 .rg(rs.getString("cod_rg"))
                 .build();
     }

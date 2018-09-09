@@ -23,6 +23,7 @@ public class Volunteer {
     Schooling schooling;
     Boolean conclusion;
     String rg;
+    School school;
     List<Answer> answers;
     List<Rating> ratings;
 

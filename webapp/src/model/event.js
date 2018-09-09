@@ -1,7 +1,10 @@
-import Address from './address'; 
+import Address from './address';
+import School from './school';
+
 export default class{
     constructor(codEvent, startOccurrence, endOccurrence, createAt, type, allDay,
-         address = new Address(), trainings = [], participants = [], ratings = []) {
+         address = new Address(), school = new School(), trainings = [],
+         participants = [], ratings = []) {
         this.codEvent = codEvent;
         this.startOccurrence = startOccurrence;
         this.endOccurrence = endOccurrence;
@@ -12,5 +15,6 @@ export default class{
         this.trainings = trainings;
         this.participants = participants;
         this.ratings = ratings;
+        this.school = school;
     }
 }

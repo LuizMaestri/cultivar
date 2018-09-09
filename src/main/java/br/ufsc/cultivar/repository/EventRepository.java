@@ -2,6 +2,7 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.Event;
+import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.model.TypeEvent;
 import br.ufsc.cultivar.utils.DateUtils;
 import lombok.AccessLevel;
@@ -16,7 +17,6 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -99,6 +99,10 @@ public class EventRepository {
                         Address.builder()
                                 .codAddress(rs.getLong("cod_address"))
                                 .build()
+                ).school(
+                        School.builder()
+                                .codSchool(rs.getLong("cod_school"))
+                                .build()
                 ).build();
     }
 
@@ -109,6 +113,7 @@ public class EventRepository {
                 .addValue("fl_all_day", event.getAllDay())
                 .addValue("tp_event", event.getType().name())
                 .addValue("cod_address", event.getAddress().getCodAddress())
+                .addValue("cod_school", event.getSchool().getCodSchool())
                 .addValue("cod_event", event.getCodEvent());
     }
 }
