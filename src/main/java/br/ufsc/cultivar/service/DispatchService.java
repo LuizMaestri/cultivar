@@ -19,12 +19,12 @@ public class DispatchService {
     DispatchRepository repository;
     FileService fileService;
 
-    public void save(Attachment attachment, MultipartFile file, String cpf) throws ServiceException {
+    public void save(final Attachment attachment, final MultipartFile file, final String cpf) throws ServiceException {
         Dispatch dispatch = fileService.save(attachment, file, cpf);
         repository.save(dispatch, cpf);
     }
 
-    public Dispatch get(String cpf, Long codAttachment) {
+    public Dispatch get(final String cpf, final Long codAttachment) {
         return repository.get(cpf, codAttachment);
     }
 }

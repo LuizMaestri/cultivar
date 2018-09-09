@@ -56,7 +56,7 @@ public class VolunteerResource {
     }
 
     @GetMapping(path = "/{cpf}/attachment/{codAttachment}")
-    public Dispatch getDispatch(@PathVariable String cpf, @PathVariable Long codAttachment){
+    public Dispatch getDispatch(@PathVariable final String cpf, @PathVariable Long codAttachment){
         return dispatchService.get(cpf, codAttachment);
     }
 

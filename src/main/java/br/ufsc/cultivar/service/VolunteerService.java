@@ -27,7 +27,7 @@ public class VolunteerService {
     RatingService ratingService;
     AnswerService answerService;
 
-    public void create(Volunteer volunteer) throws ServiceException {
+    public void create(final Volunteer volunteer) throws ServiceException {
         val user = volunteer.getUser();
         if (!ValidateUtils.isValid(user)) {
             throw new ServiceException(null, null, null);
@@ -45,7 +45,7 @@ public class VolunteerService {
                 );
     }
 
-    public List<Volunteer> get(Map<String, Object> filter) throws ServiceException {
+    public List<Volunteer> get(final Map<String, Object> filter) throws ServiceException {
         try {
             return repository.get(filter)
                     .stream()
@@ -63,7 +63,7 @@ public class VolunteerService {
         }
     }
 
-    public Volunteer get(String cpf) throws ServiceException {
+    public Volunteer get(final String cpf) throws ServiceException {
         val volunteer = repository.get(cpf);
         return Optional.ofNullable(repository.get(cpf))
                 .orElseThrow(() -> new ServiceException(null, null, null))
@@ -80,13 +80,13 @@ public class VolunteerService {
                 );
     }
 
-    public Volunteer delete(String cpf) throws ServiceException {
+    public Volunteer delete(final String cpf) throws ServiceException {
         val volunteer = get(cpf);
         repository.delete(cpf);
         return volunteer;
     }
 
-    public void update(Volunteer volunteer, String cpf) throws ServiceException {
+    public void update(final Volunteer volunteer, final String cpf) throws ServiceException {
         val user = volunteer.getUser();
         if (!user.getCpf().equals(cpf)){
             throw new ServiceException(null, null, null);
