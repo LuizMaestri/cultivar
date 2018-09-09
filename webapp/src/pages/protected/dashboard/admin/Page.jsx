@@ -38,7 +38,7 @@ export default () => (
             </Row>
             <Hr/>
             <Row>
-                <Col style={{height: '900px'}}>
+                <Col>
                     <ListEvent/>
                 </Col>
             </Row>
