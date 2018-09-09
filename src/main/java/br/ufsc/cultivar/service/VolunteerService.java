@@ -1,90 +1,100 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
-import br.ufsc.cultivar.models.Status;
-import br.ufsc.cultivar.models.Volunteer;
-import br.ufsc.cultivar.models.dto.FileDTO;
+import br.ufsc.cultivar.model.Volunteer;
+import br.ufsc.cultivar.repository.VolunteerRepository;
+import br.ufsc.cultivar.utils.ValidateUtils;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.extern.java.Log;
+import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import javax.validation.constraints.NotNull;
-import java.sql.SQLException;
-import java.util.logging.Logger;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
-import static br.ufsc.cultivar.models.Status.*;
-import static br.ufsc.cultivar.models.Status.WAIT_TV;
-
-@Log
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
-public class VolunteerService extends AbstractService<Volunteer, String> {
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class VolunteerService {
 
-    private final AddressService addressService;
+    VolunteerRepository repository;
+    UserService userService;
+    CompanyService companyService;
+    RatingService ratingService;
+    AnswerService answerService;
 
-    @Override
-    @Transactional
-    public String save(final Volunteer entity) throws ServiceException{
-        val address = entity.getAddress();
-        if (!addressService.isValid(address)){
-            throw new ServiceException("Endreço inválido.", null, Type.INVALID);
+    public void create(final Volunteer volunteer) throws ServiceException {
+        val user = volunteer.getUser();
+        if (!ValidateUtils.isValid(user)) {
+            throw new ServiceException(null, null, null);
         }
-        val codAddress = addressService.save(address);
-        return super.save(
-                entity.withAddress(
-                        address.withId(codAddress)
-                )
-        );
+        userService.create(user);
+        repository.create(volunteer);
+        Optional.ofNullable(volunteer.getAnswers())
+                .ifPresent(
+                        answers -> answers.forEach(
+                                answer -> answerService.create(
+                                        answer,
+                                        user.getCpf()
+                                )
+                        )
+                );
     }
 
-    @Override
-    public void delete(String id) throws ServiceException {
-        Volunteer volunteer = get(id);
-        super.delete(id);
-        addressService.delete(volunteer.getAddress().getId());
-    }
-
-    @Override
-    @Transactional
-    public void associate(String id, Object dto) throws ServiceException {
-        if (dto instanceof String){
-            try {
-                Volunteer volunteer = repository.findOne(id);
-                switch (volunteer.getStatus()) {
-                    case WAIT_TV: {
-                        repository.update(id, volunteer.withStatus(RECOMMEND));
-                        break;
-                    }
-                    case WAIT_TR: {
-                        repository.update(id, volunteer.withStatus(WAIT_TV));
-                        break;
-                    }
-                    default: throw new ServiceException(getMessageErrorFindOne(id), null, Type.INVALID);
-                }
-
-            } catch (SQLException e) {
-                throw new ServiceException(getMessageErrorFindOne(id), e, Type.NOT_FOUND);
-            }
+    public List<Volunteer> get(final Map<String, Object> filter) throws ServiceException {
+        try {
+            return repository.get(filter)
+                    .stream()
+                    .map(volunteer -> {
+                        try {
+                            return volunteer.withUser(
+                                    userService.get(volunteer.getUser().getCpf())
+                            );
+                        } catch (ServiceException e) {
+                            throw new RuntimeException(e);
+                        }
+                    }).collect(Collectors.toList());
+        } catch (RuntimeException e){
+            throw new ServiceException(null, null, null);
         }
     }
 
-    @Override
-    String getMessageErrorFindOne(final String id) {
-        return "Não foi possivel encontrar o voluntário com cpf " + id;
+    public Volunteer get(final String cpf) throws ServiceException {
+        val volunteer = repository.get(cpf);
+        return Optional.ofNullable(repository.get(cpf))
+                .orElseThrow(() -> new ServiceException(null, null, null))
+                .withUser(
+                        userService.get(cpf)
+                ).withCompany(
+                        companyService.get(
+                                volunteer.getCompany().getCnpj()
+                        )
+                ).withAnswers(
+                        answerService.get(cpf)
+                ).withRatings(
+                        ratingService.get(cpf)
+                );
     }
 
-    @Override
-    String getMessageErrorList() {
-        return "Não foi prossivel recuperar a lista de voluntários";
+    public Volunteer delete(final String cpf) throws ServiceException {
+        val volunteer = get(cpf);
+        repository.delete(cpf);
+        return volunteer;
     }
 
-    @Override
-    public Logger getLog() {
-        return log;
+    public void update(final Volunteer volunteer, final String cpf) throws ServiceException {
+        val user = volunteer.getUser();
+        if (!user.getCpf().equals(cpf)){
+            throw new ServiceException(null, null, null);
+        }
+        userService.update(user, cpf);
+        answerService.delete(cpf);
+        volunteer.getAnswers()
+                .forEach(answer -> answerService.create(answer, cpf));
+        repository.update(volunteer);
     }
 }
-

@@ -1,122 +1,114 @@
 package br.ufsc.cultivar.repository;
 
-import br.ufsc.cultivar.models.Address;
-import br.ufsc.cultivar.models.Place;
-import br.ufsc.cultivar.models.Status;
-import br.ufsc.cultivar.models.Volunteer;
-import br.ufsc.cultivar.models.dto.FileDTO;
-import br.ufsc.cultivar.repository.base.StringRepository;
-import br.ufsc.cultivar.utils.DateUtils;
+import br.ufsc.cultivar.model.Company;
+import br.ufsc.cultivar.model.Schooling;
+import br.ufsc.cultivar.model.User;
+import br.ufsc.cultivar.model.Volunteer;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.experimental.FieldDefaults;
+import lombok.val;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Repository
-public class VolunteerRepository extends StringRepository<Volunteer> {
+@AllArgsConstructor(onConstructor = @__(@Autowired))
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
+public class VolunteerRepository {
 
-    @Override
-    public Volunteer build(final ResultSet rs) {
-        try {
-            if(rs.isBeforeFirst()){
-                rs.first();
-            }
-            return Volunteer.builder()
-                    .id(rs.getString("cod_cpf"))
-                    .name(rs.getString("nm_user"))
-                    .email(rs.getString("dsc_email"))
-                    .password(rs.getString("dsc_password"))
-                    .phone(rs.getString("nu_phone"))
-                    .job(rs.getString("dsc_job"))
-                    .birth(
-                            DateUtils.toLocaldate(rs.getDate("dt_birth"))
-                    )
-                    .createAt(
-                            DateUtils.toZonedDateTime(rs.getTimestamp("dt_create"))
-                    )
-                    .status(
-                            Status.valueOf(
-                                    rs.getString("sta_user")
-                            )
-                    )
-                    .address(
-                            Address.builder()
-                                    .id(rs.getLong("cod_address"))
-                                    .build()
-                    )
-                    .company(
-                            Place.builder()
-                                    .id(rs.getString("cod_cnpj"))
-                                    .build()
-                    )
-                    .pathTV(rs.getString("dsc_path_tv"))
-                    .pathTR(rs.getString("dsc_path_tr"))
-                    .build();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    NamedParameterJdbcTemplate jdbcTemplate;
+
+    public void create(Volunteer volunteer) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("volunteer")
+                .execute(getParams(volunteer));
     }
 
-    @Override
-    protected String getInsertQuery() {
-        return "INSERT INTO users ("
-                + "cod_cpf, nm_user, nm_role, sta_user, dt_birth, nu_phone, "
-                + "dsc_email, dsc_password, cod_address, cod_cnpj, dsc_job"
-                + ") VALUES("
-                + ":cod_cpf, :nm_user, 'VOLUNTEER', :sta_user, :dt_birth, :nu_phone, "
-                + ":dsc_email, :dsc_password, :cod_address, :cod_cnpj, :dsc_job);";
+    public List<Volunteer> get(Map<String, Object> filter) {
+        val sql = new StringBuilder("select * from volunteer where 1=1");
+        val params = new MapSqlParameterSource();
+        Optional.ofNullable(filter)
+                .ifPresent(
+                        map -> map.forEach(
+                                (key, value) -> {
+                                    sql.append(" and ")
+                                            .append(key)
+                                            .append("=:")
+                                            .append(key);
+                                    params.addValue(key, value);
+                                }
+                        )
+                );
+        return jdbcTemplate.query(
+                sql.toString(),
+                params,
+                (rs, i) -> this.build(rs)
+        );
     }
 
-    @Override
-    protected MapSqlParameterSource getInsertParams(final Volunteer entity) {
-        return getUpdateParams(entity.getId(), entity);
+    public Volunteer get(String cpf) {
+        return jdbcTemplate.query(
+                "select * from volunteer where cod_cpf=:cod_cpf",
+                new MapSqlParameterSource("cod_cpf", cpf),
+                this::build
+        );
     }
 
-    @Override
-    protected String getSelectAllQuery() {
-        return "SELECT * FROM (SELECT * FROM users WHERE nm_role = 'VOLUNTEER') as v ";
+    public void delete(String cpf) {
+        jdbcTemplate.update(
+                "delete from volunteer where cod_cpf=:cod_cpf",
+                new MapSqlParameterSource("cod_cpf", cpf)
+        );
     }
 
-    @Override
-    protected String getIdFieldName() {
-        return "cod_cpf";
+    public void update(Volunteer volunteer) {
+        jdbcTemplate.update(
+                "update volunteer set dsc_schooling=:dsc_schooling, fl_conclusion=:fl_conclusion, " +
+                        "cod_rg=:cod_rg where cod_cpf=:cod_cpf",
+                getParams(volunteer)
+        );
     }
 
-    @Override
-    protected String getDeleteQuery() {
-        return "DELETE FROM users WHERE cod_cpf=:cod_cpf";
-    }
-
-    @Override
-    protected String getUpdateQuery() {
-        return "UPDATE users SET "
-                + "nm_user=:nm_user, sta_user=:sta_user, dt_birth=:dt_birth, nu_phone=:nu_phone, dsc_email=:dsc_email, "
-                + "dsc_password=:dsc_password, cod_address=:cod_address, cod_cnpj=:cod_cnpj, dsc_job=:dsc_job WHERE cod_cpf=:cod_cpf;";
-    }
-
-    @Override
-    protected MapSqlParameterSource getUpdateParams(final String id, final Volunteer entity) {
+    private MapSqlParameterSource getParams(Volunteer volunteer) {
+        val user = volunteer.getUser();
         return new MapSqlParameterSource()
-                .addValue(getIdFieldName(), id)
-                .addValue("nm_user", entity.getName())
-                .addValue("sta_user", entity.getStatus().name())
-                .addValue("dt_birth", entity.getBirth())
-                .addValue("nu_phone", entity.getPhone())
-                .addValue("dsc_email", entity.getEmail())
-                .addValue("dsc_password", entity.getPassword())
-                .addValue("cod_address", entity.getAddress().getId())
-                .addValue("cod_cnpj", entity.getCompany().getId())
-                .addValue("dsc_job", entity.getJob());
+                .addValue("cod_cpf", user.getCpf())
+                .addValue("nm_volunteer", user.getName())
+                .addValue("cod_cnpj", volunteer.getCompany().getCnpj())
+                .addValue("dsc_schooling", volunteer.getSchooling().name())
+                .addValue("fl_conclusion", volunteer.getConclusion())
+                .addValue("cod_rg", volunteer.getRg());
     }
 
-    @Override
-    @SuppressWarnings("unchecked")
-    public void associate(Object associations) {
-        if (associations instanceof FileDTO){
-            FileDTO<String> fileDTO = (FileDTO<String>) associations;
-            String sql = String.format("UPDATE users SET dsc_path_%s=:path", fileDTO.getType());
-            jdbcTemplate.update(sql, new MapSqlParameterSource("path", fileDTO.getFilename()));
+    private Volunteer build(ResultSet rs) throws SQLException {
+        if (rs.isBeforeFirst()){
+            rs.first();
         }
+        return Volunteer.builder()
+                .user(
+                        User.builder()
+                                .cpf(rs.getString("cod_cpf"))
+                                .build()
+                )
+                .company(
+                        Company.builder()
+                                .cnpj(rs.getString("cod_cnpj"))
+                                .build()
+                )
+                .schooling(
+                        Schooling.valueOf(rs.getString("dsc_schooling"))
+                )
+                .conclusion(rs.getBoolean("fl_conclusion"))
+                .rg(rs.getString("cod_rg"))
+                .build();
     }
 }

@@ -2,8 +2,10 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
-import lombok.extern.java.Log;
-import org.springframework.core.io.FileSystemResource;
+import br.ufsc.cultivar.model.Attachment;
+import br.ufsc.cultivar.model.Dispatch;
+import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -12,24 +14,28 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-/**
- * @author luiz.maestri
- * @since 25/07/2018
- */
-@Log
 @Service
+@Slf4j
 public class FileService {
-
-    public static final String BASE_PATH = "./files/cultivar/";
-
-    public String save(String dir, String name, MultipartFile multipart) throws ServiceException {
-        String fileName = String.format("%s/%s/%s.pdf", BASE_PATH, dir, name);
-        return save(new File(fileName), multipart);
+    public Dispatch save(final Attachment attachment, final MultipartFile multipartFile, final String cpf) throws ServiceException {
+        val path = String.format(
+                "./files/users/%s/attachments/%s.pdf",
+                cpf,
+                attachment.getName()
+                        .replaceAll(" ", "_")
+        );
+        val file = new File(path);
+        save(file, multipartFile);
+        return Dispatch.builder().attachment(attachment).send(true).build();
     }
 
-    public String save(String dir, MultipartFile multipart) throws ServiceException {
-        String fileName = String.format("%s/%s/%s", BASE_PATH, dir, multipart.getOriginalFilename());
-        return save(new File(fileName), multipart);
+    public String save(MultipartFile multipartFile, Long codEvent) throws ServiceException {
+        val path = String.format(
+                "./files/events/%d/attachments/%d.pdf",
+                codEvent,
+                System.currentTimeMillis()
+        );
+        return save(new File(path), multipartFile);
     }
 
     private String save(File file, MultipartFile multipart) throws ServiceException{
@@ -40,16 +46,7 @@ public class FileService {
             Files.copy(multipart.getInputStream(), Paths.get(file.toURI()));
             return file.getName();
         } catch (IOException e) {
-            throw createException(multipart.getOriginalFilename(), e);
+            throw new ServiceException(String.format("Não foi possível salvar o arquivo %s.", file.getPath()), e, Type.FILE);
         }
-    }
-
-    private ServiceException createException(String fileName, Throwable throwable){
-        return new ServiceException(String.format("Não foi possível salvar o arquivo %s.", fileName), throwable, Type.FILE);
-    }
-
-    public FileSystemResource get(String dir, String name) {
-        String fileName = String.format("%s/%s/%s.pdf", BASE_PATH, dir, name);
-        return new FileSystemResource(fileName);
     }
 }

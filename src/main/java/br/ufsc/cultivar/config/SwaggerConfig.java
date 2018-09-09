@@ -22,7 +22,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("br.ufsc.cultivar.resources"))
+                .apis(RequestHandlerSelectors.basePackage("br.ufsc.cultivar.resource"))
                 .paths(ant("/api/**"))
                 .build()
                 .apiInfo(metaData());
@@ -43,9 +43,9 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
     @Override
     protected void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
+                .addResourceLocations("classpath:/META-INF/resource/");
 
         registry.addResourceHandler("/webjars/**")
-                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+                .addResourceLocations("classpath:/META-INF/resource/webjars/");
     }
 }

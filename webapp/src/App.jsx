@@ -2,26 +2,27 @@
 import React, { Component } from 'react';
 import { Header, Footer } from './components';
 import { BrowserRouter } from 'react-router-dom'
-import { RedirectRoute, PrivateRoute, MissingRoute } from './components/route';
-import { Route } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import { Container, Row, Col } from 'reactstrap';
-import { getAsObject } from './utils/storage';
-import { Roles } from './model';
-import { Dashboard, Login, VolunterList, CompanyList, SchoolList, RegisterPage } from './pages';
+import { Dashboard, Login, Register } from './pages';
+import { User } from './model';
+import { getAsObject, saveObject } from './utils/storage';
 import './App.css';
 
 export default class App extends Component {
 	constructor(){
 		super();
+		const user = getAsObject('user')
 		this.state = {
-			logged: getAsObject('authenticated'),
-			user: getAsObject('user')
+			logged: false,
+			user: user ? user : new User()
 		};
+		this.handlerLogin = this.handlerLogin.bind(this);
   	}
 
-	handlerLogin(){
-		debugger;
-		this.setState({logged: true});
+	handlerLogin(user){
+		saveObject('user', user);
+		this.setState({ logged: true, user });
 	}
 
 	render() {
@@ -30,33 +31,13 @@ export default class App extends Component {
 			<BrowserRouter>
 				<div>
 					<Header/>
-					<br/>
-					<Container fluid>
+					<Container style={{ margin: '3% 0' }} fluid>
 						<Row>
 							<Col>
-								<RedirectRoute path="/login" forward={!logged} to="/dashboard">
-									<Login onAuthenticate={() => this.setState({ logged: true })} />
-								</RedirectRoute>
-								<PrivateRoute path="/dashboard" logged={logged}>
-									<Dashboard user={user} role={user.role} />
-								</PrivateRoute>
-								<PrivateRoute path="/voluntarios" logged={logged}>
-									<VolunterList/>
-								</PrivateRoute>
-								<PrivateRoute path="/escolas" logged={logged} component={(null)}>
-									<SchoolList/>
-								</PrivateRoute>
-								<PrivateRoute path="/empresas" logged={logged} component={(null)}>
-									<CompanyList/>
-								</PrivateRoute>
-								<PrivateRoute path="/usuarios" logged={logged} component={(null)}>
-									{null}
-								</PrivateRoute>
-								<PrivateRoute path="/profile" logged={logged} component={(null)}>
-									{null}
-								</PrivateRoute>
-								<Route path="/cadastro" component={RegisterPage}/>
-								<MissingRoute logged={logged}/>
+								<Route path="/dashboard" render={() => (<Dashboard cpf={user.cpf} role={user.role}/>)}/>
+								<Route path="/login" render={() => <Login logged={logged} afterLogin={this.handlerLogin}/>}/>
+								<Route path="/cadastrar" render={() => <Register afterSubmit={this.handlerLogin}/>}/>
+								<Route exact path="/" render={() => <Redirect to="/login"/>}/>
 							</Col>
 						</Row>
 					</Container>

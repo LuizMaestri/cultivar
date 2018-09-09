@@ -1,2 +1,2 @@
-import AdminDashboard from './Page.jsx'
-export default AdminDashboard;
+import Page from './Page.jsx';
+export default Page;

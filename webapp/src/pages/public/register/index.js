@@ -1,2 +1,2 @@
-import RegisterPage from './Page.jsx';
-export default RegisterPage;
+import Page from './Page.jsx';
+export default Page;

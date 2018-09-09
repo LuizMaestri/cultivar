@@ -1,26 +1,58 @@
-import React from 'react'
-import PropTypes from 'prop-types';
-import { Row, Col } from 'reactstrap';
-import Form from './Form.jsx';
-import { Link } from 'react-router-dom';
+import  React, { Component } from 'react';
+import { Redirect, Link } from 'react-router-dom';
+import { Button, Row, Col, Form } from 'reactstrap';
+import { Input } from '../../../components';
+import { postRequest } from '../../../utils/http';
 
-const Login = props => (
-    <div>
-        <Row>
-            <Col md="4 offset-4">
-                <Form onSubmit={() => this.props.onAuthenticate()} />
-            </Col>
-        </Row>
-        <Row>
-            <Col md="4 offset-4">
-                <Link to="/cadastro">Cadastrar</Link>
-            </Col>
-        </Row>
-    </div>
-);
+export default class extends Component{
+    constructor(){
+        super();
+        this.state={
+            cpf: '',
+            password: ''
+        };
+        this.handlerUsername = this.handlerUsername.bind(this);
+        this.handlerPassword = this.handlerPassword.bind(this);
+        this.handlerSubmit = this.handlerSubmit.bind(this);
+    }
 
-Login.propTypes = {
-    onAuthenticate: PropTypes.func.isRequired
-};
+    handlerUsername(event){
+        this.setState({ cpf: event.target.value});
+    }
 
-export default Login;
+    handlerPassword(event){
+        this.setState({password: event.target.value});
+    }
+
+    handlerSubmit(){
+        postRequest('/auth', this.state, res => this.props.afterLogin(res.data.user));
+    }
+
+    render(){
+        const { logged } = this.props;
+        return !logged ? (
+            <Row>
+                <Col/>
+                <Col>
+                    <Row>
+                        <Col>
+                            <Form>
+                                <Input id="login" label="Usuário" onChange={this.handlerUsername}/>
+                                <Input id="password" label="Senha" type="password" onChange={this.handlerPassword}/>
+                                <Button type="button" color="primary" size="lg" onClick={this.handlerSubmit} block>Entrar</Button>
+                            </Form>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col className="text-center">
+                            <Link to="cadastrar">Quero ser voluntário</Link>
+                        </Col>
+                    </Row>
+                </Col>
+                <Col/>
+            </Row>
+        ) : (
+            <Redirect to="/dashboard"/>
+        );
+    }
+}

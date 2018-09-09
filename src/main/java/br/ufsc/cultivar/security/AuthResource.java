@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.security;
 
+import br.ufsc.cultivar.exception.ServiceException;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.validation.Valid;
 
 @RestController
-@RequestMapping(value = "/api/auth")
+@RequestMapping(value = "/auth")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AuthResource {
@@ -22,7 +23,7 @@ public class AuthResource {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public AuthResponseDTO authenticate(@RequestBody @Valid AuthRequestDTO dto) throws AuthException {
+    public AuthResponseDTO authenticate(@RequestBody @Valid AuthRequestDTO dto) throws AuthException, ServiceException {
         return service.authenticate(dto);
     }
 }

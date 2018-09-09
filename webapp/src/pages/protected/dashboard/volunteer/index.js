@@ -1,2 +1,2 @@
-import VolunteerDashboard from './Page.jsx'
-export default VolunteerDashboard;
+import Page from './Page.jsx';
+export default Page;

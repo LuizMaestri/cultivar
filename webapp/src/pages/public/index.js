@@ -1,6 +1,2 @@
-import Login from './login';
-import RegisterPage from './register';
-export {
-    Login,
-    RegisterPage
-};
+export {default as Login} from './login';
+export {default as Register} from './register';

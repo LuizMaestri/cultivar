@@ -1,18 +1,20 @@
 import User from './user';
 import Roles from './role';
 import Status from './status';
-import Place from './place';
-import Address from './address';
+import Company from './company';
 
-export default class extends User {
-    constructor(id = '', name = '', status = Status.WAIT_TV, email = '', password = '', phone = '',
-        birth = new Date().toISOString(), createAt = new Date().toISOString(), address = new Address({}), company = new Place(),
-        job = '', pathTV = '', pathTR = '') {
-        super(id, name,Roles.VOLUNTEER, status, email, password, phone, birth, createAt);
-        this.address = address;
+export default class{
+    constructor(user = new User(), company = new Company(), schooling = '',
+        conclusion = false, course ='', rg = '', answers = [], ratings = []) {
+        user.role = Roles.VOLUNTEER;
+        user.status = Status.REGISTER;
+        this.user = user;
         this.company = company;
-        this.job = job;
-        this.pathTV = pathTV;
-        this.pathTR = pathTR;
+        this.schooling = schooling;
+        this.conclusion = conclusion;
+        this.course = course;
+        this.rg = rg;
+        this.answers = answers;
+        this.ratings = ratings;
     }
 }
