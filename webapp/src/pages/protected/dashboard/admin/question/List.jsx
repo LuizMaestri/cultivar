@@ -114,7 +114,7 @@ export default class extends Component{
                                     questions.length ? 
                                         questions.map(
                                             question => (
-                                                <tr>
+                                                <tr key={question.codQuestion}>
                                                     <td>
                                                         {question.question}
                                                     </td>
