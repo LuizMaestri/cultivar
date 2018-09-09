@@ -4,77 +4,30 @@ import { Status } from '../../../../../model';
 import { FaUser, FaCheck, FaFileAlt, FaBuilding, FaChalkboard } from 'react-icons/fa';
 import './steps.css';
 
+const Step = ({userStatus, status, icon, successContition, label}) => (
+    <Col>
+        <Row>
+            <Col>
+                <Button color={ !successContition ? "primary": 'success'} size="lg" className="btn-circle" disabled={userStatus !== status}>
+                    {icon}
+                </Button>
+            </Col>
+        </Row>
+        <Row>
+            <Col>
+                {label}
+            </Col>
+        </Row>
+    </Col>
+)
+
+
 export default ({status}) => (
     <Row style={{ textAlign: 'center' }}>
-        <Col>
-            <Row>
-                <Col>
-                    <Button color="primary" size="lg" className="btn-circle" disabled={status !== Status.REGISTER}>
-                        <FaUser/>
-                    </Button>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Registro
-                </Col>
-            </Row>
-        </Col>
-        <Col>
-            <Row>
-                <Col>
-                    <Button color="primary" size="lg" className="btn-circle" disabled={status !== Status.WAIT_COMPANY}>
-                        <FaBuilding/>
-                    </Button>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Aguardando Recomendação de empresa
-                </Col>
-            </Row>
-        </Col>
-        <Col>
-            <Row>
-                <Col>
-                    <Button color="primary" size="lg" className="btn-circle" disabled={status !== Status.WAIT_STATEMENT}>
-                        <FaFileAlt/>
-                    </Button>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Aguardando Envio do Termo de Responsabilidade
-                </Col>
-            </Row>
-        </Col>
-        <Col>
-            <Row>
-                <Col>
-                    <Button color="primary" size="lg" className="btn-circle" disabled={status !== Status.WAIT_TRAINING}>
-                        <FaChalkboard/>
-                    </Button>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Aguardando Treinamento
-                </Col>
-            </Row>
-        </Col>
-        <Col>
-            <Row>
-                <Col>
-                    <Button color="primary" size="lg" className="btn-circle" disabled={status !== Status.APPROVED}>
-                        <FaCheck />
-                    </Button>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    Aprovado
-                </Col>
-            </Row>
-        </Col>
+        <Step userStatus={status} status={Status.REGISTER} icon={<FaUser/>} successContition={status !== Status.REGISTER} label="Registro"/>
+        <Step userStatus={status} status={Status.WAIT_COMPANY} icon={<FaBuilding/>} successContition={![Status.REGISTER, Status.WAIT_COMPANY].includes(status)} label="Aguardando Recomendação de empresa"/>
+        <Step userStatus={status} status={Status.WAIT_STATEMENT} icon={<FaFileAlt/>} successContition={[Status.WAIT_TRAINING, Status.APPROVED].includes(status)} label="Aguardando Envio do Termo de Responsabilidade"/>
+        <Step userStatus={status} status={Status.WAIT_TRAINING} icon={<FaChalkboard/>} successContition={Status.APPROVED === status} label="Aguardando Treinamento"/>
+        <Step userStatus={status} status={Status.APPROVED} icon={<FaCheck/>} successContition={Status.APPROVED === status} label="Aprovado"/>
     </Row>
 );
