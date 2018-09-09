@@ -2,6 +2,7 @@ package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Attachment;
+import br.ufsc.cultivar.model.Status;
 import br.ufsc.cultivar.service.AttachmentService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,11 @@ public class AttachmentResource {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void create(@RequestBody final Attachment attachment) throws ServiceException {
         service.create(attachment);
+    }
+
+    @GetMapping(path = "/{status}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Attachment> get(@PathVariable final Status status) throws ServiceException{
+        return service.get(status);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -15,6 +15,8 @@ public class Attachment {
     Long codAttachment;
     String name;
     Boolean required;
+    Status status;
+    Boolean download;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{

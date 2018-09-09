@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Attachment;
+import br.ufsc.cultivar.model.Status;
 import br.ufsc.cultivar.repository.AttachmentRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -25,6 +26,9 @@ public class AttachmentService {
 
     public List<Attachment> get() throws ServiceException {
         return repository.get();
+    }
+    public List<Attachment> get(final Status status) throws ServiceException {
+        return repository.get(status);
     }
 
     public Attachment get(final Long codAttachment) throws ServiceException {

@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Attachment;
+import br.ufsc.cultivar.model.Status;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -42,6 +43,13 @@ public class AttachmentRepository {
                 this::build
         );
     }
+    public List<Attachment> get(final Status status) {
+        return jdbcTemplate.query(
+                "select * from attachment where sta_user=:sta_user",
+                new MapSqlParameterSource("sta_user", status.name()),
+                (rs, i) -> this.build(rs)
+        );
+    }
 
     public void delete(Long codAttachment) {
         jdbcTemplate.update(
@@ -66,12 +74,15 @@ public class AttachmentRepository {
                 .codAttachment(rs.getLong("cod_attachment"))
                 .name(rs.getString("nm_attachment"))
                 .required(rs.getBoolean("fl_required"))
+                .download(rs.getBoolean("fl_download"))
                 .build();
     }
 
     private MapSqlParameterSource getParams(final Attachment attachment) {
         return new MapSqlParameterSource()
                 .addValue("nm_attachment", attachment.getName())
-                .addValue("fl_required", attachment.getRequired());
+                .addValue("sta_user", attachment.getStatus().name())
+                .addValue("fl_required", attachment.getRequired())
+                .addValue("fl_download", attachment.getDownload());
     }
 }

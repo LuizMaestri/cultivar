@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col } from 'reactstrap';
 import AttachmentUploader from './Attachment.jsx';
 import { getRequest } from '../../../../../utils/http';
+import { Status } from '../../../../../model';
 
 export default class extends Component{
     constructor(){
@@ -12,7 +13,7 @@ export default class extends Component{
     }
 
     componentWillMount(){
-        getRequest('/attachment', res => this.setState({ attachments: res.data}));
+        getRequest(`/attachment/${Status.REGISTER}`, res => this.setState({ attachments: res.data}));
     }
 
     render(){
