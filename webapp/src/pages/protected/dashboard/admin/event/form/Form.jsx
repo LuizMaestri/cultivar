@@ -12,7 +12,7 @@ export default class extends Component {
         super(props);
         this.state = {
             event: props.event,
-            users: [],
+            volunteers: [],
             schools: []
         };
         this.handlerType = this.handlerType.bind(this);
@@ -86,26 +86,26 @@ export default class extends Component {
         const { event, schools } = this.state
         event.school = new School()
         for(const school of schools){
-            if(school.codSchool === value){
+            if(school.codSchool === parseInt(value, 10)){
                 event.school = school;
             }
         }
         if(value){
             getRequest(
                 `/volunteer?cod_school=${value}`,
-                res => this.setState({users: res.data, event})
+                res => this.setState({volunteers: res.data, event})
             );
         } else{
-            this.setState({users: [], event});
+            this.setState({volunteers: [], event});
         }
     }
     handlerParticipants(userEvent){
-        const { event, users } = this.state;
+        const { event, volunteers } = this.state;
         let participants = [], opt, participant;
 
         for (let i = 0; !!(opt = userEvent.target.options[i++]);) {
             if (opt.selected) {
-                for (let j = 0; !!(participant = users[j++]);)
+                for (let j = 0; !!(participant = volunteers[j++]);)
                 if (opt.value === participant.cpf){
                     participants.push(participant);
                     break;
@@ -132,7 +132,7 @@ export default class extends Component {
 
     render(){
         const { isOpen, close } = this.props;
-        const { event, users, schools } = this.state;
+        const { event, volunteers, schools } = this.state;
         const dateTitle = event.allDay ? 
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
@@ -166,17 +166,22 @@ export default class extends Component {
                             <hr className="row" />
                         </div>
                         <div>
+                            <h3>Participantes</h3>
                             <Input id="filter" type="select" label="Escola" onChange={this.handlerSelectSchool}>
                                 <option>Selecione</option>
                                 {
                                     schools.map(school => <option key={school.codSchool} value={school.codSchool}>{school.name}</option>)
                                 }
                             </Input>
-                            <h3>Participantes</h3>
                             <Input id="type" type="select" label="Selecione" invalidMessage="Tipo de Evento é obrigatório" onChange={this.handlerParticipants} style={{ height: '500px'}} multiple required disabled={!codSchool} >
                                 {
-                                    users.map(
-                                        user => <option key={user.cpf} value={user.cpf}>{formatter.cpf(user.cpf)} - {user.name}</option>
+                                    volunteers.map(
+                                        volunteer => {
+                                            const { user } = volunteer;
+                                            return (
+                                                <option key={user.cpf} value={user.cpf}>{formatter.cpf(user.cpf)} - {user.name}</option>
+                                            );
+                                        }
                                     )
                                 }
                             </Input>
