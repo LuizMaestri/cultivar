@@ -2,6 +2,7 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Dispatch;
+import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -10,6 +11,10 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -36,18 +41,29 @@ public class DispatchRepository {
             new MapSqlParameterSource()
                 .addValue("cod_cpf", cpf)
                 .addValue("cod_attachment", codAttachment),
-            rs -> {
-                if(rs.next()){
-                    return Dispatch.builder()
-                        .attachment(
-                            Attachment.builder()
-                                .codAttachment(codAttachment)
-                                .build()
-                        ).send(rs.getBoolean("fl_dispatch"))
-                        .build();
-                }
-                return Dispatch.builder().build();
-            }
+            this::build
         );
+    }
+
+    public List<Dispatch> get(String cpf) {
+        return jdbcTemplate.query(
+                "select * from dispatch where cod_cpf=:cod_cpf",
+                new MapSqlParameterSource()
+                        .addValue("cod_cpf", cpf),
+                (rs, i) -> this.build(rs)
+        );
+    }
+
+    private Dispatch build(ResultSet rs) throws SQLException {
+        if(!DatabaseUtils.isNotEmpty(rs)){
+            return null;
+        }
+        return Dispatch.builder()
+                .attachment(
+                        Attachment.builder()
+                                .codAttachment(rs.getLong("cod_attachment"))
+                                .build()
+                ).send(rs.getBoolean("fl_dispatch"))
+                .build();
     }
 }

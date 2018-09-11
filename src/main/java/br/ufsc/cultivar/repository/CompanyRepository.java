@@ -3,6 +3,7 @@ package br.ufsc.cultivar.repository;
 import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.Company;
 import br.ufsc.cultivar.model.User;
+import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -88,8 +89,8 @@ public class CompanyRepository {
     }
 
     private Company build(final ResultSet rs) throws SQLException {
-        if(rs.isBeforeFirst()){
-            rs.first();
+        if(!DatabaseUtils.isNotEmpty(rs)){
+            return null;
         }
         return Company.builder()
                 .cnpj(rs.getString("cod_cnpj"))

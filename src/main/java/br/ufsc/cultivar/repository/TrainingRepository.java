@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Training;
+import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -61,6 +62,9 @@ public class TrainingRepository {
 
 
     private Training build(ResultSet rs) throws SQLException {
+        if(!DatabaseUtils.isNotEmpty(rs)){
+            return null;
+        }
         return Training.builder()
                 .codTraining(rs.getLong("cod_training"))
                 .name(rs.getString("nm_training"))

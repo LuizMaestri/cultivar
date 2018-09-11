@@ -4,6 +4,7 @@ import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.model.SchoolType;
 import br.ufsc.cultivar.model.User;
+import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -90,8 +91,8 @@ public class SchoolRepository {
     }
 
     private School build(final ResultSet rs) throws SQLException {
-        if(rs.isBeforeFirst()){
-            rs.first();
+        if(!DatabaseUtils.isNotEmpty(rs)){
+            return null;
         }
         return School.builder()
                 .codSchool(rs.getLong("cod_school"))

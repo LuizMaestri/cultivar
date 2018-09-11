@@ -2,6 +2,7 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Question;
 import br.ufsc.cultivar.model.Role;
+import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -71,8 +72,8 @@ public class QuestionRepository {
     }
 
     private Question build(ResultSet rs) throws SQLException {
-        if (rs.isBeforeFirst()){
-            rs.first();
+        if(!DatabaseUtils.isNotEmpty(rs)){
+            return null;
         }
         return Question.builder()
                 .codQuestion(rs.getLong("cod_question"))

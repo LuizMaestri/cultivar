@@ -4,6 +4,7 @@ import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.model.TypeEvent;
+import br.ufsc.cultivar.utils.DatabaseUtils;
 import br.ufsc.cultivar.utils.DateUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -83,8 +84,8 @@ public class EventRepository {
     }
 
     private Event build(final ResultSet rs) throws SQLException {
-        if (rs.isBeforeFirst()){
-            rs.first();
+        if(!DatabaseUtils.isNotEmpty(rs)){
+            return null;
         }
         return Event.builder()
                 .codEvent(rs.getLong("cod_event"))
