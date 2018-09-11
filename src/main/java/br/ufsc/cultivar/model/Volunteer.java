@@ -24,6 +24,7 @@ public class Volunteer {
     Boolean conclusion;
     String rg;
     School school;
+    List<Dispatch> dispatches;
     List<Answer> answers;
     List<Rating> ratings;
 

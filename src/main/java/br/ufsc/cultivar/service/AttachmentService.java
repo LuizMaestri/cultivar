@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -41,7 +42,18 @@ public class AttachmentService {
     }
 
     public Attachment get(final Long codAttachment) throws ServiceException {
-        return repository.get(codAttachment);
+        val attachment = repository.get(codAttachment);
+        if (Objects.isNull(attachment)){
+            throw new ServiceException(null, null, null);
+        }
+        return attachment;
+    }
+
+    public Resource getAsFile(final Long codAttachment) throws ServiceException {
+        return fileService.get(
+                repository.get(codAttachment)
+                        .getCodAttachment()
+        );
     }
 
     public Attachment delete(final Long codAttachment) throws ServiceException {

@@ -3,6 +3,7 @@ import { Row, Col } from 'reactstrap';
 import RegisterSteps from './steps';
 import Register from './register';
 import Company from './company';
+import Statement from './statement';
 import { Volunteer, Status } from '../../../../model';
 import { getRequest, putRequest } from '../../../../utils/http';
 import axios from "axios";
@@ -15,30 +16,42 @@ export default class extends Component{
             attachments: [],
             dispatches: []
         };
-        this.completeRegistration = this.completeRegistration.bind(this);
+        this.completeUpload = this.completeUpload.bind(this);
     }
 
     componentWillMount(){
         const { cpf } = this.props;
-        axios.all([
-            getRequest(`/volunteer/${cpf}`, res => res.data),
-            getRequest('/attachment', res => res.data)
-        ]).then(
-            res => this.setState({
-                volunteer: res[0],
-                attachments: res[1],
-                dispatches: res[1].map(attachment => {
-                    return {
-                        codAttachment: attachment.codAttachment,
-                        required: attachment.required,
-                        send: false
-                    }
-                })
-            })
-        );        
+        getRequest(`/volunteer/${cpf}`, resVolunteer => {
+            const volunteer = resVolunteer.data;
+            const { user, dispatches } = volunteer;
+            getRequest(
+                `/attachment/${user.status}`,
+                res => {
+                    const attachments = res.data;
+                    dispatches.push(
+                        ...(
+                            attachments.map(
+                                attachment => {
+                                    return {
+                                        codAttachment: attachment.codAttachment,
+                                        required: attachment.required,
+                                        send: false
+                                    }
+                                }
+                            )
+                        )
+                    )
+                    this.setState({
+                        volunteer,
+                        attachments,
+                        dispatches 
+                    });
+                }
+            );
+        });        
     }
 
-    completeRegistration(codAttachment){
+    completeUpload(codAttachment){
         let conclude = true
         const { dispatches, volunteer } = this.state;
         for (const dispatch of dispatches) {
@@ -51,11 +64,12 @@ export default class extends Component{
             if(!conclude){
                 break;
             }
-        }
+        };
         if (conclude){
-            const confirm = window.confirm('Todos os anexo obrigatórios já foram submetidos, deseja finalizar seu cadastro?');
+            const confirm = window.confirm('Todos os anexo obrigatórios já foram submetidos, deseja finalizar esta etapa?');
             if (confirm){
-                volunteer.user.status = Status.WAIT_COMPANY;
+                const { status } = volunteer.user;
+                volunteer.user.status = Status.next(status);
                 putRequest(
                     `/volunteer/${volunteer.user.cpf}`,
                     volunteer,
@@ -78,8 +92,9 @@ export default class extends Component{
                         <Col>
                             <RegisterSteps status={user.status}/>
                             <br/>
-                            {user.status === Status.REGISTER ? <Register cpf={user.cpf} afterUpload={this.completeRegistration}/>: null}
-                            {user.status === Status.WAIT_COMPANY ? <Company cnpj={company.cnpj}/>: null}
+                            {user.status === Status.REGISTER && <Register cpf={user.cpf} afterUpload={this.completeUpload}/>}
+                            {user.status === Status.WAIT_COMPANY && <Company cnpj={company.cnpj}/>}
+                            {user.status === Status.WAIT_STATEMENT && <Statement cpf={user.cpf} afterUpload={this.completeUpload}/>}
                         </Col>
                     </Row>
                 </Col>

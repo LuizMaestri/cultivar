@@ -6,11 +6,15 @@ import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Dispatch;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -56,5 +60,13 @@ public class FileService {
         } catch (IOException e) {
             throw new ServiceException(String.format("Não foi possível salvar o arquivo %s.", file.getPath()), e, Type.FILE);
         }
+    }
+
+    public FileSystemResource get(final Long codAttachment) throws ServiceException {
+        val path = String.format(
+                "./files/attachments/%d.pdf",
+                codAttachment
+        );
+        return new FileSystemResource(path);
     }
 }

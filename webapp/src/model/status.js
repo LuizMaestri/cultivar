@@ -20,6 +20,15 @@ const Status = {
             WAIT_TRAINING: 'Aguardando treinamento',
             REGISTER: 'Registrado',
         }[status];
+    },
+    next: status => {
+        return {
+            APPROVED: Status.APPROVED,
+            WAIT_STATEMENT: Status.WAIT_TRAINING,
+            WAIT_COMPANY: Status.WAIT_STATEMENT,
+            WAIT_TRAINING: Status.APPROVED,
+            REGISTER: Status.WAIT_COMPANY,
+        }[status];
     }
 };
 

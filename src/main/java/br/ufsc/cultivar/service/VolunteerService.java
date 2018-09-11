@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Volunteer;
 import br.ufsc.cultivar.repository.VolunteerRepository;
 import br.ufsc.cultivar.utils.ValidateUtils;
@@ -26,6 +27,7 @@ public class VolunteerService {
     CompanyService companyService;
     RatingService ratingService;
     AnswerService answerService;
+    DispatchService dispatchService;
 
     public void create(final Volunteer volunteer) throws ServiceException {
         val user = volunteer.getUser();
@@ -65,8 +67,8 @@ public class VolunteerService {
 
     public Volunteer get(final String cpf) throws ServiceException {
         val volunteer = repository.get(cpf);
-        return Optional.ofNullable(repository.get(cpf))
-                .orElseThrow(() -> new ServiceException(null, null, null))
+        return Optional.ofNullable(volunteer)
+                .orElseThrow(() -> new ServiceException(null, null, Type.NOT_FOUND))
                 .withUser(
                         userService.get(cpf)
                 ).withCompany(
@@ -77,6 +79,8 @@ public class VolunteerService {
                         answerService.get(cpf)
                 ).withRatings(
                         ratingService.get(cpf)
+                ).withDispatches(
+                        dispatchService.get(cpf)
                 );
     }
 

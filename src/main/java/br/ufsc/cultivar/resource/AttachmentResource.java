@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.lang.Nullable;
@@ -33,6 +34,11 @@ public class AttachmentResource {
     @GetMapping(path = "/{status}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Attachment> get(@PathVariable final Status status) throws ServiceException{
         return service.get(status);
+    }
+
+    @GetMapping(path = "/{codAttachment}/download", produces = MediaType.APPLICATION_PDF_VALUE)
+    public Resource get(@PathVariable final Long codAttachment) throws ServiceException{
+        return service.getAsFile(codAttachment);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
