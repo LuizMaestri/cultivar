@@ -72,7 +72,7 @@ public class VolunteerRepository {
     public void update(Volunteer volunteer) {
         jdbcTemplate.update(
                 "update volunteer set dsc_schooling=:dsc_schooling, fl_conclusion=:fl_conclusion, " +
-                        "cod_rg=:cod_rg where cod_cpf=:cod_cpf",
+                        "cod_rg=:cod_rg, cod_school=:cod_school where cod_cpf=:cod_cpf",
                 getParams(volunteer)
         );
     }
