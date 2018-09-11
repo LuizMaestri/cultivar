@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getRequest } from '../../../../../utils/http';
 import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
+import VolunteerItem from './ListItem.jsx';
 
 export default class extends Component{
     constructor() {
@@ -31,15 +32,18 @@ export default class extends Component{
                         <ListGroup>
                             {
                                 volunteers.length ?
-                                volunteers.map(volunteer => null) :
-                                (
-                                    <ListGroupItem>
+                                    volunteers.map(
+                                        volunteer => (
+                                            <VolunteerItem key={volunteer.user.cpf} volunteer={volunteer} afterDelete={this.componentWillMount.bind(this)}/>
+                                        )
+                                    ) : (
+                                        <ListGroupItem>
                                             <strong>
                                                 Nenhum Voluntário Cadastrado
                                             </strong>
                                         </ListGroupItem>
                                     )
-                                }
+                            }
                         </ListGroup>
                     </Col>
                 </Row>
