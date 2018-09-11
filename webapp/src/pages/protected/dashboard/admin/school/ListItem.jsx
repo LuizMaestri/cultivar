@@ -36,7 +36,7 @@ export default class extends Component{
         return (
             <ListGroupItem key={school.codSchool}>
                 <Row>
-                    <Col md="10" onClick={this.handlerDetails} style={{ cursor: 'pointer' }}>
+                    <Col md="10" onClick={this.handlerDetails} className="text-ellipsis" style={{ cursor: 'pointer' }}>
                         {school.name}
                     </Col>
                     <Col>

@@ -10,6 +10,7 @@ export default class extends Component{
         this.state = {
             schools: []
         };
+        this.componentWillMount = this.componentWillMount.bind(this)
     }
 
     componentWillMount(){
@@ -27,7 +28,7 @@ export default class extends Component{
                         </h3>
                     </Col>
                     <Col md="2">
-                        <Add afterSubmit={this.componentWillMount.bind(this)} />
+                        <Add afterSubmit={this.componentWillMount} />
                     </Col>
                 </Row>
                 <br />
@@ -38,7 +39,7 @@ export default class extends Component{
                                 schools.length ?
                                     schools.map(
                                         school =>
-                                            <SchoolItem key={school.codSchool} school={school} afterDelete={this.componentWillMount.bind(this)} />
+                                            <SchoolItem key={school.codSchool} school={school} afterDelete={this.componentWillMount} />
                                     ) : (
                                         <ListGroupItem>
                                             <strong>

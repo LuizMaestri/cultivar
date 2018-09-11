@@ -36,7 +36,7 @@ export default class extends Component{
         return (
             <ListGroupItem key={company.cnpj}>
                 <Row>
-                    <Col md="10" onClick={this.handlerDetails} style={{ cursor: 'pointer' }}>
+                    <Col md="10" onClick={this.handlerDetails} className="text-ellipsis" style={{ cursor: 'pointer' }}>
                         {company.name}
                     </Col>
                     <Col>
