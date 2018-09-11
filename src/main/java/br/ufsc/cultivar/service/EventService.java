@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Event;
+import br.ufsc.cultivar.model.TypeEvent;
 import br.ufsc.cultivar.repository.EventRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -79,5 +80,9 @@ public class EventService {
             trainingService.create(training, codEvent);
         });
         repository.update(event);
+    }
+
+    public List<Event> eventsByVolunteer(final String cpf, final TypeEvent type) {
+        return repository.eventsByVolunteer(cpf, type);
     }
 }

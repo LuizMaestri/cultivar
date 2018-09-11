@@ -4,9 +4,9 @@ import RegisterSteps from './steps';
 import Register from './register';
 import Company from './company';
 import Statement from './statement';
+import Training from './training';
 import { Volunteer, Status } from '../../../../model';
 import { getRequest, putRequest } from '../../../../utils/http';
-import axios from "axios";
 
 export default class extends Component{
     constructor(){
@@ -95,6 +95,7 @@ export default class extends Component{
                             {user.status === Status.REGISTER && <Register cpf={user.cpf} afterUpload={this.completeUpload}/>}
                             {user.status === Status.WAIT_COMPANY && <Company cnpj={company.cnpj}/>}
                             {user.status === Status.WAIT_STATEMENT && <Statement cpf={user.cpf} afterUpload={this.completeUpload}/>}
+                            {user.status === Status.WAIT_TRAINING && <Training cpf={user.cpf} />}
                         </Col>
                     </Row>
                 </Col>

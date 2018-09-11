@@ -3,6 +3,7 @@ package br.ufsc.cultivar.resource;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.*;
 import br.ufsc.cultivar.service.DispatchService;
+import br.ufsc.cultivar.service.EventService;
 import br.ufsc.cultivar.service.RatingService;
 import br.ufsc.cultivar.service.VolunteerService;
 import lombok.AccessLevel;
@@ -26,6 +27,7 @@ public class VolunteerResource {
     VolunteerService volunteerService;
     RatingService ratingService;
     DispatchService dispatchService;
+    EventService eventService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -53,6 +55,16 @@ public class VolunteerResource {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void update(@RequestBody final Volunteer volunteer, @PathVariable final String cpf)throws ServiceException{
         volunteerService.update(volunteer, cpf);
+    }
+
+//    @GetMapping(path = "/{cpf}/event")
+//    public List<Event> getEvents(@PathVariable final String cpf){
+//        return eventService.eventsByVolunteer(cpf);
+//    }
+
+    @GetMapping(path = "/{cpf}/event/{type}")
+    public List<Event> getEvents(@PathVariable final String cpf, @PathVariable(required = false) final TypeEvent type){
+        return eventService.eventsByVolunteer(cpf, type);
     }
 
     @GetMapping(path = "/{cpf}/attachment/{codAttachment}")

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { getRequest, deleteRequest } from '../../../../../utils/http';
+import { getRequest } from '../../../../../utils/http';
 import EventType from '../../../../../model/eventType';
 import { Address } from '../../../../../model';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
@@ -12,7 +12,6 @@ export default class extends Component{
         this.state = {
             eventDetails : null
         }
-        this.handlerDelete = this.handlerDelete.bind(this);
     }
 
     static propTypes = {
@@ -34,16 +33,11 @@ export default class extends Component{
         );
     }
 
-    handlerDelete() {
-        const { code, afterDelete} = this.props;
-        deleteRequest(`/event/${code}`, afterDelete);
-    }
-
     render(){
         const { isOpen, close } = this.props;
         const { eventDetails } = this.state;
         if (eventDetails){
-            const { address: eventAddress, trainings, participants } = eventDetails;
+            const { address: eventAddress, trainings } = eventDetails;
             const duration = Math.ceil(
                 Math.abs(
                     eventDetails.startOccurrence - eventDetails.endOccurrence
@@ -69,40 +63,6 @@ export default class extends Component{
                         <Row>
                             <Col>
                                 {address.toString()}
-                            </Col>
-                        </Row>
-                        <br />
-                        <Row>
-                            <Col>
-                                <strong>Participantes:</strong>
-                            </Col>
-                        </Row>
-                        <Row>
-                            <Col>
-                                {
-                                    participants.map(
-                                        (participant, index) => {
-                                            if (index % 3 === 1){
-                                                const participant2 = participants[++index];
-                                                const participant3 = participants[++index];
-                                                return (
-                                                    <Row>
-                                                        <Col>
-                                                            {participant.cpf} - {participant.name}
-                                                        </Col>
-                                                        <Col>
-                                                            {participant2 ? participant2.cpf + '-' + participant2.name : ''}
-                                                        </Col>
-                                                        <Col>
-                                                            {participant3 ? participant3.cpf + '-' + participant3.name : ''}
-                                                        </Col>
-                                                    </Row>
-                                                )
-                                            }
-                                            return null;
-                                        }
-                                    )
-                                }
                             </Col>
                         </Row>
                         <br />

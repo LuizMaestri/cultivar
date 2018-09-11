@@ -20,6 +20,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -116,5 +117,16 @@ public class EventRepository {
                 .addValue("cod_address", event.getAddress().getCodAddress())
                 .addValue("cod_school", event.getSchool().getCodSchool())
                 .addValue("cod_event", event.getCodEvent());
+    }
+
+    public List<Event> eventsByVolunteer(final String cpf, final TypeEvent type) {
+        val sb = new StringBuilder("select e.* from event e natural join participation p where cod_cpf=:cod_cpf");
+        val params = new MapSqlParameterSource("cod_cpf", cpf);
+        if (Objects.nonNull(type)){
+            sb.append(" and tp_event=:tp_event");
+            params.addValue("tp_event", type.name());
+        }
+
+        return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
     }
 }

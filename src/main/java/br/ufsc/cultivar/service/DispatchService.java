@@ -11,6 +11,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -26,5 +29,10 @@ public class DispatchService {
 
     public Dispatch get(final String cpf, final Long codAttachment) {
         return repository.get(cpf, codAttachment);
+    }
+
+    public List<Dispatch> get(String cpf) throws ServiceException {
+        return Optional.ofNullable(repository.get(cpf))
+                .orElseThrow(() -> new ServiceException(null, null, null));
     }
 }
