@@ -202,7 +202,7 @@ export default class extends Component{
                             <Col>
                                 {
                                     this.isApprovable()? (
-                                        <Button color="info" className="float-right" onClick={this.handlerAprroved}>Approvar</Button>
+                                        <Button color="info" className="float-right" onClick={this.handlerAprroved}>Aprovar</Button>
                                     ) : (
                                         <Button color="default" className="float-right" onClick={close}>Fechar</Button>
                                     )
