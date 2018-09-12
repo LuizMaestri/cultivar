@@ -102,13 +102,14 @@ export default class extends Component {
     handlerParticipants(userEvent){
         const { event, volunteers } = this.state;
         let participants = [], opt, participant;
-
         for (let i = 0; !!(opt = userEvent.target.options[i++]);) {
+            
             if (opt.selected) {
-                for (let j = 0; !!(participant = volunteers[j++]);)
-                if (opt.value === participant.cpf){
-                    participants.push(participant);
-                    break;
+                for (let j = 0; !!(participant = volunteers[j++].user);){
+                    if (opt.value === participant.cpf){
+                        participants.push(participant);
+                        break;
+                    }
                 }
             }
         }
