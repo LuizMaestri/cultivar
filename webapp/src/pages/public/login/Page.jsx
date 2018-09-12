@@ -33,7 +33,7 @@ export default class extends Component{
         return !logged ? (
             <Row>
                 <Col/>
-                <Col>
+                <Col md="4" sm="10">
                     <Row>
                         <Col>
                             <Form>
