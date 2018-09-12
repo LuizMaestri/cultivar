@@ -87,7 +87,8 @@ public class VolunteerRepository {
                 .addValue("cod_school", Objects.nonNull(school) ? school.getCodSchool() : null)
                 .addValue("dsc_schooling", volunteer.getSchooling().name())
                 .addValue("fl_conclusion", volunteer.getConclusion())
-                .addValue("cod_rg", volunteer.getRg());
+                .addValue("cod_rg", volunteer.getRg())
+                .addValue("dsc_course", volunteer.getCourse());
     }
 
     private Volunteer build(ResultSet rs) throws SQLException {
@@ -110,7 +111,8 @@ public class VolunteerRepository {
                                 .build()
                 ).schooling(
                         Schooling.valueOf(rs.getString("dsc_schooling"))
-                ).conclusion(rs.getBoolean("fl_conclusion"))
+                ).course(rs.getString("dsc_course"))
+                .conclusion(rs.getBoolean("fl_conclusion"))
                 .rg(rs.getString("cod_rg"))
                 .build();
     }

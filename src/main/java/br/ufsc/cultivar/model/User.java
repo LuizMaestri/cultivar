@@ -26,8 +26,6 @@ public class User {
     String job;
     String phone;
     Address address;
-    Company company;
-    School school;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{

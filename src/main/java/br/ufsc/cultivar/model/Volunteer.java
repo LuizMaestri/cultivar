@@ -22,6 +22,7 @@ public class Volunteer {
     Company company;
     Schooling schooling;
     Boolean conclusion;
+    String course;
     String rg;
     School school;
     List<Dispatch> dispatches;
