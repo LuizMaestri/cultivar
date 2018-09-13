@@ -11,3 +11,4 @@ export { default as School } from './school';
 export { default as Event } from './event';
 export { default as EventType } from './eventType';
 export { default as Attachment } from './attachment';
+export { default as Training } from './training';

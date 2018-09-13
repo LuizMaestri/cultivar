@@ -1,10 +1,10 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { postRequest, getRequest } from '../../../../../../utils/http';
 import formatter from '../../../../../../utils/formatter';
-import { Event, EventType, School } from '../../../../../../model';
-import { Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { Wizard, Input } from '../../../../../../components';
+import { Event, EventType, School, Training } from '../../../../../../model';
+import { Row, Col, Modal, ModalHeader, ModalBody, Button, Label } from 'reactstrap';
+import { Wizard, Input, Switch, FileInput } from '../../../../../../components';
 import './form.css';
 
 export default class extends Component {
@@ -22,6 +22,11 @@ export default class extends Component {
         this.handlerNumber = this.handlerNumber.bind(this);
         this.handlerParticipants = this.handlerParticipants.bind(this);
         this.handlerSelectSchool = this.handlerSelectSchool.bind(this);
+        this.handlerAdd = this.handlerAdd.bind(this);
+        this.handlerRemove = this.handlerRemove.bind(this);
+        this.handlerNameAttachemnt = this.handlerNameAttachemnt.bind(this);
+        this.handlerLinkAttachemnt = this.handlerLinkAttachemnt.bind(this);
+        this.handlerIsFile = this.handlerIsFile.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
     }
 
@@ -117,6 +122,44 @@ export default class extends Component {
         this.setState({ event });
     }
 
+    handlerAdd(){
+        const { event } = this.state;
+        let training = new Training();
+        training.isFile = false;
+        event.trainings.push(training);
+        this.setState({event})
+    }
+
+    handlerNameAttachemnt(userEvent, index){
+        const { event } = this.state;
+        event.trainings[index].name = userEvent.target.value;
+        this.setState({event});
+    }
+
+    handlerLinkAttachemnt(userEvent, index) {
+        const { event } = this.state;
+        event.trainings[index].link = userEvent.target.value;
+        this.setState({ event });
+    }
+
+    handlerUploadAttachemnt(userEvent, index){
+        const file = userEvent.target.files[0];
+        console.log(file);
+    }
+
+    handlerRemove(index){
+        const { event } = this.state;
+        const training = event.trainings[index];
+        event.trainings.splice(index, 1);
+        this.setState({event});
+    }
+
+    handlerIsFile(value, index){
+        const { event } = this.state;
+        event.trainings[index].isFile = value
+        this.setState({ event });
+    }
+
     handlerSubmit(){
         const { afterSubmit } = this.props
         let { event } = this.state;
@@ -138,6 +181,7 @@ export default class extends Component {
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
         const { codSchool } = event.school;
+        const { trainings } = event;
         return (
             <Modal isOpen={isOpen} toggle={close} style={{width: 'max-content'}}>
                 <ModalHeader toggle={close}>Novo Evento - {dateTitle}</ModalHeader>
@@ -186,6 +230,45 @@ export default class extends Component {
                                     )
                                 }
                             </Input>
+                            <hr className="row" />
+                        </div>
+                        <div>
+                            <h3>Materiais  Extra</h3>
+                            {
+                                trainings.map((training, index) => (
+                                    <Fragment>
+                                        <Row>
+                                            <Col>
+                                                <Input id={`training-${index}`} label="Nome" invalidMessage="Nome é Obrigatório" value={training.name} onChange={event => this.handlerNameAttachemnt(event, index)} required/>
+                                            </Col>
+                                            <Col md="5">
+                                                <Switch id={`file-${index}`} label="Arquivo pra Upload " onChange={value => this.handlerIsFile(value, index)} />
+                                            </Col>
+                                        </Row>
+                                        <Row>
+                                            <Col>
+                                                {
+                                                    training.isFile ? 
+                                                        (
+                                                            <FileInput id={`upload-${index}`} label="Anexar arquivo" invalidMessage="Upload é Obrigatório" onChange={event => this.handlerUploadAttachemnt(event, index)} accept="application/pdf" required/>
+                                                        ) : (
+                                                            <Input id={`link-${index}`} label="Link" invalidMessage="Link é Obrigatório" value={training.link} onChange={event => this.handlerLinkAttachemnt(event, index)} required/>
+                                                        )
+                                                }
+                                            </Col>
+                                            <Col md="3">
+                                                {!training.isFile && <label>&nbsp;</label>}
+                                                <Button outline color="secondary" onClick={() => this.handlerRemove(index)}>Remover</Button>
+                                            </Col>
+                                        </Row>
+                                    </Fragment>
+                                ))
+                            }
+                            <Row>
+                                <Col>
+                                    <Button outline color="secondary" onClick={this.handlerAdd}>Incluir</Button>
+                                </Col>
+                            </Row>
                             <hr className="row" />
                         </div>
                     </Wizard>
