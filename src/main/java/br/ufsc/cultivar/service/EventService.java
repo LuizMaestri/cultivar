@@ -85,4 +85,8 @@ public class EventService {
     public List<Event> eventsByVolunteer(final String cpf, final TypeEvent type) {
         return repository.eventsByVolunteer(cpf, type);
     }
+
+    public List<Event> eventsBySchool(Long codSchool, TypeEvent type) {
+        return repository.eventsBySchool(codSchool, type);
+    }
 }

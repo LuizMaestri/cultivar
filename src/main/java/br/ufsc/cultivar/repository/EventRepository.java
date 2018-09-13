@@ -129,4 +129,15 @@ public class EventRepository {
 
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
     }
+
+    public List<Event> eventsBySchool(Long codSchool, TypeEvent type) {
+        val sb = new StringBuilder("select e.* from event e where cod_school=:cod_school");
+        val params = new MapSqlParameterSource("cod_school", codSchool);
+        if (Objects.nonNull(type)){
+            sb.append(" and tp_event=:tp_event");
+            params.addValue("tp_event", type.name());
+        }
+
+        return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
+    }
 }
