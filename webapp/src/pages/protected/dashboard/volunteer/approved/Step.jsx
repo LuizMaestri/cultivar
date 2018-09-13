@@ -36,7 +36,7 @@ export default class extends Component{
         axios.all([
             getRequest(`/volunteer/${cpf}`, res => res.data),
             getRequest(
-                `/volunteer/${cpf}/event/${EventType.TRAINING}`,
+                `/volunteer/${cpf}/event`,
                 res => res.data
             )
         ]).then(
