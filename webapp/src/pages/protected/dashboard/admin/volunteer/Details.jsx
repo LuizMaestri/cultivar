@@ -174,11 +174,6 @@ export default class extends Component{
                                 <br/>
                                 <Row>
                                     <Col>
-                                        <strong>Endereço:</strong>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
                                         <Form inline>
                                             <Input id="school" type="select" label="Escola" invalidMessage="O voluntário deve ser associado a uma escola"
                                                 onChange={this.HandlerAssociate} value={school? school.codSchool : ''} {...err} required>
