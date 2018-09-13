@@ -75,8 +75,19 @@ export default class extends Component{
                             <Col>
                                 {
                                     trainings.length ?
-                                        trainings.map((training, index) => JSON.stringify(training)) :
-                                        'Nenhum anexo para esse evento.'
+                                        (
+                                            <Row>
+                                                {
+                                                    trainings.map(
+                                                        training => (
+                                                            <Col key={training.codTraining}>
+                                                                {training.link && <a className="btn btn-info" href={training.link} target="_blank">{training.name}</a>}
+                                                            </Col>
+                                                        )
+                                                    )
+                                                }
+                                            </Row>
+                                        ) : 'Nenhum anexo para esse evento.'
                                 }
                             </Col>
                         </Row>

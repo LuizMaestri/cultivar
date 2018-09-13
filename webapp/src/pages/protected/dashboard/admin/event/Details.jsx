@@ -51,6 +51,13 @@ export default class extends Component{
             );
             const address = new Address();
             Object.assign(address, eventAddress);
+            participants.push(
+                participants[0],
+                participants[0],
+                participants[0],
+                participants[0],
+                participants[0],
+            )
             return (
                 <Modal toggle={close} isOpen={isOpen} >
                     <ModalHeader toggle={close}>{eventDetails.title}</ModalHeader>
@@ -78,32 +85,15 @@ export default class extends Component{
                             </Col>
                         </Row>
                         <Row>
-                            <Col>
-                                {
-                                    participants.map(
-                                        (participant, index) => {
-                                            if (index % 3 === 1){
-                                                const participant2 = participants[++index];
-                                                const participant3 = participants[++index];
-                                                return (
-                                                    <Row>
-                                                        <Col>
-                                                            {participant.cpf} - {participant.name}
-                                                        </Col>
-                                                        <Col>
-                                                            {participant2 ? participant2.cpf + '-' + participant2.name : ''}
-                                                        </Col>
-                                                        <Col>
-                                                            {participant3 ? participant3.cpf + '-' + participant3.name : ''}
-                                                        </Col>
-                                                    </Row>
-                                                )
-                                            }
-                                            return null;
-                                        }
+                            {
+                                participants.map(
+                                    participant => (
+                                        <Col md="4" style={{marginTop: '20px'}}>
+                                            {participant.cpf} - {participant.name}
+                                        </Col>
                                     )
-                                }
-                            </Col>
+                                )
+                            }
                         </Row>
                         <br />
                         <Row>
@@ -115,8 +105,19 @@ export default class extends Component{
                             <Col>
                                 {
                                     trainings.length ?
-                                        trainings.map((training, index) => JSON.stringify(training)) :
-                                        'Nenhum anexo para esse evento.'
+                                    (
+                                        <Row>
+                                            {
+                                                trainings.map(
+                                                    training => (
+                                                        <Col key={training.codTraining}>
+                                                            {training.link && <a className="btn btn-info" href={training.link} target="_blank">{training.name}</a>}
+                                                        </Col>
+                                                    )
+                                                )
+                                            } 
+                                        </Row>
+                                    ): 'Nenhum anexo para esse evento.'
                                 }
                             </Col>
                         </Row>
