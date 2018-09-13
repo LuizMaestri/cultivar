@@ -57,7 +57,7 @@ public class VolunteerResource {
         volunteerService.update(volunteer, cpf);
     }
 
-    @GetMapping(path = "/{cpf}/event/{type}")
+    @GetMapping(path = {"/{cpf}/event", "/{cpf}/event/{type}"})
     public List<Event> getEvents(@PathVariable final String cpf, @PathVariable(required = false) final TypeEvent type){
         return eventService.eventsByVolunteer(cpf, type);
     }
