@@ -4,7 +4,6 @@ import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.Rating;
 import br.ufsc.cultivar.service.EventService;
-import br.ufsc.cultivar.service.FileService;
 import br.ufsc.cultivar.service.RatingService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,7 +23,6 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EventResource {
 
-    FileService fileService;
     EventService eventService;
     RatingService ratingService;
 
@@ -59,7 +57,7 @@ public class EventResource {
     @PostMapping(path="/{codEvent}/upload", consumes = MediaType.APPLICATION_PDF_VALUE,
             produces = MediaType.TEXT_PLAIN_VALUE)
     public String upload(@RequestPart final MultipartFile file, @PathVariable final Long codEvent) throws ServiceException {
-        return fileService.save(file, codEvent);
+        return eventService.upload(file, codEvent);
     }
 
     @PutMapping(path = "/{codEvent}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

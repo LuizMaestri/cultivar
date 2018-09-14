@@ -1,7 +1,8 @@
-package br.ufsc.cultivar.service;
+package br.ufsc.cultivar.utils;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Dispatch;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import lombok.val;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,10 +20,10 @@ import java.net.MalformedURLException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-@Service
+@Component
 @Slf4j
-public class FileService {
-    public Dispatch save(final Attachment attachment, final MultipartFile multipartFile, final String cpf) throws ServiceException {
+public class FileUtils {
+    public Dispatch save(final Attachment attachment, final MultipartFile multipartFile, final String cpf) throws UploadException {
         val path = String.format(
                 "./files/users/%s/attachments/%s.pdf",
                 cpf,
@@ -33,7 +35,7 @@ public class FileService {
         return Dispatch.builder().attachment(attachment).send(true).build();
     }
 
-    public String save(final MultipartFile multipartFile, final Long codEvent) throws ServiceException {
+    public String save(final MultipartFile multipartFile, final Long codEvent) throws UploadException {
         val path = String.format(
                 "./files/events/%d/attachments/%d.pdf",
                 codEvent,
@@ -42,7 +44,7 @@ public class FileService {
         return save(new File(path), multipartFile);
     }
 
-    public String saveAttachment(final MultipartFile multipartFile, final Long codAttachment) throws ServiceException {
+    public String saveAttachment(final MultipartFile multipartFile, final Long codAttachment) throws UploadException {
         val path = String.format(
                 "./files/attachments/%d.pdf",
                 codAttachment
@@ -50,7 +52,7 @@ public class FileService {
         return save(new File(path), multipartFile);
     }
 
-    private String save(final File file, final MultipartFile multipart) throws ServiceException{
+    private String save(final File file, final MultipartFile multipart) throws UploadException{
         try {
             if (file.getParentFile().mkdirs()){
                 log.info("create dir: " + file.getParent());
@@ -58,11 +60,11 @@ public class FileService {
             Files.copy(multipart.getInputStream(), Paths.get(file.toURI()));
             return file.getName();
         } catch (IOException e) {
-            throw new ServiceException(String.format("Não foi possível salvar o arquivo %s.", file.getPath()), e, Type.FILE);
+            throw new UploadException(String.format("Não foi possível salvar o arquivo %s.", file.getPath()), e);
         }
     }
 
-    public FileSystemResource get(final Long codAttachment) throws ServiceException {
+    public FileSystemResource get(final Long codAttachment) {
         val path = String.format(
                 "./files/attachments/%d.pdf",
                 codAttachment

@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.School;
+import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.SchoolRepository;
 import br.ufsc.cultivar.utils.ValidateUtils;
 import lombok.AccessLevel;
@@ -19,8 +20,8 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class SchoolService {
 
-    SchoolRepository repository;
-    AddressService addressService;
+    SchoolRepository schoolRepository;
+    AddressRepository addressRepository;
     UserService userService;
 
     public School create(final School school) throws ServiceException {
@@ -30,22 +31,24 @@ public class SchoolService {
         }
         userService.create(school.getResponsible());
         return school.withCodSchool(
-                repository.create(
+                schoolRepository.create(
                         school.withAddress(
-                                addressService.create(address)
+                                address.withCodAddress(
+                                        addressRepository.create(address)
+                                )
                         )
                 )
         );
     }
 
     public List<School> get(final Map<String, Object> filter) throws ServiceException {
-        return repository.get(filter);
+        return schoolRepository.get(filter);
     }
 
     public School get(final Long codSchool) throws ServiceException {
-        val school = repository.get(codSchool);
+        val school = schoolRepository.get(codSchool);
         return school.withAddress(
-                addressService.get(
+                addressRepository.get(
                         school.getAddress().getCodAddress()
                 )
         ).withResponsible(
@@ -57,7 +60,7 @@ public class SchoolService {
 
     public School delete(final Long codSchool) throws ServiceException {
         val school = get(codSchool);
-        repository.delete(codSchool);
+        schoolRepository.delete(codSchool);
         return school;
     }
 
@@ -65,6 +68,6 @@ public class SchoolService {
         if (school.getCodSchool().equals(codSchool)){
             throw new ServiceException(null, null, null);
         }
-        repository.update(school);
+        schoolRepository.update(school);
     }
 }

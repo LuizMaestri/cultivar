@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.User;
+import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.UserRepository;
 import br.ufsc.cultivar.utils.ValidateUtils;
 import lombok.AccessLevel;
@@ -19,18 +20,20 @@ import java.util.Map;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class UserService {
 
-    UserRepository repository;
-    AddressService addressService;
+    UserRepository userRepository;
+    AddressRepository addressRepository;
 
     public void create(final User user) throws ServiceException {
         val address = user.getAddress();
         if (!ValidateUtils.isValid(address)) {
             throw new ServiceException(null, null, null);
         }
-        repository.create(
+        userRepository.create(
                 user.withAddress(
-                        addressService.create(
-                                address
+                        address.withCodAddress(
+                                addressRepository.create(
+                                        address
+                                )
                         )
                 )
         );
@@ -39,7 +42,7 @@ public class UserService {
 
     public List<User> get(final Map<String, Object> filter) throws ServiceException {
         try {
-            return repository.get(filter);
+            return userRepository.get(filter);
         } catch (RuntimeException e){
             val throwable = e.getCause();
             if (throwable instanceof ServiceException) {
@@ -50,9 +53,9 @@ public class UserService {
     }
 
     public User get(final String cpf) throws ServiceException {
-        val user = repository.get(cpf);
+        val user = userRepository.get(cpf);
         return user.withAddress(
-                addressService.get(
+                addressRepository.get(
                         user.getAddress().getCodAddress()
                 )
         );
@@ -60,7 +63,7 @@ public class UserService {
 
     public User delete(final String cpf) throws ServiceException {
         val user = get(cpf);
-        repository.delete(cpf);
+        userRepository.delete(cpf);
         return user;
     }
 
@@ -71,10 +74,10 @@ public class UserService {
         if (!get(cpf).getStatus().isValid(user.getStatus())){
             throw new ServiceException(null, null, null);
         }
-        repository.update(user);
+        userRepository.update(user);
     }
 
     List<User> getParticipants(final Long codEvent) {
-        return repository.getParticipants(codEvent);
+        return userRepository.getParticipants(codEvent);
     }
 }

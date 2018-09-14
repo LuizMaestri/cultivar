@@ -1,15 +1,21 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.TypeEvent;
+import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.EventRepository;
+import br.ufsc.cultivar.repository.ParticipationRepository;
+import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 
@@ -18,23 +24,37 @@ import java.util.*;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EventService {
 
-    EventRepository repository;
-    AddressService addressService;
+    FileUtils fileUtils;
+    EventRepository eventRepository;
+    AddressRepository addressRepository;
     TrainingService trainingService;
     RatingService ratingService;
     UserService userService;
-    ParticipationService participationService;
+    ParticipationRepository participationRepository;
+
+    public String upload(MultipartFile file, Long codEvent) throws ServiceException{
+        try {
+            return fileUtils.save(file, codEvent);
+        } catch (UploadException e) {
+            throw new ServiceException(e.getMessage(), e, Type.FILE);
+        }
+    }
 
     public void create(final Event event) throws ServiceException {
-        val codEvent = repository.create(
+        val address = event.getAddress();
+        val codEvent = eventRepository.create(
                 event.withAddress(
-                        addressService.create(event.getAddress())
+                        address.withCodAddress(
+                                addressRepository.create(
+                                        address
+                                )
+                        )
                 )
         );
         Optional.ofNullable(event.getParticipants())
                 .orElseGet(ArrayList::new)
                 .forEach(
-                        user -> participationService.create(codEvent, user.getCpf())
+                        user -> participationRepository.create(codEvent, user.getCpf())
                 );
         Optional.ofNullable(event.getTrainings())
                 .orElseGet(ArrayList::new)
@@ -44,16 +64,16 @@ public class EventService {
     }
 
     public List<Event> get(final Map<String, Object> filter) throws ServiceException {
-        return repository.get(filter);
+        return eventRepository.get(filter);
     }
 
     public Event get(final Long codEvent) throws ServiceException {
-        val event = repository.get(codEvent);
+        val event = eventRepository.get(codEvent);
         if (Objects.isNull(event)){
             throw new ServiceException(null, null, null);
         }
         return event.withAddress(
-                addressService.get(
+                addressRepository.get(
                         event.getAddress().getCodAddress()
                 )
         ).withParticipants(
@@ -67,7 +87,7 @@ public class EventService {
 
     public Event delete(final Long codEvent) throws ServiceException {
         val event = get(codEvent);
-        repository.delete(codEvent);
+        eventRepository.delete(codEvent);
         return event;
     }
 
@@ -79,14 +99,14 @@ public class EventService {
             trainingService.deleteByEvent(codEvent);
             trainingService.create(training, codEvent);
         });
-        repository.update(event);
+        eventRepository.update(event);
     }
 
     public List<Event> eventsByVolunteer(final String cpf, final TypeEvent type) {
-        return repository.eventsByVolunteer(cpf, type);
+        return eventRepository.eventsByVolunteer(cpf, type);
     }
 
     public List<Event> eventsBySchool(Long codSchool, TypeEvent type) {
-        return repository.eventsBySchool(codSchool, type);
+        return eventRepository.eventsBySchool(codSchool, type);
     }
 }

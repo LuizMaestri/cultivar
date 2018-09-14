@@ -1,9 +1,12 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Dispatch;
 import br.ufsc.cultivar.repository.DispatchRepository;
+import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -20,11 +23,14 @@ import java.util.Optional;
 public class DispatchService {
 
     DispatchRepository repository;
-    FileService fileService;
+    FileUtils fileUtils;
 
     public void save(final Attachment attachment, final MultipartFile file, final String cpf) throws ServiceException {
-        Dispatch dispatch = fileService.save(attachment, file, cpf);
-        repository.save(dispatch, cpf);
+        try {
+            repository.save(fileUtils.save(attachment, file, cpf), cpf);
+        } catch (UploadException e) {
+            throw new ServiceException(null, null, Type.FILE);
+        }
     }
 
     public Dispatch get(final String cpf, final Long codAttachment) {
@@ -33,6 +39,6 @@ public class DispatchService {
 
     public List<Dispatch> get(String cpf) throws ServiceException {
         return Optional.ofNullable(repository.get(cpf))
-                .orElseThrow(() -> new ServiceException(null, null, null));
+                .orElseThrow(() -> new ServiceException(null, null, Type.NOT_FOUND));
     }
 }

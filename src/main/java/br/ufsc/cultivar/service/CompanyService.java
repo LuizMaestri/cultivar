@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Company;
+import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.CompanyRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,59 +13,64 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class CompanyService {
 
-    CompanyRepository repository;
+    CompanyRepository companyRepository;
     UserService userService;
-    AddressService addressService;
+    AddressRepository addressRepository;
 
     public void create(final Company company) throws ServiceException {
         userService.create(company.getResponsible());
-        repository.create(
+        val address = company.getAddress();
+        companyRepository.create(
             company.withAddress(
-                addressService.create(
-                    company.getAddress()
+                address.withCodAddress(
+                    addressRepository.create(
+                        address
+                    )
                 )
             )
         );
     }
 
     public List<Company> get(final Map<String, Object> filter) throws ServiceException {
-        return repository.get(filter);
+        return companyRepository.get(filter);
     }
 
     public Company get(final String cnpj) throws ServiceException {
-        val company = repository.get(cnpj);
-        if (Objects.isNull(company)){
-            throw new ServiceException(null, null, null);
-        }
-        return company.withAddress(
-                addressService.get(
-                        company.getAddress().getCodAddress()
-                )
-        ).withResponsible(
-                userService.get(
-                        company.getResponsible().getCpf()
-                )
-        );
+        val company = companyRepository.get(cnpj);
+        return Optional.ofNullable(company)
+                .orElseThrow(
+                    () -> new ServiceException(null, null, null)
+                ).withAddress(
+                    addressRepository.get(
+                        company.getAddress()
+                            .getCodAddress()
+                    )
+                ).withResponsible(
+                    userService.get(
+                        company.getResponsible()
+                            .getCpf()
+                    )
+                );
     }
 
     public Company delete(String cnpj) throws ServiceException {
         val company = get(cnpj);
-        repository.delete(cnpj);
-        return company;
+        companyRepository.delete(cnpj);
+        return Optional.ofNullable(company).orElseThrow(() -> new ServiceException(null, null, null));
     }
 
     public void update(Company company, String cnpj) throws ServiceException {
-        if(company.getCnpj().equals(cnpj)){
+        if(!company.getCnpj().equals(cnpj)){
             throw new ServiceException(null, null, null);
         }
-        addressService.update(company.getAddress());
-        repository.update(company);
+        addressRepository.update(company.getAddress());
+        companyRepository.update(company);
     }
 }

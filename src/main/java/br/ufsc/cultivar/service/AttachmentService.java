@@ -1,9 +1,12 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Status;
 import br.ufsc.cultivar.repository.AttachmentRepository;
+import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,6 +18,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -22,7 +26,7 @@ import java.util.Objects;
 public class AttachmentService {
 
     AttachmentRepository repository;
-    FileService fileService;
+    FileUtils fileUtils;
 
     public void create(final Attachment attachment, final MultipartFile file) throws ServiceException {
         if(attachment.getDownload() && Objects.isNull(file)){
@@ -30,7 +34,11 @@ public class AttachmentService {
         }
         val codAttachment = repository.create(attachment);
         if (attachment.getDownload()){
-            fileService.saveAttachment(file, codAttachment);
+            try {
+                fileUtils.saveAttachment(file, codAttachment);
+            } catch (UploadException e) {
+                throw new ServiceException(e.getMessage(), e, Type.FILE);
+            }
         }
     }
 
@@ -43,16 +51,16 @@ public class AttachmentService {
 
     public Attachment get(final Long codAttachment) throws ServiceException {
         val attachment = repository.get(codAttachment);
-        if (Objects.isNull(attachment)){
-            throw new ServiceException(null, null, null);
-        }
-        return attachment;
+        return Optional.ofNullable(attachment)
+            .orElseThrow(() -> new ServiceException(null, null, null));
     }
 
     public Resource getAsFile(final Long codAttachment) throws ServiceException {
-        return fileService.get(
-                repository.get(codAttachment)
-                        .getCodAttachment()
+        return fileUtils.get(
+            Optional.ofNullable(repository.get(codAttachment))
+                .orElseThrow(
+                    () -> new ServiceException(null, null, Type.NOT_FOUND)
+                ).getCodAttachment()
         );
     }
 

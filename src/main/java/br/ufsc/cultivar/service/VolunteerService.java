@@ -3,6 +3,8 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Volunteer;
+import br.ufsc.cultivar.repository.AnswerRepository;
+import br.ufsc.cultivar.repository.QuestionRepository;
 import br.ufsc.cultivar.repository.VolunteerRepository;
 import br.ufsc.cultivar.utils.ValidateUtils;
 import lombok.AccessLevel;
@@ -22,11 +24,12 @@ import java.util.stream.Collectors;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VolunteerService {
 
-    VolunteerRepository repository;
+    VolunteerRepository volunteerRepository;
     UserService userService;
     CompanyService companyService;
     RatingService ratingService;
-    AnswerService answerService;
+    AnswerRepository answerRepository;
+    QuestionRepository questionRepository;
     DispatchService dispatchService;
 
     public void create(final Volunteer volunteer) throws ServiceException {
@@ -35,11 +38,11 @@ public class VolunteerService {
             throw new ServiceException(null, null, null);
         }
         userService.create(user);
-        repository.create(volunteer);
+        volunteerRepository.create(volunteer);
         Optional.ofNullable(volunteer.getAnswers())
                 .ifPresent(
                         answers -> answers.forEach(
-                                answer -> answerService.create(
+                                answer -> answerRepository.create(
                                         answer,
                                         user.getCpf()
                                 )
@@ -49,7 +52,7 @@ public class VolunteerService {
 
     public List<Volunteer> get(final Map<String, Object> filter) throws ServiceException {
         try {
-            return repository.get(filter)
+            return volunteerRepository.get(filter)
                     .stream()
                     .map(volunteer -> {
                         try {
@@ -66,27 +69,34 @@ public class VolunteerService {
     }
 
     public Volunteer get(final String cpf) throws ServiceException {
-        val volunteer = repository.get(cpf);
+        val volunteer = volunteerRepository.get(cpf);
         return Optional.ofNullable(volunteer)
                 .orElseThrow(() -> new ServiceException(null, null, Type.NOT_FOUND))
                 .withUser(
-                        userService.get(cpf)
+                    userService.get(cpf)
                 ).withCompany(
-                        companyService.get(
-                                volunteer.getCompany().getCnpj()
-                        )
+                    companyService.get(
+                            volunteer.getCompany().getCnpj()
+                    )
                 ).withAnswers(
-                        answerService.get(cpf)
+                    answerRepository.get(cpf)
+                        .stream()
+                        .map(answer -> answer.withQuestion(
+                                questionRepository.get(
+                                        answer.getQuestion().getCodQuestion()
+                                )
+                            )
+                        ).collect(Collectors.toList())
                 ).withRatings(
-                        ratingService.get(cpf)
+                    ratingService.get(cpf)
                 ).withDispatches(
-                        dispatchService.get(cpf)
+                    dispatchService.get(cpf)
                 );
     }
 
     public Volunteer delete(final String cpf) throws ServiceException {
         val volunteer = get(cpf);
-        repository.delete(cpf);
+        volunteerRepository.delete(cpf);
         return volunteer;
     }
 
@@ -96,9 +106,9 @@ public class VolunteerService {
             throw new ServiceException(null, null, null);
         }
         userService.update(user, cpf);
-        answerService.delete(cpf);
+        answerRepository.delete(cpf);
         volunteer.getAnswers()
-                .forEach(answer -> answerService.create(answer, cpf));
-        repository.update(volunteer);
+                .forEach(answer -> answerRepository.create(answer, cpf));
+        volunteerRepository.update(volunteer);
     }
 }
