@@ -8,6 +8,9 @@ import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 @Value
 @Wither
 @Builder(builderClassName = "Builder")
@@ -15,6 +18,8 @@ import lombok.experimental.Wither;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Training {
     Long codTraining;
+    @Valid
+    @NotNull
     String name;
     String path;
     String link;

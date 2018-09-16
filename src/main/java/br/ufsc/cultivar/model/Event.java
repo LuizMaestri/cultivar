@@ -8,6 +8,10 @@ import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -20,16 +24,29 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Event {
     Long codEvent;
+    @NotBlank
+    @NotNull
     Date startOccurrence;
+    @NotBlank
+    @NotNull
     Date endOccurrence;
     Date createAt;
+    @NotBlank
+    @NotNull
     TypeEvent type;
+    @NotNull
     Boolean allDay;
+    @Valid
+    @NotNull
     Address address;
+    @Valid
+    @NotNull
     School school;
-    List<Training> trainings;
-    List<User> participants;
-    List<Rating> ratings;
+    List<@Valid Training> trainings;
+    @NotNull
+    @NotEmpty
+    List<@Valid User> participants;
+    List<@Valid Rating> ratings;
 
     public Double getRating() {
         return Optional.ofNullable(ratings)

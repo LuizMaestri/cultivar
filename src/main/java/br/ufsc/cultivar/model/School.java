@@ -8,6 +8,10 @@ import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Value
 @Wither
 @Builder(builderClassName = "Builder")
@@ -15,10 +19,19 @@ import lombok.experimental.Wither;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class School {
     Long codSchool;
+    @NotBlank
+    @NotNull
     String name;
+    @NotBlank
+    @NotNull
     String phone;
+    @Valid
+    @NotNull
     Address address;
+    @Valid
+    @NotNull
     User responsible;
+    @NotNull
     SchoolType type;
 
     @JsonPOJOBuilder(withPrefix = "")

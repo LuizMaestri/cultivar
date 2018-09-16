@@ -19,6 +19,7 @@ import static springfox.documentation.builders.PathSelectors.ant;
 public class SwaggerConfig extends WebMvcConfigurationSupport {
 
     @Bean
+
     public Docket productApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
@@ -33,7 +34,7 @@ public class SwaggerConfig extends WebMvcConfigurationSupport {
         return new ApiInfoBuilder()
                 .title("Sistema CulTiVar")
                 .description("Sistema de Controle de Tutores Voluntários")
-                .version("0.1.0")
+                .version("0.2.0")
                 .license("Apache License Version 2.0")
                 .licenseUrl("https://www.apache.org/licenses/LICENSE-2.0")
                 .contact(new Contact("Luiz Maestri", null, "luizricardomaestri@gmail.com"))

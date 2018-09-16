@@ -7,11 +7,16 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 @Value
 @Builder(builderClassName = "Builder")
 @JsonDeserialize(builder = Rating.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Rating {
+    @NotBlank
+    @NotNull
     Integer grade;
     String comment;
 

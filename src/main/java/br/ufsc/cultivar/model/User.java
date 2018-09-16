@@ -8,6 +8,9 @@ import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 
 @Value
@@ -17,14 +20,29 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class User {
     String cpf;
+    @NotBlank
+    @NotNull
     String name;
+    @NotBlank
+    @NotNull
     String email;
+    @NotBlank
     String password;
+    @NotNull
     Role role;
+    @NotNull
     Status status;
+    @NotBlank
+    @NotNull
     Date birth;
+    @NotBlank
+    @NotNull
     String job;
+    @NotBlank
+    @NotNull
     String phone;
+    @Valid
+    @NotNull
     Address address;
 
     @JsonPOJOBuilder(withPrefix = "")
