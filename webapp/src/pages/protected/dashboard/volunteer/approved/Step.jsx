@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Calendar } from '../../../../../components';
-import { Row, Col } from 'reactstrap';
+import { Row, Col, Label } from 'reactstrap';
 import BigCalendar from 'react-big-calendar';
 import Details from './Details.jsx'
 import { EventType, Volunteer } from '../../../../../model';
@@ -50,6 +50,30 @@ export default class extends Component{
         ;
     }
 
+    getLabel(){
+        const { ratings, rating } = this.state.volunteer;
+        const lastRating = ratings[0];
+        let className, text;
+        if (lastRating){
+            if (rating < 40 || lastRating.grade < 40){
+                className = 'danger';
+            } else if (rating < 70){
+                className = 'warning';
+            } else {
+                className = 'success';
+            }
+        } else {
+            className = 'secondary';
+            text = 'Ainda não há avaliações';
+        }
+
+        return (
+            <Label className={`btn btn-${className}`} style={{ cursor: 'default', width: 'inherit', height: '40px'}}>
+                {text}
+            </Label>
+        );
+    }
+
     closeDetails(){
         this.setState({ isOpenDetails: false, codEvent: null });
     }
@@ -73,16 +97,9 @@ export default class extends Component{
                     }
                 </Col>
                 <Col md="2">
-                    <h3>Avaliações anteriores</h3>
+                    <h3 className="text-center">Avaliações</h3>
                     {
-                        ratings.length ? 
-                            ratings.map(
-                                rating => null
-                            ) : (
-                                <span>
-                                    Não há avaliações registradas.
-                                </span>
-                            )
+                        this.getLabel()
                     }
                 </Col>
             </Row>
