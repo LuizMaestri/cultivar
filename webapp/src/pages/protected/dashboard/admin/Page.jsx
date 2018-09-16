@@ -1,6 +1,4 @@
 import React from 'react';
-import ListAttachment from './attachment';
-import ListQuestion from './question';
 import ListCompany from './company';
 import ListVolunteer from './volunteer';
 import ListEvent from './event'
@@ -43,15 +41,6 @@ export default () => (
                 </Col>
             </Row>
             <Hr/>
-            <Row>
-                <Col>
-                    <ListAttachment/>
-                </Col>
-                <Col md="1" />
-                <Col>
-                    <ListQuestion/>
-                </Col>
-            </Row>
         </Col>
         <Col md="1"/>
     </Row>

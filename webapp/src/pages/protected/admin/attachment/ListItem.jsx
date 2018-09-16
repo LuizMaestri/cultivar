@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
-import { deleteRequest } from '../../../../../utils/http';
+import { deleteRequest } from '../../../../utils/http';
 import { FaTrash } from 'react-icons/fa';
 import Details from './Details.jsx';
 

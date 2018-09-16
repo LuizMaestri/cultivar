@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Attachment, Status } from '../../../../../model';
+import { Attachment, Status } from '../../../../model';
 import PropTypes from 'prop-types';
-import { postRequest } from '../../../../../utils/http';
+import { postRequest } from '../../../../utils/http';
 import { Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { Wizard, Input, FileInput, Switch } from '../../../../../components';
+import { Wizard, Input, FileInput, Switch } from '../../../../components';
 
 export default class extends Component{
     constructor(){

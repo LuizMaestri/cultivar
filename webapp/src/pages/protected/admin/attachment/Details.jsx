@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, ModalBody, ModalHeader, ModalFooter, Row, Col, Button } from 'reactstrap';
-import { Status } from '../../../../../model';
+import { Status } from '../../../../model';
 
 export default ({ close, attachment, isOpen }) => attachment && (
     <Modal toggle={close} isOpen={isOpen}>

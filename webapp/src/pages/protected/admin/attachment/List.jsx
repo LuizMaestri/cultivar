@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getRequest } from '../../../../../utils/http';
+import { getRequest } from '../../../../utils/http';
 import { Row, Col, Table } from 'reactstrap';
 import ListItem from './ListItem.jsx';
 import Add from './Add.jsx';

@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
-import { Question, Roles } from '../../../../../model';
-import { getRequest, postRequest, deleteRequest } from '../../../../../utils/http';
+import { Question, Roles } from '../../../../model';
+import { getRequest, postRequest, deleteRequest } from '../../../../utils/http';
 import { Row, Col, Form, Button, Table } from 'reactstrap';
-import { Input } from '../../../../../components';
+import { Input } from '../../../../components';
 import { FaTrash } from 'react-icons/fa';
 
 export default class extends Component{
@@ -94,7 +94,6 @@ export default class extends Component{
                         </Form>
                     </Col>
                 </Row>
-                <br/>
                 <Row>
                     <Col>
                         <Table striped>
