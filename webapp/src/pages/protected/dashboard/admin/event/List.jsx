@@ -105,7 +105,7 @@ export default class extends Component{
                         </Col>
                     </Row>
                     <br/>
-                    <Row>
+                    <Row style={{ height: '600px', marginBottom: '1%' }}>
                         <Col>
                             <Calendar events={events} onSelectEvent={this.handlerSelectEvent} onSelectSlot={this.handlerSelectSlot} selectable defaultView={BigCalendar.Views.WEEK}/>
                             {

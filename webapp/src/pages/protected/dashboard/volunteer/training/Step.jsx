@@ -53,7 +53,7 @@ export default class extends Component{
     render(){
         const { events, isOpenDetails,  codEvent } = this.state;
         return (
-            <Row>
+            <Row style={{ height: '600px', marginBottom: '1%' }}>
                 <Col>
                     <Calendar events={events} onSelectEvent={this.handlerSelectEvent}  defaultView={BigCalendar.Views.WEEK}/>
                     {

@@ -1,8 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { Calendar } from '../../../../../components';
 import BigCalendar from 'react-big-calendar';
 import Details from './Details.jsx'
-import { EventType, Volunteer } from '../../../../../model';
+import { EventType } from '../../../../../model';
 import { getRequest } from '../../../../../utils/http';
 
 export default class extends Component{
@@ -46,10 +46,10 @@ export default class extends Component{
     render(){
         const { events, isOpenDetails,  codEvent } = this.state;
         return (
-            <Fragment style={{ marginBottom: '1%' }}>
+            <div style={{ height: '600px', marginBottom: '1%' }}>
                     <Calendar events={events} onSelectEvent={this.handlerSelectEvent}  defaultView={BigCalendar.Views.WEEK}/>
                     { isOpenDetails && <Details code={codEvent} isOpen={isOpenDetails} close={this.closeDetails} />}
-            </Fragment>
+            </div>
         );
     }
 }
