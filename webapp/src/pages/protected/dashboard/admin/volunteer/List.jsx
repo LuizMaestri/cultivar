@@ -12,9 +12,16 @@ export default class extends Component{
     }
 
     componentWillMount() {
-        getRequest('/volunteer', res => this.setState({ volunteers: res.data }));
+        const { filterByCompany, filterBySchool } = this.props;
+        getRequest(
+            `/volunteer?cod_cnpj=${filterByCompany.join(',')}&cod_school=${filterBySchool.join(',')}`,
+            res => this.setState({ volunteers: res.data })
+        );
     }
 
+    componentWillReceiveProps(){
+        this.componentWillMount();
+    }
 
 
     render(){

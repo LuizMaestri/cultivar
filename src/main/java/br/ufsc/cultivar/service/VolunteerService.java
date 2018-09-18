@@ -14,6 +14,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -50,9 +51,9 @@ public class VolunteerService {
                 );
     }
 
-    public List<Volunteer> get(final Map<String, Object> filter) throws ServiceException {
+    public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool) throws ServiceException {
         try {
-            return volunteerRepository.get(filter)
+            return volunteerRepository.get(filterCompany, filterSchool)
                     .stream()
                     .map(volunteer -> {
                         try {

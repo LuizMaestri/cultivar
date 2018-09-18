@@ -36,8 +36,10 @@ public class VolunteerResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Volunteer> get(@RequestParam final Map<String, Object> filter) throws ServiceException{
-        return volunteerService.get(filter);
+    public List<Volunteer> get(
+            @RequestParam(value = "cod_cnpj", required = false) final List<String> filterCompany,
+            @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool) throws ServiceException{
+        return volunteerService.get(filterCompany, filterSchool);
     }
 
     @GetMapping(path = "/{cpf}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

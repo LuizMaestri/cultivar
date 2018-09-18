@@ -19,6 +19,7 @@ export default class extends Component{
 
     render(){
         const { schools } = this.state;
+        const { onSelectSchool } = this.props;
         return (
             <div>
                 <Row>
@@ -39,7 +40,7 @@ export default class extends Component{
                                 schools.length ?
                                     schools.map(
                                         school =>
-                                            <SchoolItem key={school.codSchool} school={school} afterDelete={this.componentWillMount} />
+                                            <SchoolItem key={school.codSchool} onSelectSchool={onSelectSchool} school={school} afterDelete={this.componentWillMount} />
                                     ) : (
                                         <ListGroupItem>
                                             <strong>

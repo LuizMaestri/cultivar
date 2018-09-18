@@ -18,6 +18,7 @@ export default class extends Component {
 
     render() {
         const { companies } = this.state;
+        const { onSelectCompany } = this.props;
         return (
             <div>
                 <Row>
@@ -38,7 +39,7 @@ export default class extends Component {
                                 companies.length ? 
                                     companies.map(
                                         company => 
-                                            <CompanyItem key={company.cnpj} company={company} afterDelete={this.componentWillMount.bind(this)}/>
+                                            <CompanyItem onSelectCompany={onSelectCompany} key={company.cnpj} company={company} afterDelete={this.componentWillMount.bind(this)}/>
                                     ) : (
                                         <ListGroupItem>
                                             <strong>

@@ -31,12 +31,15 @@ export default class extends Component{
     }
 
     render(){
-        const { company } = this.props;
+        const { company, onSelectCompany } = this.props;
         const { isOpen } = this.state;
         return (
             <ListGroupItem key={company.cnpj}>
-                <Row>
-                    <Col md="10" onClick={this.handlerDetails} className="text-ellipsis" style={{ cursor: 'pointer' }}>
+            <Row>
+                    <Col md="1">
+                        <input type="checkbox" value={company.cnpj} onChange={onSelectCompany}/> 
+                    </Col> 
+                    <Col md="9" onClick={this.handlerDetails} className="text-ellipsis" style={{ cursor: 'pointer' }}>
                         {company.name}
                     </Col>
                     <Col>

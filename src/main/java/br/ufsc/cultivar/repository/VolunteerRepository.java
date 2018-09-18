@@ -32,21 +32,17 @@ public class VolunteerRepository {
                 .execute(getParams(volunteer));
     }
 
-    public List<Volunteer> get(Map<String, Object> filter) {
+    public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool) {
         val sql = new StringBuilder("select * from volunteer where 1=1");
         val params = new MapSqlParameterSource();
-        Optional.ofNullable(filter)
-                .ifPresent(
-                        map -> map.forEach(
-                                (key, value) -> {
-                                    sql.append(" and ")
-                                            .append(key)
-                                            .append("=:")
-                                            .append(key);
-                                    params.addValue(key, value);
-                                }
-                        )
-                );
+        if (!filterCompany.isEmpty()){
+            sql.append(" and cod_cnpj in(:cod_cnpj)");
+            params.addValue("cod_cpnj", filterCompany);
+        }
+        if (!filterSchool.isEmpty()){
+            sql.append(" and cod_school in(:cod_school)");
+            params.addValue("cod_school", filterSchool);
+        }
         return jdbcTemplate.query(
                 sql.toString(),
                 params,
