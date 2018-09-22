@@ -11,11 +11,23 @@ export default ({role}) => {
             <Row>
                 <Col md="1" />
                 <Col>
-                    <ListAttachment />
-                </Col>
-                <Col md="1" />
-                <Col>
-                    <ListQuestion />
+                    <Row style={{height: '400px', maxHeight: '400px'}}>
+                        <Col>
+                            <ListAttachment />
+                        </Col>
+                        <Col md="1" />
+                        <Col>
+                            <ListAttachment />
+                        </Col>
+                    </Row>
+                    <br/>
+                    <hr/>
+                    <br/>
+                    <Row style={{maxHeight: '400px' }}>
+                        <Col>
+                            <ListQuestion />
+                        </Col>
+                    </Row>
                 </Col>
                 <Col md="1" />
             </Row>
