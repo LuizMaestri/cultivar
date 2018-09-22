@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import { Row, Col, ListGroupItem } from 'reactstrap';
-import { FaTrash } from 'react-icons/fa';
 import Details from './Details.jsx';
 import PropTypes from 'prop-types';
-import { deleteRequest } from '../../../../../utils/http';
 import formatter from '../../../../../utils/formatter';
 
 export default class extends Component{
