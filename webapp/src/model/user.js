@@ -1,7 +1,8 @@
 import Address from './address';
 
 export default class{
-    constructor(cpf, name, email, password, role, status, birth, job, phone, address=new Address() ) {
+    constructor(cpf='', name='', email='', password='', role='', status='', 
+            birth='', job='', phone='', address=new Address() ) {
         this.cpf = cpf;
         this.name = name;
         this.email = email;

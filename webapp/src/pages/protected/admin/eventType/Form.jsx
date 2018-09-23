@@ -96,7 +96,7 @@ export default class extends Component{
                         <div>
                             <Row>
                                 <Col>
-                                    <Input id="name" label="Tipo de Evento" onChange={this.handlerName} invalidMessage="Tipo de Evento é Obrigatório" required/>
+                                    <Input id="name" label="Tipo de Evento" onChange={this.handlerName} invalidMessage="Tipo de Evento é Obrigatório" value={typeEvent.type} required/>
                                 </Col>
                             </Row>
                             <Row>
@@ -114,7 +114,7 @@ export default class extends Component{
                                                         <Input id={`training-${index}`} label="Nome" invalidMessage="Nome é Obrigatório" value={training.name} onChange={event => this.handlerNameAttachemnt(event, index)} required />
                                                     </Col>
                                                     <Col md="5">
-                                                        <Switch id={`file-${index}`} label="Arquivo pra Upload " onChange={value => this.handlerIsFile(value, index)} />
+                                                        <Switch id={`file-${index}`} label="Arquivo pra Upload" value={training.isFile} onChange={value => this.handlerIsFile(value, index)} />
                                                     </Col>
                                                 </Row>
                                                 <Row>

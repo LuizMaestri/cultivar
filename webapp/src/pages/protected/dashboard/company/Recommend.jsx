@@ -126,7 +126,7 @@ export default class extends Component{
                                                     <Switch id={`question-${question.codQuestion}`} label="Resposta" onChange={(value) => this.handlerAnswer(value, question.codQuestion)} />
                                                 </Col>
                                                 <Col>
-                                                    <textarea id={`details-${question.codQuestion}`} cols="30" rows="3" onChange={(event) => this.handlerAnswerComment(event, question.codQuestion)} />
+                                                    <textarea id={`details-${question.codQuestion}`} cols="30" rows="3" value={question.comment} onChange={(event) => this.handlerAnswerComment(event, question.codQuestion)} />
                                                 </Col>
                                             </Row>
                                             {index !== question.length - 1 ? <hr /> : null}

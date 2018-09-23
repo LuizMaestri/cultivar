@@ -2,7 +2,7 @@ import Address from './address';
 import School from './school';
 
 export default class{
-    constructor(codEvent, startOccurrence, endOccurrence, createAt, type, allDay,
+    constructor(codEvent, startOccurrence, endOccurrence, createAt, type = '', allDay,
          address = new Address(), school = new School(), trainings = [],
          participants = [], ratings = []) {
         this.codEvent = codEvent;

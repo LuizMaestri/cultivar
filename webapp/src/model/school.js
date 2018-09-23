@@ -4,7 +4,7 @@ import Roles from './role';
 import Status from './status';
 
 export default class {
-    constructor(codSchool, name, phone, schoolType, address = new Address(), responsible = new User()) {
+    constructor(codSchool, name = '', phone = '', schoolType = '', address = new Address(), responsible = new User()) {
         this.codSchool = codSchool;
         this.name = name
         this.phone = phone;

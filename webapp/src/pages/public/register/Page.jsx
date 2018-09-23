@@ -212,7 +212,8 @@ export default class extends Component{
     }
 
     render(){
-        const { questions, companies, volunteer } = this.state;
+        const { questions, companies, volunteer, confirmPassword } = this.state;
+        const { user, company } = volunteer;
         const maxDate = new Date().toJSON().split('T')[0];
         return (
             <Row>
@@ -221,17 +222,17 @@ export default class extends Component{
                     <Wizard onCancel={()=> null} submitLabel="cadastrar" onSubmit={this.handlerSubmit}>
                         <div>
                             <h3>Dados do Voluntário</h3>
-                            <Input id="nameReponsible" label="Nome Completo" invalidMessage="Nome Completo é obrigatório" onChange={this.handlerName} required />
+                            <Input id="nameReponsible" label="Nome Completo" invalidMessage="Nome Completo é obrigatório" value={user.name} onChange={this.handlerName} required />
                             <Row>
                                 <Col>
-                                    <MaskInput id="cpf" label="CPF" invalidMessage="CPF é obrigatório" mask="999.999.999-99" onChange={this.handlerCpf} required />
+                                    <MaskInput id="cpf" label="CPF" invalidMessage="CPF é obrigatório" mask="999.999.999-99" value={user.cpf} onChange={this.handlerCpf} required />
                                 </Col>
                                 <Col>
-                                    <MaskInput id="rg" label="RG" invalidMessage="RG é obrigatório" mask="99999999999" onChange={this.handlerRg} required />
+                                    <MaskInput id="rg" label="RG" invalidMessage="RG é obrigatório" mask="99999999999" value={volunteer.rg} onChange={this.handlerRg} required />
                                 </Col>
                             </Row>
-                            <MaskInput id="phoneResponsible" label="Número para Contato" invalidMessage="Número para Contato é obrigatório" mask="(99)9999-9999" onChange={this.handlerPhone} required />
-                            <Input id="company" type="select" label="Empresa" invalidMessage="Empresa é obrigatório" onChange={this.handlerCompany} required >
+                            <MaskInput id="phoneResponsible" label="Número para Contato" invalidMessage="Número para Contato é obrigatório" value={user.phone} mask="(99)9999-9999" onChange={this.handlerPhone} required />
+                            <Input id="company" type="select" label="Empresa" invalidMessage="Empresa é obrigatório" value={company.cnpj} onChange={this.handlerCompany} required >
                                 <option value="">Selecione</option>
                                 {
                                     companies.length ? 
@@ -240,7 +241,7 @@ export default class extends Component{
                                         ) : null
                                 }
                             </Input>
-                            <Input id="job" label="Cargo na Empresa" invalidMessage="Cargo na Empresa é obrigatório" onChange={this.handlerJob} required />
+                            <Input id="job" label="Cargo na Empresa" invalidMessage="Cargo na Empresa é obrigatório" value={user.job} onChange={this.handlerJob} required />
                             <Row>
                                 <Col>
                                     <Label for="radio1">Escolaridade <Required/></Label>
@@ -255,7 +256,7 @@ export default class extends Component{
                                 <Col>
                                     <Row>
                                         <Col>
-                                            <Switch id="complete" label="Completo" onChange={this.handlerComplete} checkedChildren="Sim" unCheckedChildren="Não"/>
+                                            <Switch id="complete" label="Completo" onChange={this.handlerComplete} value={volunteer.conclusion} checkedChildren="Sim" unCheckedChildren="Não"/>
                                         </Col>
                                     </Row>
                                     {
@@ -266,7 +267,7 @@ export default class extends Component{
                                                 <Row>
                                                     <Col>
                                                         <Form inline>
-                                                                <Input id="course" label="Curso" invalidMessage="Curso é obrigatório" onChange={this.handlerCourse} required/>
+                                                            <Input id="course" label="Curso" invalidMessage="Curso é obrigatório" value={volunteer.course} onChange={this.handlerCourse} required/>
                                                         </Form>
                                                     </Col>
                                                 </Row>
@@ -277,13 +278,13 @@ export default class extends Component{
                                 </Col>
                             </Row>
                             <DatePicker id="birth" label="Nascimento" invalidMessage="Nascimento é obrigatório" max={maxDate} onChange={this.handlerBirth} required />
-                            <Input id="email" type="email" label="Email" invalidMessage="Email é obrigatório" onChange={this.handlerEmail} required />
+                            <Input id="email" type="email" label="Email" invalidMessage="Email é obrigatório" value={user.email} onChange={this.handlerEmail} required />
                             <Row>
                                 <Col>
-                                    <Input id="password" type="password" label="Senha" invalidMessage="Senha é obrigatório" onChange={this.handlerPassword} required />
+                                    <Input id="password" type="password" label="Senha" invalidMessage="Senha é obrigatório" value={user.password} onChange={this.handlerPassword} required />
                                 </Col>
                                 <Col>
-                                    <Input id="passwordConfirm" type="password" label="Confirmar Senha" invalidMessage="As senhas devem ser idênticas" onChange={this.handlerConfirmPassword} required />
+                                    <Input id="passwordConfirm" type="password" label="Confirmar Senha" invalidMessage="As senhas devem ser idênticas" value={confirmPassword} onChange={this.handlerConfirmPassword} required />
                                 </Col>
                             </Row>
                         </div>

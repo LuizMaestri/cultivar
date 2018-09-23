@@ -189,7 +189,7 @@ export default class extends Component {
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
         const { codSchool } = event.school;
-        const { trainings } = event;
+        const { trainings, type, address } = event;
         return (
             <Modal isOpen={isOpen} toggle={close} style={{width: 'max-content'}}>
                 <ModalHeader toggle={close}>Novo Evento - {dateTitle}</ModalHeader>
@@ -197,7 +197,7 @@ export default class extends Component {
                     <Wizard onCancel={close} submitLabel="cadastrar" onSubmit={this.handlerSubmit}>
                         <div>
                             <h3>Dados do evento</h3>
-                            <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" onChange={this.handlerType} required >
+                            <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={type} onChange={this.handlerType} required >
                                 <option value="">Selecione</option>
                                 {
                                     typesEvent.map(
@@ -205,21 +205,21 @@ export default class extends Component {
                                     )
                                 }
                             </Input>
-                            <Input id="city" label="Cidade" invalidMessage="Cidade é obrigatório" onChange={this.handlerCity} required />
-                            <Input id="neighborhood" label="Bairro" invalidMessage="Bairro é obrigatório" onChange={this.handlerNeighborhood} required />
+                            <Input id="city" label="Cidade" invalidMessage="Cidade é obrigatório" value={address.city} onChange={this.handlerCity} required />
+                            <Input id="neighborhood" label="Bairro" invalidMessage="Bairro é obrigatório" value={address.neighborhood} onChange={this.handlerNeighborhood} required />
                             <Row>
                                 <Col>
-                                    <Input id="street" label="Lougradouro" invalidMessage="Lougradouro é obrigatório" onChange={this.handlerStreet} required />
+                                    <Input id="street" label="Lougradouro" invalidMessage="Lougradouro é obrigatório" value={address.street} onChange={this.handlerStreet} required />
                                 </Col>
                                 <Col md="3">
-                                    <Input id="number" label="Número" onChange={this.handlerNumber} />
+                                    <Input id="number" label="Número" value={address.number} onChange={this.handlerNumber} />
                                 </Col>
                             </Row>
                             <hr className="row" />
                         </div>
                         <div>
                             <h3>Participantes</h3>
-                            <Input id="filter" type="select" label="Escola" onChange={this.handlerSelectSchool}>
+                            <Input id="filter" type="select" label="Escola" value={codSchool} onChange={this.handlerSelectSchool}>
                                 <option>Selecione</option>
                                 {
                                     schools.map(school => <option key={school.codSchool} value={school.codSchool}>{school.name}</option>)
@@ -249,7 +249,7 @@ export default class extends Component {
                                                 <Input id={`training-${index}`} label="Nome" invalidMessage="Nome é Obrigatório" value={training.name} onChange={event => this.handlerNameAttachemnt(event, index)} required/>
                                             </Col>
                                             <Col md="5">
-                                                <Switch id={`file-${index}`} label="Arquivo pra Upload " onChange={value => this.handlerIsFile(value, index)} />
+                                                <Switch id={`file-${index}`} label="Arquivo pra Upload" value={training.isFile} onChange={value => this.handlerIsFile(value, index)} />
                                             </Col>
                                         </Row>
                                         <Row>

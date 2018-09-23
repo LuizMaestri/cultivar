@@ -4,7 +4,7 @@ import Roles from './role';
 import Status from './status';
 
 export default class{
-    constructor(cnpj, name, phone, address = new Address(), responsible = new User()) {
+    constructor(cnpj='', name='', phone='', address = new Address(), responsible = new User()) {
         this.cnpj = cnpj;
         this.name = name
         this.phone = phone;

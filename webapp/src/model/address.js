@@ -1,5 +1,5 @@
 export default class {
-    constructor(codAddress, city, neighborhood, street, number) {
+    constructor(codAddress, city = '', neighborhood = '', street = '', number = '') {
         this.codAddress = codAddress;
         this.city = city;
         this.neighborhood = neighborhood;
