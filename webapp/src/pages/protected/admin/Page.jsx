@@ -3,6 +3,7 @@ import { Redirect } from 'react-router-dom';
 import { Row, Col } from 'reactstrap';
 import ListAttachment from './attachment';
 import ListQuestion from './question';
+import ListEventType from './eventType';
 import { Roles } from '../../../model';
 
 export default ({role}) => {
@@ -17,7 +18,7 @@ export default ({role}) => {
                         </Col>
                         <Col md="1" />
                         <Col>
-                            <ListAttachment />
+                            <ListEventType />
                         </Col>
                     </Row>
                     <br/>

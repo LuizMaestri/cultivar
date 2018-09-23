@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getRequest, putRequest } from '../../../../../utils/http';
 import formatter from '../../../../../utils/formatter';
 import { Input } from '../../../../../components';
-import { EventType, Status, Address, Schooling, School } from '../../../../../model';
+import { Status, Address, Schooling, School } from '../../../../../model';
 import axios from 'axios';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col, Label, Form } from 'reactstrap';
 import pic from './pic.jpeg';
@@ -28,13 +28,11 @@ export default class extends Component{
         const { cpf } = this.props;
         axios.all([
             getRequest(`/volunteer/${cpf}`, res => res.data),
-            getRequest(`/volunteer/${cpf}/event/${EventType.TRAINING}`, res => res.data),
             getRequest('/school', res => res.data)
         ]).then(
             res => this.setState({
                 volunteer: res[0],
-                trainings: res[1] ? res[1] : [],
-                schools: res[2]
+                schools: res[1]
             })
         );
     }

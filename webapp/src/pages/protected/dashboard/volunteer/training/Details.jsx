@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { getRequest } from '../../../../../utils/http';
-import EventType from '../../../../../model/eventType';
 import { Address } from '../../../../../model';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
 
@@ -27,7 +26,7 @@ export default class extends Component{
             `/event/${code}`,
             res => {
                 let eventDetails  = res.data;
-                eventDetails.title = EventType.translate(eventDetails.type) + ' - ' + new Date(eventDetails.startOccurrence).toLocaleString();
+                eventDetails.title = eventDetails.type.name + ' - ' + new Date(eventDetails.startOccurrence).toLocaleString();
                 this.setState({ eventDetails });
             }
         );

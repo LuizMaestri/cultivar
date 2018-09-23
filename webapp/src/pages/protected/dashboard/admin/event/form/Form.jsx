@@ -2,9 +2,10 @@ import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { postRequest, getRequest } from '../../../../../../utils/http';
 import formatter from '../../../../../../utils/formatter';
-import { Event, EventType, School, Training } from '../../../../../../model';
+import { Event,  School, Training } from '../../../../../../model';
 import { Row, Col, Modal, ModalHeader, ModalBody, Button, Label } from 'reactstrap';
 import { Wizard, Input, Switch, FileInput } from '../../../../../../components';
+import axios from 'axios';
 import './form.css';
 
 export default class extends Component {
@@ -13,7 +14,8 @@ export default class extends Component {
         this.state = {
             event: props.event,
             volunteers: [],
-            schools: []
+            schools: [],
+            typesEvent: []
         };
         this.handlerType = this.handlerType.bind(this);
         this.handlerCity = this.handlerCity.bind(this);
@@ -40,10 +42,16 @@ export default class extends Component {
     componentWillMount(){
         const { event } = this.state;
         event.allDay = event.startOccurrence === event.endOccurrence;
-        getRequest('/school', res => this.setState({
+        axios.all([
+            getRequest('/school', res => res.data),
+            getRequest('/typeEvent', res => res.data)
+        ]).then(
+            res => this.setState({
                 event,
-                schools: res.data
-        }));
+                schools: res[0],
+                typesEvent: res[1]
+            })
+        );
     }
 
     handlerType(userEvent){
@@ -176,7 +184,7 @@ export default class extends Component {
 
     render(){
         const { isOpen, close } = this.props;
-        const { event, volunteers, schools } = this.state;
+        const { event, volunteers, schools, typesEvent } = this.state;
         const dateTitle = event.allDay ? 
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
@@ -192,9 +200,8 @@ export default class extends Component {
                             <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" onChange={this.handlerType} required >
                                 <option value="">Selecione</option>
                                 {
-                                    EventType.values()
-                                    .map(
-                                        type => <option key={type} value={type}>{EventType.translate(type)}</option>
+                                    typesEvent.map(
+                                        type => <option key={type} value={type}>{type.name}</option>
                                     )
                                 }
                             </Input>

@@ -3,7 +3,7 @@ import { Calendar } from '../../../../../components';
 import { Row, Col, Label } from 'reactstrap';
 import BigCalendar from 'react-big-calendar';
 import Details from './Details.jsx'
-import { EventType, Volunteer } from '../../../../../model';
+import { Volunteer } from '../../../../../model';
 import { getRequest } from '../../../../../utils/http';
 import axios from 'axios';
 
@@ -12,7 +12,7 @@ const mapEvents =
         event =>{
             event.end = new Date(event.endOccurrence);
             event.start = new Date(event.startOccurrence);
-            event.title = EventType.translate(event.type) + ' - ' + event.start.toLocaleString()
+            event.title = event.type.name + ' - ' + event.start.toLocaleString()
             return event
         }
     );

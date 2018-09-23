@@ -4,7 +4,6 @@ import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Event;
-import br.ufsc.cultivar.model.TypeEvent;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.EventRepository;
 import br.ufsc.cultivar.repository.ParticipationRepository;
@@ -27,7 +26,6 @@ public class EventService {
     FileUtils fileUtils;
     EventRepository eventRepository;
     AddressRepository addressRepository;
-    TrainingService trainingService;
     RatingService ratingService;
     UserService userService;
     ParticipationRepository participationRepository;
@@ -56,11 +54,6 @@ public class EventService {
                 .forEach(
                         user -> participationRepository.create(codEvent, user.getCpf())
                 );
-        Optional.ofNullable(event.getTrainings())
-                .orElseGet(ArrayList::new)
-                .forEach(
-                        training -> trainingService.create(training, codEvent)
-                );
     }
 
     public List<Event> get(final Map<String, Object> filter) throws ServiceException {
@@ -80,8 +73,6 @@ public class EventService {
                 userService.getParticipants(codEvent)
         ).withRatings(
                 ratingService.get(codEvent)
-        ).withTrainings(
-                trainingService.getByEvent(codEvent)
         );
     }
 
@@ -95,18 +86,14 @@ public class EventService {
         if (event.getCodEvent().equals(codEvent)){
             throw new ServiceException(null, null, null);
         }
-        event.getTrainings().forEach(training -> {
-            trainingService.deleteByEvent(codEvent);
-            trainingService.create(training, codEvent);
-        });
         eventRepository.update(event);
     }
 
-    public List<Event> eventsByVolunteer(final String cpf, final TypeEvent type) {
+    public List<Event> eventsByVolunteer(final String cpf, final Long type) {
         return eventRepository.eventsByVolunteer(cpf, type);
     }
 
-    public List<Event> eventsBySchool(Long codSchool, TypeEvent type) {
+    public List<Event> eventsBySchool(Long codSchool, Long type) {
         return eventRepository.eventsBySchool(codSchool, type);
     }
 }

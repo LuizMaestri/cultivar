@@ -36,10 +36,10 @@ public class TrainingRepository {
                 ).longValue();
     }
 
-    public List<Training> getByEvent(final Long codEvent) {
+    public List<Training> getByEvent(final Long tpEvent) {
         return jdbcTemplate.query(
-                "select * from training where cod_event=:cod_event",
-                new MapSqlParameterSource("cod_event", codEvent),
+                "select * from training where tp_event=:tp_event",
+                new MapSqlParameterSource("tp_event", tpEvent),
                 (rs, i) -> this.build(rs)
         );
     }
@@ -52,10 +52,10 @@ public class TrainingRepository {
         );
     }
 
-    public void deleteByEvent(final Long codEvent) {
+    public void deleteByEvent(final Long tpEvent) {
         jdbcTemplate.update(
-                "select * from training where cod_event=:cod_event",
-                new MapSqlParameterSource("cod_event", codEvent)
+                "select * from training where tp_event=:tp_event",
+                new MapSqlParameterSource("tp_event", tpEvent)
         );
     }
 

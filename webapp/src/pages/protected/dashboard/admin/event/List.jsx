@@ -5,7 +5,6 @@ import BigCalendar from 'react-big-calendar';
 import FormEvent from './form';
 import Details from './Details.jsx'
 import Event from '../../../../../model/event';
-import EventType from '../../../../../model/eventType';
 import { getRequest } from '../../../../../utils/http';
 import axios from 'axios';
 import './list.css'
@@ -15,7 +14,7 @@ const mapEvents =
         event =>{
             event.end = new Date(event.endOccurrence);
             event.start = new Date(event.startOccurrence);
-            event.title = EventType.translate(event.type) + ' - ' + event.start.toLocaleString()
+            event.title = event.type.name + ' - ' + event.start.toLocaleString()
             return event
         }
     );

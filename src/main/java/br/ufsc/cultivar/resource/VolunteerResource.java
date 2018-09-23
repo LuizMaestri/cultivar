@@ -60,7 +60,7 @@ public class VolunteerResource {
     }
 
     @GetMapping(path = {"/{cpf}/event", "/{cpf}/event/{type}"})
-    public List<Event> getEvents(@PathVariable final String cpf, @PathVariable(required = false) final TypeEvent type){
+    public List<Event> getEvents(@PathVariable final String cpf, @PathVariable(required = false) final Long type){
         return eventService.eventsByVolunteer(cpf, type);
     }
 

@@ -95,7 +95,9 @@ public class EventRepository {
                 .allDay(rs.getBoolean("fl_all_day"))
                 .createAt(DateUtils.toDate(rs.getTimestamp("dt_create")))
                 .type(
-                        TypeEvent.valueOf(rs.getString("tp_event"))
+                        TypeEvent.builder()
+                                .type(rs.getLong("tp_event"))
+                                .build()
                 )
                 .address(
                         Address.builder()
@@ -113,29 +115,29 @@ public class EventRepository {
                 .addValue("dt_start_occurrence", event.getStartOccurrence())
                 .addValue("dt_end_occurrence",  event.getEndOccurrence())
                 .addValue("fl_all_day", event.getAllDay())
-                .addValue("tp_event", event.getType().name())
+                .addValue("tp_event", event.getType().getType())
                 .addValue("cod_address", event.getAddress().getCodAddress())
                 .addValue("cod_school", event.getSchool().getCodSchool())
                 .addValue("cod_event", event.getCodEvent());
     }
 
-    public List<Event> eventsByVolunteer(final String cpf, final TypeEvent type) {
+    public List<Event> eventsByVolunteer(final String cpf, final Long type) {
         val sb = new StringBuilder("select e.* from event e natural join participation p where cod_cpf=:cod_cpf");
         val params = new MapSqlParameterSource("cod_cpf", cpf);
         if (Objects.nonNull(type)){
             sb.append(" and tp_event=:tp_event");
-            params.addValue("tp_event", type.name());
+            params.addValue("tp_event", type);
         }
 
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
     }
 
-    public List<Event> eventsBySchool(Long codSchool, TypeEvent type) {
+    public List<Event> eventsBySchool(Long codSchool, Long type) {
         val sb = new StringBuilder("select e.* from event e where cod_school=:cod_school");
         val params = new MapSqlParameterSource("cod_school", codSchool);
         if (Objects.nonNull(type)){
             sb.append(" and tp_event=:tp_event");
-            params.addValue("tp_event", type.name());
+            params.addValue("tp_event", type);
         }
 
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));

@@ -42,7 +42,7 @@ public class SchoolResource {
     }
 
     @GetMapping(path = {"/{codSchool}/event", "/{codSchool}/event/{type}"}, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Event> getEvents(@PathVariable final Long codSchool, @PathVariable(required = false) final TypeEvent type){
+    public List<Event> getEvents(@PathVariable final Long codSchool, @PathVariable(required = false) final Long type){
         return eventService.eventsBySchool(codSchool, type);
     }
 
