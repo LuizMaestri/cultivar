@@ -35,6 +35,30 @@ export default class extends Component{
         deleteRequest(`/user/${user.cpf}`, () => afterDelete(company));
     }
 
+    getLabel() {
+        const { ratings, rating } = this.props.volunteer;
+        const lastRating = ratings[0];
+        let className, text;
+        if (lastRating) {
+            if (rating < 40 || lastRating.grade < 40) {
+                className = 'danger';
+            } else if (rating < 70) {
+                className = 'warning';
+            } else {
+                className = 'success';
+            }
+        } else {
+            className = 'secondary';
+            text = 'Ainda não há avaliações';
+        }
+
+        return (
+            <Label className={`btn btn-${className}`} style={{ cursor: 'default', width: 'inherit', height: '40px' }}>
+                {text}
+            </Label>
+        );
+    }
+
     render(){
         const { volunteer, afterDelete } = this.props;
         const { user } = volunteer;
@@ -58,9 +82,9 @@ export default class extends Component{
                         )
                     }
                 </td>
-                <td style={{ width: '60px' }}>
+                <td style={{ width: user.status === Status.WAIT_COMPANY ? '60px': '200px' }}>
                     {
-                        user.status === Status.WAIT_COMPANY && (
+                        user.status === Status.WAIT_COMPANY ? (
                             <div>
                                 <Button type="button" color="info" onClick={this.toggleRecommend}>
                                     Recomendar
@@ -71,8 +95,7 @@ export default class extends Component{
                                     )
                                 }
                             </div>
-                            
-                        )
+                        ) : this.getLabel()
                     }
                 </td>
                 <td style={{maxWidth: '15px'}}>

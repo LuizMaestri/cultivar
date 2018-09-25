@@ -38,7 +38,7 @@ public class VolunteerRepository {
                 .isEmpty()
                 ){
             sql.append(" and cod_cnpj in(:cod_cnpj)");
-            params.addValue("cod_cpnj", filterCompany);
+            params.addValue("cod_cnpj", filterCompany);
         }
         if (!Optional.ofNullable(filterSchool)
                 .orElseGet(ArrayList::new)

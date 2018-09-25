@@ -5,6 +5,7 @@ import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Volunteer;
 import br.ufsc.cultivar.repository.AnswerRepository;
 import br.ufsc.cultivar.repository.QuestionRepository;
+import br.ufsc.cultivar.repository.RatingRepository;
 import br.ufsc.cultivar.repository.VolunteerRepository;
 import br.ufsc.cultivar.utils.ValidateUtils;
 import lombok.AccessLevel;
@@ -14,9 +15,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -28,7 +27,7 @@ public class VolunteerService {
     VolunteerRepository volunteerRepository;
     UserService userService;
     CompanyService companyService;
-    RatingService ratingService;
+    RatingRepository ratingRepository;
     AnswerRepository answerRepository;
     QuestionRepository questionRepository;
     DispatchService dispatchService;
@@ -58,7 +57,15 @@ public class VolunteerService {
                     .map(volunteer -> {
                         try {
                             return volunteer.withUser(
-                                    userService.get(volunteer.getUser().getCpf())
+                                userService.get(
+                                    volunteer.getUser()
+                                        .getCpf()
+                                )
+                            ).withRatings(
+                                ratingRepository.get(
+                                    volunteer.getUser()
+                                        .getCpf()
+                                )
                             );
                         } catch (ServiceException e) {
                             throw new RuntimeException(e);
@@ -89,7 +96,7 @@ public class VolunteerService {
                             )
                         ).collect(Collectors.toList())
                 ).withRatings(
-                    ratingService.get(cpf)
+                    ratingRepository.get(cpf)
                 ).withDispatches(
                     dispatchService.get(cpf)
                 );
