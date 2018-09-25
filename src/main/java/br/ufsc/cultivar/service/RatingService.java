@@ -8,8 +8,6 @@ import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -23,13 +21,5 @@ public class RatingService {
 
     public void create(Rating rating, Long codEvent) {
         repository.create(rating, codEvent);
-    }
-
-    public List<Rating> get(String cpf) {
-        return repository.get(cpf);
-    }
-
-    public List<Rating> get(Long codEvent) {
-        return repository.get(codEvent);
     }
 }

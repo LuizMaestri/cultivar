@@ -7,6 +7,7 @@ import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.EventRepository;
 import br.ufsc.cultivar.repository.ParticipationRepository;
+import br.ufsc.cultivar.repository.RatingRepository;
 import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class EventService {
     FileUtils fileUtils;
     EventRepository eventRepository;
     AddressRepository addressRepository;
-    RatingService ratingService;
+    RatingRepository ratingRepository;
     UserService userService;
     ParticipationRepository participationRepository;
 
@@ -72,7 +73,7 @@ public class EventService {
         ).withParticipants(
                 userService.getParticipants(codEvent)
         ).withRatings(
-                ratingService.get(codEvent)
+                ratingRepository.get(codEvent)
         );
     }
 
