@@ -15,7 +15,8 @@ export default class extends Component {
             event: props.event,
             volunteers: [],
             schools: [],
-            typesEvent: []
+            typesEvent: [],
+            trainingsOfType: []
         };
         this.handlerType = this.handlerType.bind(this);
         this.handlerCity = this.handlerCity.bind(this);
@@ -56,8 +57,12 @@ export default class extends Component {
 
     handlerType(userEvent){
         const { event } = this.state;
-        event.type = userEvent.target.value;
-        this.setState({ event });
+        const { value } = userEvent.target;
+        event.type = value;
+        getRequest(
+            `/typeEvent/${value}/trainings`,
+            res => this.setState({ trainingsOfType: res.data, event })
+        );
     }
 
     //address
@@ -104,10 +109,24 @@ export default class extends Component {
             }
         }
         if(value){
-            getRequest(
-                `/volunteer?cod_school=${value}`,
-                res => this.setState({volunteers: res.data, event})
-            );
+            axios.all([
+                getRequest(
+                    `/volunteer?cod_school=${value}`,
+                    res => res.data
+                ),
+                getRequest(
+                    `/school/${value}`,
+                    res => res.data
+                )
+            ]).then(
+                res => {
+                    const school = res[1];
+                    event.school = school;
+                    event.address = school.address;
+                    event.address.codAddress = null;
+                    this.setState({volunteers: res[0], event});
+                }
+            )
         } else{
             this.setState({volunteers: [], event});
         }
@@ -184,11 +203,12 @@ export default class extends Component {
 
     render(){
         const { isOpen, close } = this.props;
-        const { event, volunteers, schools, typesEvent } = this.state;
+        const { event, volunteers, schools, typesEvent, trainingsOfType } = this.state;
         const dateTitle = event.allDay ? 
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
         const { codSchool } = event.school;
+        console.log(codSchool);
         const { trainings, type, address } = event;
         return (
             <Modal isOpen={isOpen} toggle={close} style={{width: 'max-content'}}>
@@ -201,30 +221,30 @@ export default class extends Component {
                                 <option value="">Selecione</option>
                                 {
                                     typesEvent.map(
-                                        type => <option key={type} value={type}>{type.name}</option>
+                                        typeEvent => <option key={typeEvent.type} value={typeEvent.type}>{typeEvent.name}</option>
                                     )
                                 }
                             </Input>
-                            <Input id="city" label="Cidade" invalidMessage="Cidade é obrigatório" value={address.city} onChange={this.handlerCity} required />
-                            <Input id="neighborhood" label="Bairro" invalidMessage="Bairro é obrigatório" value={address.neighborhood} onChange={this.handlerNeighborhood} required />
-                            <Row>
-                                <Col>
-                                    <Input id="street" label="Lougradouro" invalidMessage="Lougradouro é obrigatório" value={address.street} onChange={this.handlerStreet} required />
-                                </Col>
-                                <Col md="3">
-                                    <Input id="number" label="Número" value={address.number} onChange={this.handlerNumber} />
-                                </Col>
-                            </Row>
-                            <hr className="row" />
-                        </div>
-                        <div>
-                            <h3>Participantes</h3>
                             <Input id="filter" type="select" label="Escola" value={codSchool} onChange={this.handlerSelectSchool}>
                                 <option>Selecione</option>
                                 {
                                     schools.map(school => <option key={school.codSchool} value={school.codSchool}>{school.name}</option>)
                                 }
                             </Input>
+                            <Input id="city" label="Cidade" invalidMessage="Cidade é obrigatório" value={address.city} disabled={!codSchool} onChange={this.handlerCity} required />
+                            <Input id="neighborhood" label="Bairro" invalidMessage="Bairro é obrigatório" value={address.neighborhood} disabled={!codSchool} onChange={this.handlerNeighborhood} required />
+                            <Row>
+                                <Col>
+                                    <Input id="street" label="Lougradouro" invalidMessage="Lougradouro é obrigatório" value={address.street} disabled={!codSchool} onChange={this.handlerStreet} required />
+                                </Col>
+                                <Col md="3">
+                                    <Input id="number" label="Número" value={address.number} onChange={this.handlerNumber} disabled={!codSchool} />
+                                </Col>
+                            </Row>
+                            <hr className="row" />
+                        </div>
+                        <div>
+                            <h3>Participantes</h3>
                             <Input id="type" type="select" label="Selecione" invalidMessage="Tipo de Evento é obrigatório" onChange={this.handlerParticipants} style={{ height: '500px'}} multiple required disabled={!codSchool} >
                                 {
                                     volunteers.map(
@@ -237,6 +257,24 @@ export default class extends Component {
                                     )
                                 }
                             </Input>
+                            <hr className="row" />
+                        </div>
+                        <div>
+                            <h3>Materias</h3>
+                            {
+                                trainingsOfType.length?
+                                    trainingsOfType.map(
+                                        training => (
+                                                <Col key={training.codTraining}>
+                                                    {training.link && <a className="btn btn-info" href={training.link} target="_blank">{training.name}</a>}
+                                                </Col>
+                                            )
+                                    ) : (
+                                        <div>
+                                            <strong>Para esse tipo de evento não há materiais préviamente cadastrados</strong>
+                                        </div>
+                                    )
+                            }
                             <hr className="row" />
                         </div>
                         <div>

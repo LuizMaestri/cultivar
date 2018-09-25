@@ -1,8 +1,8 @@
 package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.model.Training;
 import br.ufsc.cultivar.model.TypeEvent;
-import br.ufsc.cultivar.model.Volunteer;
 import br.ufsc.cultivar.service.TypeEventService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -41,5 +41,10 @@ public class TypeEventResource {
     @DeleteMapping(path = "/{tpEvent}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public TypeEvent delete(@PathVariable final Long tpEvent) throws ServiceException{
         return typeEventService.delete(tpEvent);
+    }
+
+    @GetMapping(path = "/{tpEvent}/trainings", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Training> getTrainings(@PathVariable final Long tpEvent) throws ServiceException{
+        return typeEventService.getTrainings(tpEvent);
     }
 }

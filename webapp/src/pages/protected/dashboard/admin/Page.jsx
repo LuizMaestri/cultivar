@@ -75,7 +75,6 @@ export default class extends Component{
                             <ListEvent/>
                         </Col>
                     </Row>
-                    <Hr />
                 </Col>
                 <Col md="1" />
             </Row>

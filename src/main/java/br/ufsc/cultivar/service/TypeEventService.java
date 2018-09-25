@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.model.Training;
 import br.ufsc.cultivar.model.TypeEvent;
 import br.ufsc.cultivar.repository.TrainingRepository;
 import br.ufsc.cultivar.repository.TypeEventRepository;
@@ -48,5 +49,9 @@ public class TypeEventService {
         val typeEvent = get(tpEvent);
         typeEventRepository.delete(tpEvent);
         return typeEvent;
+    }
+
+    public List<Training> getTrainings(Long tpEvent) {
+        return trainingRepository.getByEvent(tpEvent);
     }
 }

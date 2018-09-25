@@ -14,10 +14,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -35,11 +32,18 @@ public class VolunteerRepository {
     public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool) {
         val sql = new StringBuilder("select * from volunteer where 1=1");
         val params = new MapSqlParameterSource();
-        if (!filterCompany.isEmpty()){
+
+        if (!Optional.ofNullable(filterCompany)
+                .orElseGet(ArrayList::new)
+                .isEmpty()
+                ){
             sql.append(" and cod_cnpj in(:cod_cnpj)");
             params.addValue("cod_cpnj", filterCompany);
         }
-        if (!filterSchool.isEmpty()){
+        if (!Optional.ofNullable(filterSchool)
+                .orElseGet(ArrayList::new)
+                .isEmpty()
+                ){
             sql.append(" and cod_school in(:cod_school)");
             params.addValue("cod_school", filterSchool);
         }
