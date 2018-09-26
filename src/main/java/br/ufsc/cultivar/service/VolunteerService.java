@@ -3,10 +3,7 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Volunteer;
-import br.ufsc.cultivar.repository.AnswerRepository;
-import br.ufsc.cultivar.repository.QuestionRepository;
-import br.ufsc.cultivar.repository.RatingRepository;
-import br.ufsc.cultivar.repository.VolunteerRepository;
+import br.ufsc.cultivar.repository.*;
 import br.ufsc.cultivar.utils.ValidateUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,6 +12,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -30,6 +28,7 @@ public class VolunteerService {
     RatingRepository ratingRepository;
     AnswerRepository answerRepository;
     QuestionRepository questionRepository;
+    EventRepository eventRepository;
     DispatchService dispatchService;
 
     public void create(final Volunteer volunteer) throws ServiceException {
@@ -103,6 +102,16 @@ public class VolunteerService {
     }
 
     public Volunteer delete(final String cpf) throws ServiceException {
+        val hasEvents = eventRepository.eventsByVolunteer(cpf, null)
+                .stream()
+                .filter(
+                        event -> event.getEndOccurrence()
+                                .after(new Date())
+                ).collect(Collectors.toList())
+                .isEmpty();
+        if(hasEvents){
+            throw new ServiceException(null, null, null);
+        }
         val volunteer = get(cpf);
         volunteerRepository.delete(cpf);
         return volunteer;
