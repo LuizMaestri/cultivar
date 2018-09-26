@@ -15,7 +15,7 @@ const Step = ({userStatus, status, icon, successContition, label}) => (
         </Row>
         <Row>
             <Col>
-                {label}
+                {successContition ? label.replace('Aguardando ', '') : label}
             </Col>
         </Row>
     </Col>
