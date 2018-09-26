@@ -57,8 +57,8 @@ public class EventService {
                 );
     }
 
-    public List<Event> get(final Map<String, Object> filter) throws ServiceException {
-        return eventRepository.get(filter);
+    public Set<Event> get(final List<String> filterVolunteer,  final List<Long> filterSchool) throws ServiceException {
+        return new HashSet<>(eventRepository.get(filterVolunteer, filterSchool));
     }
 
     public Event get(final Long codEvent) throws ServiceException {

@@ -8,6 +8,7 @@ export {
     Wizard,
     Option,
     Switch,
-    Required
+    Required,
+    Checkbox
 } from './form';
 export { default as Calendar } from './calender';

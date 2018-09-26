@@ -26,6 +26,7 @@ export default class extends Component{
 
     render(){
         const { volunteers } = this.state;
+        const { onSelectVolunteer } = this.props;
         return (
             <div>
                 <Row>
@@ -41,7 +42,7 @@ export default class extends Component{
                                 volunteers.length ?
                                     volunteers.map(
                                         volunteer => (
-                                            <VolunteerItem key={volunteer.user.cpf} volunteer={volunteer} afterDelete={this.componentWillMount.bind(this)}/>
+                                            <VolunteerItem key={volunteer.user.cpf} volunteer={volunteer} onSelectVolunteer={onSelectVolunteer} afterDelete={this.componentWillMount.bind(this)}/>
                                         )
                                     ) : (
                                         <ListGroupItem>

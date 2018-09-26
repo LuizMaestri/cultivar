@@ -3,6 +3,7 @@ import { Row, Col, ListGroupItem } from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';
 import Details from './Details.jsx';
 import PropTypes from 'prop-types';
+import { Checkbox } from '../../../../../components';
 import { deleteRequest } from '../../../../../utils/http';
 import formatter from '../../../../../utils/formatter';
 
@@ -33,12 +34,15 @@ export default class extends Component{
     }
 
     render(){
-        const { volunteer } = this.props;
+        const { volunteer, onSelectVolunteer } = this.props;
         const { user } = volunteer;
         const { isOpen } = this.state;
         return (
             <ListGroupItem>
                 <Row>
+                    <Col md="1">
+                        <Checkbox value={user.cpf} onChange={onSelectVolunteer} />
+                    </Col>
                     <Col onClick={this.toggle} className="text-ellipsis" style={{ cursor: 'pointer' }}>
                         {formatter.cpf(user.cpf)} - {user.name}
                     </Col>

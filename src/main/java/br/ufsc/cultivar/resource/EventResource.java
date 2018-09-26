@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/event")
@@ -33,8 +34,10 @@ public class EventResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Event> get(@RequestParam final Map<String, Object> filter) throws ServiceException{
-        return eventService.get(filter);
+    public Set<Event> get(
+            @RequestParam(value = "cod_cpf", required = false) final List<String> filterVolunteer,
+           @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool) throws ServiceException{
+        return eventService.get(filterVolunteer, filterSchool);
     }
 
     @GetMapping(path = "/{codEvent}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

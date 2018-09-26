@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import ListCompany from './company';
 import ListVolunteer from './volunteer';
 import ListEvent from './event'
@@ -6,11 +6,11 @@ import ListSchool from './school';
 import { Row, Col } from 'reactstrap';
 
 const Hr = () => (
-    <div>
+    <Fragment>
         <br />
         <hr />
         <br />
-    </div>
+    </Fragment>
 );
 
 export default class extends Component{
@@ -18,10 +18,12 @@ export default class extends Component{
         super();
         this.state = {
             filterByCompany: [],
-            filterBySchool: []
+            filterBySchool: [],
+            filterByVolunteer: []
         }
         this.onSelectCompany = this.onSelectCompany.bind(this);
         this.onSelectSchool = this.onSelectSchool.bind(this);
+        this.onSelectVolunteer = this.onSelectVolunteer.bind(this);
     }
 
     onSelectCompany(event){
@@ -46,8 +48,19 @@ export default class extends Component{
         this.setState({ filterBySchool });
     }
 
+    onSelectVolunteer(event) {
+        const { filterByVolunteer } = this.state;
+        const { value } = event.target;
+        if (filterByVolunteer.includes(value)) {
+            filterByVolunteer.splice(filterByVolunteer.indexOf(value), 1);
+        } else {
+            filterByVolunteer.push(value);
+        }
+        this.setState({ filterByVolunteer });
+    }
+
     render(){
-        const { filterByCompany, filterBySchool } = this.state;
+        const { filterByCompany, filterBySchool, filterByVolunteer } = this.state;
         return (
             <Row>
                 <Col md="1" />
@@ -62,7 +75,7 @@ export default class extends Component{
                         </Col>
                         <Col md="1" />
                         <Col>
-                            <ListVolunteer filterByCompany={filterByCompany} filterBySchool={filterBySchool}/>
+                            <ListVolunteer onSelectVolunteer={this.onSelectVolunteer} filterByCompany={filterByCompany} filterBySchool={filterBySchool}/>
                         </Col>
                         <Col md="1" />
                         <Col>
@@ -72,7 +85,7 @@ export default class extends Component{
                     <Hr />
                     <Row>
                         <Col>
-                            <ListEvent/>
+                            <ListEvent filterBySchool={filterBySchool} filterByVolunteer={filterByVolunteer}/>
                         </Col>
                     </Row>
                 </Col>

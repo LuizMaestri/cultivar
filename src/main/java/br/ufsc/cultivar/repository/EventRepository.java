@@ -18,10 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -39,21 +36,23 @@ public class EventRepository {
                 .longValue();
     }
 
-    public List<Event> get(final Map<String, Object> filter) {
-        val sql = new StringBuilder("select * from event where 1=1");
+    public List<Event> get(final List<String> filterVolunteer,  final List<Long> filterSchool) {
+        val sql = new StringBuilder("select e.* from event e natural join participation where 1=1");
         val params = new MapSqlParameterSource();
-        Optional.ofNullable(filter)
-                .ifPresent(
-                        map -> map.forEach(
-                                (key, value) -> {
-                                    sql.append(" and ")
-                                            .append(key)
-                                            .append("=:")
-                                            .append(key);
-                                    params.addValue(key, value);
-                                }
-                        )
-                );
+        if (!Optional.ofNullable(filterVolunteer)
+                .orElseGet(ArrayList::new)
+                .isEmpty()
+                ){
+            sql.append(" and cod_cpf in(:cod_cpf)");
+            params.addValue("cod_cpf", filterVolunteer);
+        }
+        if (!Optional.ofNullable(filterSchool)
+                .orElseGet(ArrayList::new)
+                .isEmpty()
+                ){
+            sql.append(" and cod_school in(:cod_school)");
+            params.addValue("cod_school", filterSchool);
+        }
         return jdbcTemplate.query(
                 sql.toString(),
                 params,

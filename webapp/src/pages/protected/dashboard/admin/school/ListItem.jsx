@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { deleteRequest } from '../../../../../utils/http';
+import { Checkbox } from '../../../../../components';
 import { Row, Col, ListGroupItem } from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';
 import Details from './Details.jsx';
@@ -37,7 +38,7 @@ export default class extends Component{
             <ListGroupItem key={school.codSchool}>
                 <Row>
                     <Col md="1">
-                        <input type="checkbox" value={school.codSchool} onChange={onSelectSchool}/>
+                        <Checkbox value={school.codSchool} onChange={onSelectSchool}/>
                     </Col>
                     <Col md="9" onClick={this.handlerDetails} className="text-ellipsis" style={{ cursor: 'pointer' }}>
                         {school.name}
