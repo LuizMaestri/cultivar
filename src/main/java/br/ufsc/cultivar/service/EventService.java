@@ -57,8 +57,9 @@ public class EventService {
                 );
     }
 
-    public Set<Event> get(final List<String> filterVolunteer,  final List<Long> filterSchool) throws ServiceException {
-        return new HashSet<>(eventRepository.get(filterVolunteer, filterSchool));
+    public Set<Event> get(final List<String> filterVolunteer, final List<Long> filterSchool,
+                          final Long filterProject) throws ServiceException {
+        return new HashSet<>(eventRepository.get(filterVolunteer, filterSchool, filterProject));
     }
 
     public Event get(final Long codEvent) throws ServiceException {
@@ -96,9 +97,5 @@ public class EventService {
 
     public List<Event> eventsBySchool(Long codSchool, Long type) {
         return eventRepository.eventsBySchool(codSchool, type);
-    }
-
-    public List<Event> eventsByProject(Long codProject) {
-        return eventRepository.eventsByProject(codProject);
     }
 }

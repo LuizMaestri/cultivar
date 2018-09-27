@@ -1,8 +1,6 @@
 package br.ufsc.cultivar.resource;
 
-import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.Project;
-import br.ufsc.cultivar.service.EventService;
 import br.ufsc.cultivar.service.ProjectService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -22,7 +20,6 @@ import java.util.List;
 public class ProjectResource {
 
     ProjectService projectService;
-    EventService eventService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -38,11 +35,6 @@ public class ProjectResource {
     @GetMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Project get(@PathVariable final Long codProject){
         return projectService.get(codProject);
-    }
-
-    @GetMapping(path = "/{codProject}/event", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Event> getEvents(@PathVariable final Long codProject){
-        return eventService.eventsByProject(codProject);
     }
 
     @DeleteMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

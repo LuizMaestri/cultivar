@@ -33,7 +33,7 @@ public class EventRepository {
                 .longValue();
     }
 
-    public List<Event> get(final List<String> filterVolunteer,  final List<Long> filterSchool) {
+    public List<Event> get(final List<String> filterVolunteer,  final List<Long> filterSchool, final Long filterProject) {
         val sql = new StringBuilder("select e.* from event e natural join participation where 1=1");
         val params = new MapSqlParameterSource();
         if (!Optional.ofNullable(filterVolunteer)
@@ -49,6 +49,10 @@ public class EventRepository {
                 ){
             sql.append(" and cod_school in(:cod_school)");
             params.addValue("cod_school", filterSchool);
+        }
+        if (Objects.nonNull(filterProject)){
+            sql.append(" and cod_project in(:cod_project)");
+            params.addValue("cod_project", filterProject);
         }
         return jdbcTemplate.query(
                 sql.toString(),
@@ -145,13 +149,5 @@ public class EventRepository {
         }
 
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
-    }
-
-    public List<Event> eventsByProject(Long codProject) {
-        return jdbcTemplate.query(
-                "select e.* from event e where cod_project=:cod_project",
-                new MapSqlParameterSource("cod_project", codProject),
-                (rs, i) -> this.build(rs)
-        );
     }
 }

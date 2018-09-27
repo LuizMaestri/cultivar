@@ -36,8 +36,9 @@ public class EventResource {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Set<Event> get(
             @RequestParam(value = "cod_cpf", required = false) final List<String> filterVolunteer,
-           @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool) throws ServiceException{
-        return eventService.get(filterVolunteer, filterSchool);
+            @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool,
+            @RequestParam(value = "cod_project", required = false) final Long filterProject) throws ServiceException{
+        return eventService.get(filterVolunteer, filterSchool, filterProject);
     }
 
     @GetMapping(path = "/{codEvent}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
