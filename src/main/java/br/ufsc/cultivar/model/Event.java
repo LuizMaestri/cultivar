@@ -42,6 +42,8 @@ public class Event {
     @Valid
     @NotNull
     School school;
+    @Valid
+    Project project;
     List<@Valid Training> trainings;
     @NotNull
     @NotEmpty

@@ -97,4 +97,8 @@ public class EventService {
     public List<Event> eventsBySchool(Long codSchool, Long type) {
         return eventRepository.eventsBySchool(codSchool, type);
     }
+
+    public List<Event> eventsByProject(Long codProject) {
+        return eventRepository.eventsByProject(codProject);
+    }
 }

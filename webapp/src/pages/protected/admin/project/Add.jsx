@@ -26,7 +26,7 @@ export default class extends Component{
         const { isOpen } = this.state;
         const { afterSubmit } = this.props;
         return (
-            <div class="float-right">
+            <div>
                 <Button type="button" color="primary" onClick={this.handlerAdd}>
                     <FaPlus />
                 </Button>

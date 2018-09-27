@@ -1,9 +1,6 @@
 package br.ufsc.cultivar.repository;
 
-import br.ufsc.cultivar.model.Address;
-import br.ufsc.cultivar.model.Event;
-import br.ufsc.cultivar.model.School;
-import br.ufsc.cultivar.model.TypeEvent;
+import br.ufsc.cultivar.model.*;
 import br.ufsc.cultivar.utils.DatabaseUtils;
 import br.ufsc.cultivar.utils.DateUtils;
 import lombok.AccessLevel;
@@ -87,6 +84,8 @@ public class EventRepository {
         if(!DatabaseUtils.isNotEmpty(rs)){
             return null;
         }
+        val codProject = rs.getLong("cod_project");
+        val isNull = rs.wasNull();
         return Event.builder()
                 .codEvent(rs.getLong("cod_event"))
                 .startOccurrence(DateUtils.toDate(rs.getTimestamp("dt_start_occurrence")))
@@ -106,6 +105,12 @@ public class EventRepository {
                         School.builder()
                                 .codSchool(rs.getLong("cod_school"))
                                 .build()
+                ).project(
+                        isNull ?
+                                Project.builder()
+                                        .codProject(codProject)
+                                        .build() :
+                                null
                 ).build();
     }
 
@@ -140,5 +145,13 @@ public class EventRepository {
         }
 
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
+    }
+
+    public List<Event> eventsByProject(Long codProject) {
+        return jdbcTemplate.query(
+                "select e.* from event e where cod_project=:cod_project",
+                new MapSqlParameterSource("cod_project", codProject),
+                (rs, i) -> this.build(rs)
+        );
     }
 }
