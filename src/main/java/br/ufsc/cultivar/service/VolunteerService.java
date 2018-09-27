@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.email.EmailClient;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Volunteer;
@@ -8,15 +9,19 @@ import br.ufsc.cultivar.utils.ValidateUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
@@ -30,6 +35,8 @@ public class VolunteerService {
     QuestionRepository questionRepository;
     EventRepository eventRepository;
     DispatchService dispatchService;
+    EmailClient emailClient;
+    SpringTemplateEngine templateEngine;
 
     public void create(final Volunteer volunteer) throws ServiceException {
         val user = volunteer.getUser();
@@ -47,6 +54,13 @@ public class VolunteerService {
                                 )
                         )
                 );
+        emailClient.sendEmailAsync(user.getEmail(), "Bem vindo", buildEmail());
+    }
+
+    private String buildEmail(){
+        val context = new Context();
+        context.setVariable("message", "teste volunteer");
+        return templateEngine.process("newVolunteerEmail", context);
     }
 
     public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool) throws ServiceException {

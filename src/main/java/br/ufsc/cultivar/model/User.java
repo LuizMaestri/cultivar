@@ -32,7 +32,6 @@ public class User {
     Role role;
     @NotNull
     Status status;
-    @NotBlank
     @NotNull
     Date birth;
     @NotBlank
