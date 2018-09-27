@@ -12,6 +12,7 @@
     "rc-switch": "^1.7.0",
     "react": "^16.4.1",
     "react-albus": "^2.0.0",
+    "react-arrow": "^2.0.3",
     "react-big-calendar": "^0.19.2",
     "react-bootstrap-toggle": "^2.3.1",
     "react-dom": "^16.4.1",
