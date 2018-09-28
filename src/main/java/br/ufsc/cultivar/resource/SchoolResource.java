@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.School;
@@ -32,8 +33,13 @@ public class SchoolResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<School> get(@RequestParam final Map<String, Object> filter) throws ServiceException{
-        return service.get(filter);
+    public List get(@RequestParam final Map<String, Object> filter) throws ServiceException{
+        return service.get(filter, null).getData();
+    }
+
+    @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public PaginateList get(@RequestParam final Map<String, Object> filter, @PathVariable final Long page) throws ServiceException{
+        return service.get(filter, page);
     }
 
     @GetMapping(path = "/{codSchool}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

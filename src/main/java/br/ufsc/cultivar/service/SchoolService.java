@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.repository.AddressRepository;
@@ -12,6 +13,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -41,8 +43,11 @@ public class SchoolService {
         );
     }
 
-    public List<School> get(final Map<String, Object> filter) throws ServiceException {
-        return schoolRepository.get(filter);
+    public PaginateList get(final Map<String, Object> filter, final Long page) throws ServiceException {
+        return PaginateList.builder()
+                .count(schoolRepository.count(filter))
+                .data(new ArrayList<>(schoolRepository.get(filter, page)))
+                .build();
     }
 
     public School get(final Long codSchool) throws ServiceException {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getRequest } from '../../../../../utils/http';
 import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
+import { Pagination } from '../../../../../components';
 import SchoolItem from './ListItem.jsx';
 import Add from './Add.jsx';
 
@@ -8,17 +9,44 @@ export default class extends Component{
     constructor(){
         super();
         this.state = {
-            schools: []
+            schools: [],
+            count: 0,
+            pages: 0
         };
+        this.onChangePage = this.onChangePage.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this)
     }
 
     componentWillMount(){
-        getRequest('/school', res => this.setState({ schools: res.data }));
+        getRequest(
+            '/school/page/0',
+            res => {
+                const page = res.data;
+                this.setState({
+                    schools: page.data,
+                    count: page.count,
+                    pages: page.count / 5
+                });
+            }
+        );
+    }
+
+    onChangePage(pageNumber) {
+        getRequest(
+            `/school/page/${pageNumber}`,
+            res => {
+                const page = res.data;
+                this.setState({
+                    schools: page.data,
+                    count: page.count,
+                    pages: page.count / 5
+                });
+            }
+        );
     }
 
     render(){
-        const { schools } = this.state;
+        const { schools, pages, count } = this.state;
         const { onSelectSchool } = this.props;
         return (
             <div>
@@ -52,6 +80,7 @@ export default class extends Component{
                         </ListGroup>
                     </Col>
                 </Row>
+                <Pagination pages={pages} count={count} onChangePage={this.onChangePage} />
             </div>
         );
     }
