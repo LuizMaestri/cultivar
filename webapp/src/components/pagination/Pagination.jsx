@@ -24,11 +24,10 @@ export default class Example extends React.Component {
     }
 
     render() {
-        const { pages } = this.props;
+        const { pages, count } = this.props;
         const { page } = this.state;
         return (
             <Row>
-                <Col />
                 <Col>
                     <Pagination aria-label="Page navigation example">
                         <PaginationItem disabled={page === 0}>
@@ -40,8 +39,10 @@ export default class Example extends React.Component {
                     </Pagination>
                 </Col>
                 <Col>
-                    <strong>
+                    <strong className="float-right" style={{fontSize: '.8rem'}}>
                         Página {page + 1} de {parseInt(pages) + 1}
+                        <br/>
+                        {count} Registros
                     </strong>
                 </Col>
             </Row>
