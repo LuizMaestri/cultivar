@@ -13,6 +13,7 @@ export default class extends Component {
             count: 0,
             pages: 0
         }
+        this.onChangePage = this.onChangePage.bind(this);
     }
 
     componentWillMount() {
