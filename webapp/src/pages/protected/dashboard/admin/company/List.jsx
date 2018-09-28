@@ -14,6 +14,7 @@ export default class extends Component {
             pages: 0
         }
         this.onChangePage = this.onChangePage.bind(this);
+        this.componentWillMount = this.componentWillMount.bind(this)
     }
 
     componentWillMount() {
@@ -56,7 +57,7 @@ export default class extends Component {
                         </h3>
                     </Col>
                     <Col md="2">
-                        <Add afterSubmit={this.componentWillMount.bind(this)}/>
+                        <Add afterSubmit={this.componentWillMount}/>
                     </Col>
                 </Row>
                 <br/>
@@ -67,7 +68,7 @@ export default class extends Component {
                                 companies.length ? 
                                     companies.map(
                                         company => 
-                                            <CompanyItem onSelectCompany={onSelectCompany} key={company.cnpj} company={company} afterDelete={this.componentWillMount.bind(this)}/>
+                                            <CompanyItem onSelectCompany={onSelectCompany} key={company.cnpj} company={company} afterDelete={this.componentWillMount}/>
                                     ) : (
                                         <ListGroupItem>
                                             <strong>
