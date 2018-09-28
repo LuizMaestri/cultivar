@@ -25,7 +25,7 @@ export default class extends Component{
                 <Row>
                     <Col>
                         <h3>
-                            Escola Beneficiadas
+                            Organizações Beneficiadas
                         </h3>
                     </Col>
                     <Col md="2">
@@ -44,7 +44,7 @@ export default class extends Component{
                                     ) : (
                                         <ListGroupItem>
                                             <strong>
-                                                Nenhuma Escola Cadastrada
+                                                Nenhuma Organização Cadastrada
                                             </strong>
                                         </ListGroupItem>
                                     )

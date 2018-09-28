@@ -184,7 +184,7 @@ export default class extends Component{
                             <h3>Dados da Escola</h3>
                             <Input id="nameCompany" label="Nome da Escola" invalidMessage="Nome da Escola é obrigatório" value={school.name} onChange={this.handlerName} required/>
                             <MaskInput id="phone" label="Contato da Empresa" invalidMessage="Contato da Escola é obrigatório" value={school.phone} mask="(99)9999-9999" onChange={this.handlerPhone} required/>
-                            <Input id="schoolType" type="select" label="???" invalidMessage="??? é obrigatório" value={school.schoolType} onChange={this.handlerType} required >
+                            <Input id="schoolType" type="select" label="Nível Federativo" invalidMessage="Nível Federativo é obrigatório" value={school.schoolType} onChange={this.handlerType} required >
                                 <option value="">Selecione</option>
                                 {
                                     SchoolType.values().map(
