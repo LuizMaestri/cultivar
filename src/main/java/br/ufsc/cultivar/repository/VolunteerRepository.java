@@ -2,6 +2,7 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.*;
 import br.ufsc.cultivar.utils.DatabaseUtils;
+import javafx.scene.chart.PieChartBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -29,7 +30,7 @@ public class VolunteerRepository {
                 .execute(getParams(volunteer));
     }
 
-    public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool) {
+    public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool, final Integer page) {
         val sql = new StringBuilder("select * from volunteer where 1=1");
         val params = new MapSqlParameterSource();
 
@@ -46,6 +47,10 @@ public class VolunteerRepository {
                 ){
             sql.append(" and cod_school in(:cod_school)");
             params.addValue("cod_school", filterSchool);
+        }
+        if (Objects.nonNull(page)){
+            sql.append(" limit 5 offset :offset");
+            params.addValue("offset", page*5);
         }
         return jdbcTemplate.query(
                 sql.toString(),
@@ -115,5 +120,26 @@ public class VolunteerRepository {
                 .conclusion(rs.getBoolean("fl_conclusion"))
                 .rg(rs.getString("cod_rg"))
                 .build();
+    }
+
+    public Integer count(List<String> filterCompany, List<Long> filterSchool) {
+        val sql = new StringBuilder("select count(cod_cpf) from volunteer where 1=1");
+        val params = new MapSqlParameterSource();
+
+        if (!Optional.ofNullable(filterCompany)
+                .orElseGet(ArrayList::new)
+                .isEmpty()
+                ){
+            sql.append(" and cod_cnpj in(:cod_cnpj)");
+            params.addValue("cod_cnpj", filterCompany);
+        }
+        if (!Optional.ofNullable(filterSchool)
+                .orElseGet(ArrayList::new)
+                .isEmpty()
+                ){
+            sql.append(" and cod_school in(:cod_school)");
+            params.addValue("cod_school", filterSchool);
+        }
+        return jdbcTemplate.queryForObject(sql.toString(), params, Integer.class);
     }
 }

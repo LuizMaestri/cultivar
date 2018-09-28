@@ -12,3 +12,4 @@ export {
     Checkbox
 } from './form';
 export { default as Calendar } from './calender';
+export { default as Pagination } from './pagination';

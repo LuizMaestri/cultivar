@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.*;
 import br.ufsc.cultivar.service.DispatchService;
@@ -35,11 +36,20 @@ public class VolunteerResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Volunteer> get(
+    public List get(
             @RequestParam(value = "cod_cnpj", required = false) final List<String> filterCompany,
             @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool) throws ServiceException{
-        return volunteerService.get(filterCompany, filterSchool);
+        return volunteerService.get(filterCompany, filterSchool, null).getData();
     }
+
+    @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public PaginateList get(
+            @RequestParam(value = "cod_cnpj", required = false) final List<String> filterCompany,
+            @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool,
+            @PathVariable final Long page) throws ServiceException{
+        return volunteerService.get(filterCompany, filterSchool, page);
+    }
+
 
     @GetMapping(path = "/{cpf}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Volunteer get(@PathVariable final String cpf) throws ServiceException{

@@ -1,21 +1,31 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { getRequest } from '../../../../../utils/http';
 import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import VolunteerItem from './ListItem.jsx';
+import { Pagination } from '../../../../../components';
 
 export default class extends Component{
     constructor() {
         super()
         this.state = {
-            volunteers: []
+            volunteers: [],
+            count: 0,
+            pages: 0
         }
     }
 
     componentWillMount() {
         const { filterByCompany, filterBySchool } = this.props;
         getRequest(
-            `/volunteer?cod_cnpj=${filterByCompany.join(',')}&cod_school=${filterBySchool.join(',')}`,
-            res => this.setState({ volunteers: res.data })
+            `/volunteer/page/0?cod_cnpj=${filterByCompany.join(',')}&cod_school=${filterBySchool.join(',')}`,
+            res => {
+                const page = res.data;
+                this.setState({
+                    volunteers: page.data,
+                    count: page.count,
+                    pages: page.count / 5
+                });
+            }
         );
     }
 
@@ -23,12 +33,25 @@ export default class extends Component{
         this.componentWillMount();
     }
 
-
+    onChangePage(pageNumber){
+        const { filterByCompany, filterBySchool } = this.props;
+        getRequest(
+            `/volunteer/page/${pageNumber}?cod_cnpj=${filterByCompany.join(',')}&cod_school=${filterBySchool.join(',')}`,
+            res => {
+                const page = res.data;
+                this.setState({
+                    volunteers: page.data,
+                    count: page.count,
+                    pages: page.count / 5
+                });
+            }
+        );
+    }
     render(){
-        const { volunteers } = this.state;
+        const { volunteers, pages, count } = this.state;
         const { onSelectVolunteer } = this.props;
         return (
-            <div>
+            <Fragment>
                 <Row>
                     <Col>
                         <h3>Mentores Voluntários</h3>
@@ -55,7 +78,8 @@ export default class extends Component{
                         </ListGroup>
                     </Col>
                 </Row>
-            </div>
+                <Pagination pages={pages} count={count} onChangePage={this.onChangePage}/>
+            </Fragment>
         );
     }
 }

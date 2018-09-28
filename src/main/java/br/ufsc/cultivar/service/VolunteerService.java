@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.email.EmailClient;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -61,32 +63,6 @@ public class VolunteerService {
         val context = new Context();
         context.setVariable("message", "teste volunteer");
         return templateEngine.process("newVolunteerEmail", context);
-    }
-
-    public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool) throws ServiceException {
-        try {
-            return volunteerRepository.get(filterCompany, filterSchool)
-                    .stream()
-                    .map(volunteer -> {
-                        try {
-                            return volunteer.withUser(
-                                userService.get(
-                                    volunteer.getUser()
-                                        .getCpf()
-                                )
-                            ).withRatings(
-                                ratingRepository.get(
-                                    volunteer.getUser()
-                                        .getCpf()
-                                )
-                            );
-                        } catch (ServiceException e) {
-                            throw new RuntimeException(e);
-                        }
-                    }).collect(Collectors.toList());
-        } catch (RuntimeException e){
-            throw new ServiceException(null, null, null);
-        }
     }
 
     public Volunteer get(final String cpf) throws ServiceException {
@@ -141,5 +117,35 @@ public class VolunteerService {
         volunteer.getAnswers()
                 .forEach(answer -> answerRepository.create(answer, cpf));
         volunteerRepository.update(volunteer);
+    }
+
+    public PaginateList get(List<String> filterCompany, List<Long> filterSchool, Long page) throws ServiceException {
+        try {
+            return PaginateList.builder()
+                .count(volunteerRepository.count(filterCompany, filterSchool))
+                .data(
+                    volunteerRepository.get(filterCompany, filterSchool, null)
+                        .stream()
+                        .map(volunteer -> {
+                            try {
+                                return volunteer.withUser(
+                                    userService.get(
+                                        volunteer.getUser()
+                                            .getCpf()
+                                    )
+                                ).withRatings(
+                                    ratingRepository.get(
+                                        volunteer.getUser()
+                                            .getCpf()
+                                    )
+                                );
+                            } catch (ServiceException e) {
+                                throw new RuntimeException(e);
+                            }
+                        }).collect(Collectors.toList())
+                ).build();
+        } catch (RuntimeException e){
+            throw new ServiceException(null, null, null);
+        }
     }
 }
