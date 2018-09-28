@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Company;
 import br.ufsc.cultivar.service.CompanyService;
@@ -29,8 +30,14 @@ public class CompanyResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Company> get(@RequestParam final Map<String, Object> filter) throws ServiceException{
-        return service.get(filter);
+    public List get(@RequestParam final Map<String, Object> filter) throws ServiceException{
+        return service.get(filter, null).getData();
+    }
+
+    @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public PaginateList get(@RequestParam final Map<String, Object> filter,
+                            @PathVariable final Long page) throws ServiceException{
+        return service.get(filter, page);
     }
 
     @GetMapping(path = "/{cnpj}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

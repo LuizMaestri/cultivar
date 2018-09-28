@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Company;
 import br.ufsc.cultivar.repository.AddressRepository;
@@ -11,9 +12,11 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -38,8 +41,12 @@ public class CompanyService {
         );
     }
 
-    public List<Company> get(final Map<String, Object> filter) throws ServiceException {
-        return companyRepository.get(filter);
+    public PaginateList get(final Map<String, Object> filter, final Long page) throws ServiceException {
+        return PaginateList.builder()
+            .count(companyRepository.count(filter))
+            .data(
+                new ArrayList<>(companyRepository.get(filter, page))
+            ).build();
     }
 
     public Company get(final String cnpj) throws ServiceException {

@@ -19,6 +19,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -34,7 +35,7 @@ public class CompanyRepository {
                 .execute(getParams(company));
     }
 
-    public List<Company> get(final Map<String, Object> filter) {
+    public List<Company> get(final Map<String, Object> filter, final Long page) {
         val sql = new StringBuilder("select * from company where 1=1");
         val params = new MapSqlParameterSource();
         Optional.ofNullable(filter)
@@ -49,11 +50,34 @@ public class CompanyRepository {
                                 }
                         )
                 );
+        if (Objects.nonNull(page)){
+            sql.append(" limit 5 offset :offset");
+            params.addValue("offset", page*5);
+        }
         return jdbcTemplate.query(
                 sql.toString(),
                 params,
                 (rs, i) -> this.build(rs)
         );
+    }
+
+    public Integer count(final Map<String, Object> filter) {
+        val sql = new StringBuilder("select count(cod_cnpj) from company where 1=1");
+        val params = new MapSqlParameterSource();
+        Optional.ofNullable(filter)
+                .ifPresent(
+                        map -> map.forEach(
+                                (key, value) -> {
+                                    sql.append(" and ")
+                                            .append(key)
+                                            .append("=:")
+                                            .append(key);
+                                    params.addValue(key, value);
+                                }
+                        )
+                );
+
+        return jdbcTemplate.queryForObject(sql.toString(), params, Integer.class);
     }
 
     public Company get(final String cnpj) {

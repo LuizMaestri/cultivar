@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { getRequest } from '../../../../../utils/http';
 import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
+import { Pagination } from '../../../../../components';
 import CompanyItem from './ListItem.jsx';
 import Add from './Add.jsx';
 
@@ -8,16 +9,42 @@ export default class extends Component {
     constructor() {
         super()
         this.state = {
-            companies: []
+            companies: [],
+            count: 0,
+            pages: 0
         }
     }
 
     componentWillMount() {
-        getRequest('/company', res => this.setState({ companies: res.data }));
+        getRequest(
+            '/company/page/0',
+            res => {
+                const page = res.data;
+                this.setState({
+                    companies: page.data,
+                    count: page.count,
+                    pages: page.count / 5
+                });
+            }
+        );
+    }
+
+    onChangePage(pageNumber){
+        getRequest(
+            `/company/page/${pageNumber}`,
+            res => {
+                const page = res.data;
+                this.setState({
+                    companies: page.data,
+                    count: page.count,
+                    pages: page.count / 5
+                });
+            }
+        );
     }
 
     render() {
-        const { companies } = this.state;
+        const { companies, pages, count  } = this.state;
         const { onSelectCompany } = this.props;
         return (
             <div>
@@ -51,6 +78,7 @@ export default class extends Component {
                         </ListGroup>
                     </Col>
                 </Row>
+                <Pagination pages={pages} count={count} onChangePage={this.onChangePage} />
             </div>
         );
     }
