@@ -11,9 +11,9 @@ import './App.css';
 export default class App extends Component {
 	constructor(){
 		super();
-		const user = getAsObject('user')
+		const user = getAsObject('user'); 
 		this.state = {
-			logged: false,
+			logged: getAsObject('logged'),
 			user: user ? user : new User()
 		};
 		this.handlerLogin = this.handlerLogin.bind(this);
@@ -21,6 +21,7 @@ export default class App extends Component {
 
 	handlerLogin(user){
 		saveObject('user', user);
+		saveObject('logged', true);
 		this.setState({ logged: true, user });
 	}
 
