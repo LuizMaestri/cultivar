@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Attachment, Status } from '../../../../model';
 import PropTypes from 'prop-types';
 import { postRequest } from '../../../../utils/http';
-import { Row, Col, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { Wizard, Input, FileInput, Switch } from '../../../../components';
+import { Row, Col, Form, Button, Card, CardBody } from 'reactstrap';
+import { Input, FileInput, Switch } from '../../../../components';
 
 export default class extends Component{
     constructor(){
@@ -21,9 +21,7 @@ export default class extends Component{
     }
     
     static propTypes = {
-        afterSubmit: PropTypes.func.isRequired,
-        isOpen: PropTypes.bool.isRequired,
-        close: PropTypes.func.isRequired
+        afterSubmit: PropTypes.func.isRequired
     }
 
     handlerAttatchment(event){
@@ -55,7 +53,7 @@ export default class extends Component{
     }
 
     handlerSubmit(){
-        const { afterSubmit, close } = this.props;
+        const { afterSubmit } = this.props;
         const { attachment, file } = this.state;
         const json = JSON.stringify(attachment);
         const blob = new Blob([json], {
@@ -66,44 +64,37 @@ export default class extends Component{
         if(file){
             form.append('file', file);
         }
-        postRequest('/attachment', form, () => {
-            afterSubmit();
-            close();
-        })
+        postRequest('/attachment', form, afterSubmit)
     }
 
     render(){
-        const { isOpen, close } = this.props;
         const { attachment } = this.state;
         return (
-            <Modal isOpen={isOpen} toggle={close}>
-                <ModalHeader toggle={close}>Nova Empresa</ModalHeader>
-                <ModalBody>
-                    <Wizard onCancel={close} submitLabel="Cadastrar" onSubmit={this.handlerSubmit}>
-                        <div>
-                            <Input id="name" label="Anexo" onChange={this.handlerAttatchment} invalidMessage="Anexo é Obrigatório" required/>
-                            <Row>
-                                <Col md="5">
-                                    <Switch id="required" label="Envio Obrigatório " onChange={this.handlerRequired}/>
-                                </Col>
-                                <Col>
-                                    <Switch id="dowload" label="Disponibilizado Pela CnE " onChange={this.handlerDownload}/>
-                                </Col>
-                            </Row>
+            <Card>
+                <CardBody>
+                    <Form>
+                        <Input id="name" label="Anexo" onChange={this.handlerAttatchment} invalidMessage="Anexo é Obrigatório" required/>
+                        <Row>
+                            <Col md="5">
+                                <Switch id="required" label="Envio Obrigatório " onChange={this.handlerRequired}/>
+                            </Col>
+                            <Col>
+                                <Switch id="dowload" label="Disponibilizado Pela CnE " onChange={this.handlerDownload}/>
+                            </Col>
+                        </Row>
+                        {
+                            attachment.download && <FileInput color="info" label="Upload" onChange={this.handlerFile} accept="application/pdf" required/>
+                        }
+                        <Input id="status" type="select" label="Enviado Durante" onChange={this.handlerStatus} invalidMessage="Enviado Durante é Obrigatório" required>
+                            <option value="">Selecione</option>
                             {
-                                attachment.download && <FileInput color="info" label="Upload" onChange={this.handlerFile} accept="application/pdf" required/>
+                                Status.values().map(status => <option key={status} value={status}>{Status.translate(status)}</option>)
                             }
-                            <Input id="status" type="select" label="Enviado Durante" onChange={this.handlerStatus} invalidMessage="Enviado Durante é Obrigatório" required>
-                                <option value="">Selecione</option>
-                                {
-                                    Status.values().map(status => <option key={status} value={status}>{Status.translate(status)}</option>)
-                                }
-                            </Input>
-                            <hr className="row"/>
-                        </div>
-                    </Wizard>
-                </ModalBody>
-            </Modal>
+                        </Input>
+                        <Button type="button" color="primary" className="float-right" onClick={this.handlerSubmit}>Cadastrar</Button>
+                    </Form>
+                </CardBody>
+            </Card>
         );
     }
 }

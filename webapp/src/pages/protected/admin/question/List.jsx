@@ -1,21 +1,16 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Question, Roles } from '../../../../model';
-import { getRequest, postRequest, deleteRequest } from '../../../../utils/http';
-import { Row, Col, Form, Button, Table } from 'reactstrap';
-import { Input } from '../../../../components';
+import { getRequest, deleteRequest } from '../../../../utils/http';
+import { Row, Col, Table} from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';
+import Form from './Form.jsx';
 
 export default class extends Component{
     constructor(){
         super()
         this.state = {
-            questions: [],
-            newQuestion: new Question(),
-            invalid: false
+            questions: []
         }
-        this.handlerQuestion = this.handlerQuestion.bind(this);
-        this.handlerResponds = this.handlerResponds.bind(this);
-        this.handlerSubmit = this.handlerSubmit.bind(this);
         this.handlerDelete = this.handlerDelete.bind(this);
     }
 
@@ -23,119 +18,67 @@ export default class extends Component{
         getRequest('/question', res => this.setState({ questions: res.data }));
     }
 
-    handlerQuestion(event){
-        const { newQuestion } = this.state;
-        newQuestion.question = event.target.value;
-        this.setState({ newQuestion, invalid: false });
-    }
-
-    handlerResponds(event){
-        const { newQuestion } = this.state;
-        newQuestion.responds = event.target.value;
-        this.setState({ newQuestion, invalid: false });
-    }
-
     handlerDelete(codQuestion){
-        deleteRequest(
-            `/question/${codQuestion}`,
-            () => getRequest(
-                '/question',
-                res => this.setState({
-                    questions: res.data
-                })
-            )
-        );
-    }
-
-    handlerSubmit(){
-        const { newQuestion } = this.state;
-        if(!newQuestion.question || !newQuestion.responds){
-            this.setState({invalid : true})
-            return;
-        }
-        postRequest(
-            '/question',
-            newQuestion,
-            () =>
-                getRequest(
-                    '/question',
-                    res => this.setState({
-                        questions: res.data,
-                        newQuestion: new Question()
-                    })
-                )
-        );
+        deleteRequest(`/question/${codQuestion}`, this.componentWillMount);
     }
 
     render(){
         const { questions } = this.state;
         return (
-            <Row>
-                <Col>
-                    <Row>
-                        <Col>
-                            <h3>Questões</h3>
-                        </Col>
-                    </Row>
-                    <br/>
-                    <Row>
-                        <Col>
-                            <Table striped>
-                                <thead>
-                                    <tr>
-                                        <td>
-                                            Questão
-                                        </td>
-                                        <td>
-                                            Destinada
-                                        </td>
-                                        <td/>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {
-                                        questions.length ? 
-                                        questions.map(
-                                            question => (
+            <Fragment>
+                <Row>
+                    <Col>
+                        <h3>Questões</h3>
+                    </Col>
+                </Row>
+                <br/>
+                <Row>
+                    <Col>
+                        <Table striped>
+                            <thead>
+                                <tr>
+                                    <td>
+                                        <strong>Questão</strong>
+                                    </td>
+                                    <td>
+                                        <strong>Destinada</strong>
+                                    </td>
+                                    <td/>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    questions.length ? 
+                                    questions.map(
+                                        question => (
                                                 <tr key={question.codQuestion}>
-                                                        <td>
-                                                            {question.question}
-                                                        </td>
-                                                        <td>
-                                                            {Roles.translate(question.responds)}
-                                                        </td>
-                                                        <td>
-                                                            <FaTrash style={{cursor: 'pointer'}} color="red" onClick={() => this.handlerDelete(question.codQuestion)}/>
-                                                        </td>
-                                                    </tr>
-                                                )
-                                            ) : (
-                                                <tr>
-                                                    <td colSpan="3">
-                                                        Nenhuma Questão cadastrada Cadastrada
+                                                    <td>
+                                                        <strong>{question.question}</strong>
+                                                    </td>
+                                                    <td>
+                                                        <strong>{Roles.translate(question.responds)}</strong>
+                                                    </td>
+                                                    <td>
+                                                        <FaTrash style={{cursor: 'pointer'}} color="red" onClick={() => this.handlerDelete(question.codQuestion)}/>
                                                     </td>
                                                 </tr>
                                             )
-                                        }
-                                </tbody>
-                            </Table>
-                        </Col>
-                    </Row>
-                </Col>
-                <Col>
-                    <Form>
-                        <Input id="newQuestion" label="Questão" invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerQuestion} required />
-                        <Input id="destiny" type="select" label="Destinada" invalidMessage="Campo Obrigatório" invalid={this.state.invalid} onChange={this.handlerResponds} required>
-                            <option>Selecione</option>
-                            <option value={Roles.VOLUNTEER}>{Roles.translate(Roles.VOLUNTEER)}</option>
-                            <option value={Roles.COMPANY_ADMIN}>{Roles.translate(Roles.COMPANY_ADMIN)}</option>
-                        </Input>
-                        <Button type="button" color="primary" onClick={this.handlerSubmit} style={{ marginTop: '3%' }}>
-                            Cadastrar
-                        </Button>
-                    </Form>
-                </Col>
-            </Row>
+                                        ) : (
+                                            <tr>
+                                                <td colSpan="3">
+                                                    Nenhuma Questão cadastrada Cadastrada
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+                            </tbody>
+                        </Table>
+                    </Col>
+                    <Col md="4">
+                        <Form afterSubmit={this.componentWillMount.bind(this)} />
+                    </Col>
+                </Row>
+            </Fragment>
 
         );
     }

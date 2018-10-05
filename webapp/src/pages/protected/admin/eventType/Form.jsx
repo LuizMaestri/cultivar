@@ -2,8 +2,8 @@ import React, { Component, Fragment } from 'react';
 import { EventType, Training } from '../../../../model';
 import PropTypes from 'prop-types';
 import { postRequest } from '../../../../utils/http';
-import { Row, Col, Button, Modal, ModalHeader, ModalBody } from 'reactstrap';
-import { Wizard, Input, FileInput, Switch } from '../../../../components';
+import { Row, Col, Button, Form, Card, CardBody } from 'reactstrap';
+import { Input, FileInput, Switch } from '../../../../components';
 
 export default class extends Component{
     constructor(){
@@ -18,8 +18,6 @@ export default class extends Component{
     
     static propTypes = {
         afterSubmit: PropTypes.func.isRequired,
-        isOpen: PropTypes.bool.isRequired,
-        close: PropTypes.func.isRequired
     }
 
     handlerName(event){
@@ -67,7 +65,7 @@ export default class extends Component{
     }
 
     handlerSubmit(){
-        const { afterSubmit, close } = this.props;
+        const { afterSubmit } = this.props;
         const { typeEvent, file } = this.state;
         const json = JSON.stringify(typeEvent);
         const blob = new Blob([json], {
@@ -80,7 +78,7 @@ export default class extends Component{
         }
         postRequest('/typeEvent', form, () => {
             afterSubmit();
-            close();
+            this.setState({ typeEvent: new EventType() });
         })
     }
 
@@ -89,64 +87,66 @@ export default class extends Component{
         const { typeEvent } = this.state;
         const { trainings } = typeEvent;
         return (
-            <Modal isOpen={isOpen} toggle={close}>
-                <ModalHeader toggle={close}>Novo Tipo de Evento</ModalHeader>
-                <ModalBody>
-                    <Wizard onCancel={close} submitLabel="Cadastrar" onSubmit={this.handlerSubmit}>
-                        <div>
-                            <Row>
-                                <Col>
-                                    <Input id="name" label="Tipo de Evento" onChange={this.handlerName} invalidMessage="Tipo de Evento é Obrigatório" value={typeEvent.type} required/>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col>
-                                    <h4>Materiais</h4>
-                                </Col>
-                            </Row>
-                            {
-                                trainings.length ?
-                                    trainings.map(
-                                        (training, index) => (
-                                            <Fragment key={`training-${index}`}>
-                                                <Row>
-                                                    <Col>
-                                                        <Input id={`training-${index}`} label="Nome" invalidMessage="Nome é Obrigatório" value={training.name} onChange={event => this.handlerNameAttachemnt(event, index)} required />
-                                                    </Col>
-                                                    <Col md="5">
-                                                        <Switch id={`file-${index}`} label="Arquivo pra Upload" value={training.isFile} onChange={value => this.handlerIsFile(value, index)} />
-                                                    </Col>
-                                                </Row>
-                                                <Row>
-                                                    <Col>
-                                                        {
-                                                            training.isFile ?
-                                                                (
-                                                                    <FileInput id={`upload-${index}`} label="Anexar arquivo" invalidMessage="Upload é Obrigatório" onChange={event => this.handlerUploadAttachemnt(event, index)} accept="application/pdf" required />
-                                                                ) : (
-                                                                    <Input id={`link-${index}`} label="Link" invalidMessage="Link é Obrigatório" value={training.link} onChange={event => this.handlerLinkAttachemnt(event, index)} required />
-                                                                )
-                                                        }
-                                                    </Col>
-                                                    <Col md="3">
-                                                        {!training.isFile && <label>&nbsp;</label>}
-                                                        <Button outline color="secondary" onClick={() => this.handlerRemove(index)}>Remover</Button>
-                                                    </Col>
-                                                </Row>
-                                            </Fragment>
-                                        )
-                                    ): null
-                            }
-                            <Row>
-                                <Col>
-                                    <Button outline color="secondary" onClick={this.handlerAdd}>Incluir</Button>
-                                </Col>
-                            </Row>
-                            <hr className="row"/>
-                        </div>
-                    </Wizard>
-                </ModalBody>
-            </Modal>
+            <Card>
+                <CardBody>
+                    <Form>
+                        <Row>
+                            <Col>
+                                <Input id="name" label="Tipo de Evento" onChange={this.handlerName} invalidMessage="Tipo de Evento é Obrigatório" value={typeEvent.type} required/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <h4>Materiais</h4>
+                            </Col>
+                        </Row>
+                        {
+                            trainings.length ?
+                                trainings.map(
+                                    (training, index) => (
+                                        <Fragment key={`training-${index}`}>
+                                            <Row>
+                                                <Col>
+                                                    <Input id={`training-${index}`} label="Nome" invalidMessage="Nome é Obrigatório" value={training.name} onChange={event => this.handlerNameAttachemnt(event, index)} required />
+                                                </Col>
+                                                <Col md="5">
+                                                    <Switch id={`file-${index}`} label="Arquivo pra Upload" value={training.isFile} onChange={value => this.handlerIsFile(value, index)} />
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col>
+                                                    {
+                                                        training.isFile ?
+                                                            (
+                                                                <FileInput id={`upload-${index}`} label="Anexar arquivo" invalidMessage="Upload é Obrigatório" onChange={event => this.handlerUploadAttachemnt(event, index)} accept="application/pdf" required />
+                                                            ) : (
+                                                                <Input id={`link-${index}`} label="Link" invalidMessage="Link é Obrigatório" value={training.link} onChange={event => this.handlerLinkAttachemnt(event, index)} required />
+                                                            )
+                                                    }
+                                                </Col>
+                                                <Col md="3">
+                                                    {!training.isFile && <label>&nbsp;</label>}
+                                                    <Button outline color="secondary" onClick={() => this.handlerRemove(index)}>Remover</Button>
+                                                </Col>
+                                            </Row>
+                                        </Fragment>
+                                    )
+                                ): null
+                        }
+                        <Row>
+                            <Col>
+                                <Button outline color="secondary" onClick={this.handlerAdd}>Incluir</Button>
+                            </Col>
+                        </Row>
+                        <br/>
+                        <Row>
+                            <Col>
+                                <Button type="button" color="primary" className="float-right" onClick={this.handlerSubmit}>Cadastrar</Button>
+                            </Col>
+                        </Row>
+                    </Form>
+                </CardBody>
+            </Card>
         );
     }
 }

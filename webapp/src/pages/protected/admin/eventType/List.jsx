@@ -1,8 +1,8 @@
 import React, { Component, Fragment } from 'react';
-import { getRequest, deleteRequest } from '../../../../utils/http';
+import { getRequest } from '../../../../utils/http';
 import { Row, Col, Table } from 'reactstrap';
 import ListItem from './ListItem.jsx';
-import Add from './Add.jsx';
+import Form from './Form.jsx';
 
 export default class extends Component{
     constructor(){
@@ -29,7 +29,6 @@ export default class extends Component{
                         <h3>Tipo de Eventos</h3>
                     </Col>
                     <Col md="1">
-                        <Add afterSubmit={this.componentWillMount}/>
                     </Col>
                 </Row>
                 <br/>
@@ -46,20 +45,23 @@ export default class extends Component{
                             <tbody>
                                 {
                                     typesEvent.length?
-                                        typesEvent.map(
-                                            typeEvent => (
-                                                <ListItem key={typeEvent.type} typeEvent={typeEvent} afterDelete={this.componentWillMount}/>
-                                            )
-                                        ) : (
-                                            <tr>
+                                    typesEvent.map(
+                                        typeEvent => (
+                                            <ListItem key={typeEvent.type} typeEvent={typeEvent} afterDelete={this.componentWillMount}/>
+                                        )
+                                    ) : (
+                                        <tr>
                                                 <td colSpan="3">
                                                     <strong>Nenhum Tipo de Evento cadastrado</strong>
                                                 </td>
                                             </tr>
                                         )
-                                }
+                                    }
                             </tbody>
                         </Table>
+                    </Col>
+                    <Col md="4">
+                        <Form afterSubmit={this.componentWillMount}/>
                     </Col>
                 </Row>
             </Fragment>

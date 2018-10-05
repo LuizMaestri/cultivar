@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { getRequest } from '../../../../utils/http';
 import { Row, Col, Table } from 'reactstrap';
 import ListItem from './ListItem.jsx';
-import Add from './Add.jsx';
+import Form from './Form.jsx';
 
 export default class extends Component{
     constructor(){
@@ -10,7 +10,6 @@ export default class extends Component{
         this.state = {
             attachments: []
         };
-        this.componentWillMount = this.componentWillMount.bind(this);
     }
 
     componentWillMount(){
@@ -26,9 +25,6 @@ export default class extends Component{
                         <h3>
                             Anexos
                         </h3>
-                    </Col>
-                    <Col md="2">
-                        <Add afterSubmit={this.componentWillMount}/>
                     </Col>
                 </Row>
                 <br/>
@@ -61,6 +57,9 @@ export default class extends Component{
                                 }
                             </tbody>
                         </Table>
+                    </Col>
+                    <Col md="4">
+                        <Form afterSubmit={this.componentWillMount.bind(this)}/>
                     </Col>
                 </Row>
             </div>
