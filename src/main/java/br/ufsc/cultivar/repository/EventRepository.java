@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.repository;
 
+import br.ufsc.cultivar.dto.EventDTO;
 import br.ufsc.cultivar.model.*;
 import br.ufsc.cultivar.utils.DatabaseUtils;
 import br.ufsc.cultivar.utils.DateUtils;
@@ -149,5 +150,34 @@ public class EventRepository {
         }
 
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
+    }
+
+    public List<EventDTO> getEventsToAlert(String cpf) {
+        val sql = "select dt_start_occurrence, dt_end_occurrence, " +
+            "a.*, fl_all_day, te.nm_type from event " +
+            "natural join type_event te natural join address a natural join participation " +
+            "where cod_cpf=:cod_cpf and " +
+            "dt_start_occurrence between CURDATE() and (CURDATE() + INTERVAL 7 DAY)";
+        return jdbcTemplate.query(
+            sql,
+            new MapSqlParameterSource("cod_cpf", cpf),
+            (rs, i) ->
+                EventDTO.builder()
+                    .type(
+                        TypeEvent.builder()
+                            .name(rs.getString("nm_type"))
+                            .build()
+                    ).startOccurrence(rs.getTimestamp("dt_start_occurrence"))
+                    .endOccurrence(rs.getTimestamp("dt_end_occurrence"))
+                    .allDay(rs.getBoolean("fl_all_day"))
+                    .address(
+                        Address.builder()
+                            .city(rs.getString("nm_city"))
+                            .neighborhood(rs.getString("nm_neighborhood"))
+                            .street(rs.getString("nm_street"))
+                            .number(rs.getString("nu_street"))
+                            .build()
+                    ).build()
+        );
     }
 }

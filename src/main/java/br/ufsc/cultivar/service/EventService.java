@@ -1,13 +1,11 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.UserEventsDTO;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Event;
-import br.ufsc.cultivar.repository.AddressRepository;
-import br.ufsc.cultivar.repository.EventRepository;
-import br.ufsc.cultivar.repository.ParticipationRepository;
-import br.ufsc.cultivar.repository.RatingRepository;
+import br.ufsc.cultivar.repository.*;
 import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -28,7 +27,7 @@ public class EventService {
     EventRepository eventRepository;
     AddressRepository addressRepository;
     RatingRepository ratingRepository;
-    UserService userService;
+    UserRepository userRepository;
     ParticipationRepository participationRepository;
 
     public String upload(MultipartFile file, Long codEvent) throws ServiceException{
@@ -72,7 +71,7 @@ public class EventService {
                         event.getAddress().getCodAddress()
                 )
         ).withParticipants(
-                userService.getParticipants(codEvent)
+                userRepository.getParticipants(codEvent)
         ).withRatings(
                 ratingRepository.get(codEvent)
         );
@@ -97,5 +96,19 @@ public class EventService {
 
     public List<Event> eventsBySchool(Long codSchool, Long type) {
         return eventRepository.eventsBySchool(codSchool, type);
+    }
+
+    public List<UserEventsDTO> getEventsToAlert() {
+        return userRepository.get((Map<String, Object>) null)
+            .stream()
+            .map(
+                user ->
+                    UserEventsDTO.builder()
+                        .email(user.getEmail())
+                        .name(user.getName())
+                        .events(
+                            eventRepository.getEventsToAlert(user.getCpf())
+                        ).build()
+            ).collect(Collectors.toList());
     }
 }
