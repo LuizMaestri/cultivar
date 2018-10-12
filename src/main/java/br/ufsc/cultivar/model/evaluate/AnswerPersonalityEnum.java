@@ -1,5 +1,5 @@
 package br.ufsc.cultivar.model.evaluate;
 
-public enum AnswerVolunteerEnum {
+public enum AnswerPersonalityEnum {
     TOTALLY_AGREE, AGREE, DISAGREE, TOTALLY_DISAGREE
 }

@@ -31,7 +31,7 @@ public class TechnologyRepository {
     }
 
     public List<Technology> get() {
-        return jdbcTemplate.query("select * technology", (rs, i) -> this.build(rs));
+        return jdbcTemplate.query("select * from technology", (rs, i) -> this.build(rs));
     }
 
     private Technology build(ResultSet rs) throws SQLException {

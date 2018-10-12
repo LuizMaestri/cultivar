@@ -1,7 +1,7 @@
 package br.ufsc.cultivar.service.evaluate;
 
-import br.ufsc.cultivar.model.evaluate.VolunteerQuestion;
-import br.ufsc.cultivar.repository.evaluate.QuestionRepository;
+import br.ufsc.cultivar.model.evaluate.Mentoring;
+import br.ufsc.cultivar.repository.evaluate.MentoringRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -11,24 +11,24 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-//@Service
+@Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class QuestionService {
-    QuestionRepository repository;
+public class MentoringService {
 
-    public void create(VolunteerQuestion question) {
-        repository.create(question);
+    MentoringRepository repository;
+
+    public void create(Mentoring mentoring){
+        repository.create(mentoring);
     }
 
-    public List<VolunteerQuestion> get() {
+    public List<Mentoring> get(){
         return repository.get();
     }
 
-
-    public VolunteerQuestion delete(Long codQuestion) {
-        VolunteerQuestion question = repository.get(codQuestion);
+    public Mentoring delete(Long codQuestion){
+        val mentoring = repository.get(codQuestion);
         repository.delete(codQuestion);
-        return question;
+        return mentoring;
     }
 }

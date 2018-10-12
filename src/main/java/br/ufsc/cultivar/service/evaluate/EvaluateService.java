@@ -2,7 +2,6 @@ package br.ufsc.cultivar.service.evaluate;
 
 import br.ufsc.cultivar.dto.EvaluateDTO;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.model.evaluate.Experience;
 import br.ufsc.cultivar.repository.evaluate.EvaluateRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -27,7 +26,7 @@ public class EvaluateService {
             .forEach(
                 answerTechnology -> repository.saveTechnology(answerTechnology, codProject, cpf)
             );
-        dto.getAnswerVolunteers()
+        dto.getAnswerPersonalities()
                 .forEach(
                         answerVolunteer -> repository.saveAnswerVolunteer(answerVolunteer, codProject, cpf)
                 );
@@ -41,7 +40,7 @@ public class EvaluateService {
                 cpf -> EvaluateDTO.builder()
                     .cpf(cpf)
                     .project(codProject)
-                    .answerVolunteers(
+                    .answerPersonalities(
                         repository.getAnswersVolunteer(codProject, cpf)
                     ).technologies(
                         repository.getAnswersTechnologies(codProject, cpf)

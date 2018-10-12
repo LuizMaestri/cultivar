@@ -11,8 +11,6 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.List;
 
 @Repository
@@ -36,9 +34,9 @@ public class EvaluateRepository {
             );
     }
 
-    public void saveAnswerVolunteer(AnswerVolunteer answerVolunteer, Long codProject, String cpf) {
-        val question = answerVolunteer.getQuestion();
-        val answer = answerVolunteer.getAnswer();
+    public void saveAnswerVolunteer(AnswerPersonality answerPersonality, Long codProject, String cpf) {
+        val question = answerPersonality.getQuestion();
+        val answer = answerPersonality.getAnswer();
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
             .withTableName("answer_technology")
             .execute(
@@ -78,19 +76,19 @@ public class EvaluateRepository {
         );
     }
 
-    public List<AnswerVolunteer> getAnswersVolunteer(Long codProject, String cpf) {
+    public List<AnswerPersonality> getAnswersVolunteer(Long codProject, String cpf) {
         return jdbcTemplate.query(
-                "select av.dsc_answer, vq.* from answer_volunteer av natural join volunteer_question vq where cod_project=:cod_project and cod_cpf=:cod_cpf",
+                "select av.dsc_answer, vq.* from answer_personality av natural join personality vq where cod_project=:cod_project and cod_cpf=:cod_cpf",
                 new MapSqlParameterSource("cod_project", codProject).addValue("cod_cpf", cpf),
                 (rs, i) ->
-                    AnswerVolunteer.builder()
+                    AnswerPersonality.builder()
                         .question(
-                            VolunteerQuestion.builder()
+                            Personality.builder()
                                 .codQuestion(rs.getLong("cod_question"))
                                 .question(rs.getString("dsc_question"))
                                 .build()
                         ).answer(
-                            AnswerVolunteerEnum
+                            AnswerPersonalityEnum
                                 .valueOf(rs.getString("dsc_answer"))
                         ).build()
         );

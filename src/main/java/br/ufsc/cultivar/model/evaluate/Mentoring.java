@@ -9,11 +9,11 @@ import lombok.experimental.FieldDefaults;
 
 @Value
 @Builder(builderClassName = "Builder")
-@JsonDeserialize(builder = AnswerVolunteer.Builder.class)
+@JsonDeserialize(builder = Mentoring.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AnswerVolunteer {
-    VolunteerQuestion question;
-    AnswerVolunteerEnum answer;
+public class Mentoring {
+    Long codQuestion;
+    String question;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{

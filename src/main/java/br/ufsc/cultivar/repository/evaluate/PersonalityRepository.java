@@ -1,6 +1,6 @@
 package br.ufsc.cultivar.repository.evaluate;
 
-import br.ufsc.cultivar.model.evaluate.VolunteerQuestion;
+import br.ufsc.cultivar.model.evaluate.Personality;
 import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -15,42 +15,42 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
-//@Repository
+@Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class QuestionRepository {
+public class PersonalityRepository {
 
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void create(VolunteerQuestion question) {
+    public void create(Personality question) {
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
-                .withTableName("volunteer_question")
+                .withTableName("personality")
                 .usingGeneratedKeyColumns("cod_question")
                 .execute(
                         new MapSqlParameterSource("dsc_question", question.getQuestion())
                 );
     }
 
-    public List<VolunteerQuestion> get() {
+    public List<Personality> get() {
         return jdbcTemplate.query(
-                "select * from volunteer_question",
+                "select * from personality",
                 (rs, i) -> this.build(rs)
         );
     }
 
-    public VolunteerQuestion get(Long codQuestion) {
+    public Personality get(Long codQuestion) {
         return jdbcTemplate.query(
-                "select * from volunteer_question where cod_question=:cod_question",
+                "select * from personality where cod_question=:cod_question",
                 new MapSqlParameterSource("cod_question", codQuestion),
                 this::build
         );
     }
 
-    private VolunteerQuestion build(ResultSet rs) throws SQLException {
+    private Personality build(ResultSet rs) throws SQLException {
         if(!DatabaseUtils.isNotEmpty(rs)){
             return null;
         }
-        return VolunteerQuestion.builder()
+        return Personality.builder()
                 .codQuestion(rs.getLong("cod_question"))
                 .question(rs.getString("dsc_question"))
                 .build();
@@ -58,7 +58,7 @@ public class QuestionRepository {
 
     public void delete(Long codQuestion) {
         jdbcTemplate.update(
-                "delete from volunteer_question where cod_question=:cod_question",
+                "delete from personality where cod_question=:cod_question",
                 new MapSqlParameterSource("cod_question", codQuestion)
         );
     }

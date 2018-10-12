@@ -5,6 +5,7 @@ import ListAttachment from './attachment';
 import ListQuestion from './question';
 import ListEventType from './eventType';
 import ListProject from './project';
+import EvaluatePage from './evaluate';
 import { Roles } from '../../../model';
 
 const styleButton = {
@@ -19,7 +20,8 @@ export default class extends Component{
                 project: false,
                 eventType: false,
                 attachment: false,
-                question: false
+                question: false,
+                evaluate: false
             }
         };
     }
@@ -58,6 +60,10 @@ export default class extends Component{
                             <Col>
                                 <Button type="button" color="info" style={styleButton} onClick={()=>this.changeShow('question')}>Questões</Button>
                             </Col>
+                            <Col md="1" />
+                            <Col>
+                                <Button type="button" color="info" style={styleButton} onClick={()=>this.changeShow('evaluate')}>Avaliação</Button>
+                            </Col>
                         </Row>
                         <br/>
                         <Row>
@@ -73,6 +79,9 @@ export default class extends Component{
                                 </Collapse>
                                 <Collapse isOpen={show.question}>
                                     <ListQuestion />
+                                </Collapse>
+                                <Collapse isOpen={show.evaluate}>
+                                    <EvaluatePage/>
                                 </Collapse>
                             </Col>
                         </Row>

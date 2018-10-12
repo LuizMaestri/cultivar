@@ -1,8 +1,8 @@
 package br.ufsc.cultivar.resource.evaluate;
 
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.model.evaluate.VolunteerQuestion;
-import br.ufsc.cultivar.service.evaluate.QuestionService;
+import br.ufsc.cultivar.model.evaluate.Personality;
+import br.ufsc.cultivar.service.evaluate.PersonalityService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -13,26 +13,26 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-//@RestController
-@RequestMapping(path = "/volunteerQuestion")
+@RestController
+@RequestMapping(path = "/personality")
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class QuestionResource {
-    QuestionService service;
+public class PersonalityResource {
+    PersonalityService service;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.CREATED)
-    public void create(@RequestBody final VolunteerQuestion question) throws ServiceException {
+    public void create(@RequestBody final Personality question) throws ServiceException {
         service.create(question);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<VolunteerQuestion> get() throws ServiceException{
+    public List<Personality> get() throws ServiceException{
         return service.get();
     }
 
     @DeleteMapping(path = "/{codQuestion}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public VolunteerQuestion delete(@PathVariable final Long codQuestion) throws ServiceException{
+    public Personality delete(@PathVariable final Long codQuestion) throws ServiceException{
         return service.delete(codQuestion);
     }
 }
