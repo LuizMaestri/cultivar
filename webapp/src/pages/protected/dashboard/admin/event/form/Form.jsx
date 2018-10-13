@@ -30,16 +30,17 @@ export default class extends Component {
         this.handlerNameAttachemnt = this.handlerNameAttachemnt.bind(this);
         this.handlerLinkAttachemnt = this.handlerLinkAttachemnt.bind(this);
         this.handlerIsFile = this.handlerIsFile.bind(this);
+        this.handlerEvaluate = this.handlerEvaluate.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
     }
-
+    
     static propTypes = {
-        afterSubmit: PropTypes.func.isRequired,
         event: PropTypes.objectOf(Event).isRequired,
+        afterSubmit: PropTypes.func.isRequired,
         isOpen: PropTypes.bool.isRequired,
         close: PropTypes.func.isRequired
     }
-
+    
     componentWillMount(){
         const { event } = this.state;
         event.allDay = event.startOccurrence === event.endOccurrence;
@@ -53,6 +54,12 @@ export default class extends Component {
                 typesEvent: res[1]
             })
         );
+    }
+
+    handlerEvaluate(value){
+        const { event } = this.state;
+        event.evaluate = value;
+        this.setState({event});
     }
 
     handlerType(userEvent){
@@ -208,7 +215,6 @@ export default class extends Component {
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
         const { codSchool } = event.school;
-        console.log(codSchool);
         const { trainings, type, address } = event;
         return (
             <Modal isOpen={isOpen} toggle={close} style={{width: 'max-content'}}>
@@ -217,14 +223,21 @@ export default class extends Component {
                     <Wizard onCancel={close} submitLabel="cadastrar" onSubmit={this.handlerSubmit}>
                         <div>
                             <h3>Dados do evento</h3>
-                            <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={type} onChange={this.handlerType} required >
-                                <option value="">Selecione</option>
-                                {
-                                    typesEvent.map(
-                                        typeEvent => <option key={typeEvent.type} value={typeEvent.type}>{typeEvent.name}</option>
-                                    )
-                                }
-                            </Input>
+                            <Row>
+                                <Col>
+                                    <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={type} onChange={this.handlerType} required >
+                                        <option value="">Selecione</option>
+                                        {
+                                            typesEvent.map(
+                                                typeEvent => <option key={typeEvent.type} value={typeEvent.type}>{typeEvent.name}</option>
+                                            )
+                                        }
+                                    </Input>
+                                </Col>
+                                <Col md="3">
+                                    <Switch id="evaluate" label="Avaliado" value={event.evaluate} onChange={this.handlerEvaluate} />
+                                </Col>
+                            </Row>
                             <Input id="filter" type="select" label="Escola" value={codSchool} onChange={this.handlerSelectSchool}>
                                 <option>Selecione</option>
                                 {

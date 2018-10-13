@@ -29,7 +29,7 @@ public class EventRepository {
         return new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("event")
                 .usingGeneratedKeyColumns("cod_event")
-                .usingColumns("dt_start_occurrence", "dt_end_occurrence", "fl_all_day", "tp_event", "cod_address")
+                .usingColumns("dt_start_occurrence", "dt_end_occurrence", "fl_all_day", "tp_event", "cod_address", "fl_evaluate")
                 .executeAndReturnKey(getParams(event))
                 .longValue();
     }
@@ -116,7 +116,8 @@ public class EventRepository {
                                         .codProject(codProject)
                                         .build() :
                                 null
-                ).build();
+                ).evaluate(rs.getBoolean("fl_evaluate"))
+                .build();
     }
 
     private MapSqlParameterSource getParams(final Event event) {
@@ -127,7 +128,8 @@ public class EventRepository {
                 .addValue("tp_event", event.getType().getType())
                 .addValue("cod_address", event.getAddress().getCodAddress())
                 .addValue("cod_school", event.getSchool().getCodSchool())
-                .addValue("cod_event", event.getCodEvent());
+                .addValue("cod_event", event.getCodEvent())
+                .addValue("fl_evaluate", event.getEvaluate());
     }
 
     public List<Event> eventsByVolunteer(final String cpf, final Long type) {

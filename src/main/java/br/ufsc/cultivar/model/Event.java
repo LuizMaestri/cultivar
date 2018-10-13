@@ -39,6 +39,8 @@ public class Event {
     @Valid
     @NotNull
     Address address;
+    @NotNull
+    Boolean evaluate;
     @Valid
     @NotNull
     School school;
