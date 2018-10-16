@@ -119,12 +119,13 @@ public class VolunteerService {
         volunteerRepository.update(volunteer);
     }
 
-    public PaginateList get(List<String> filterCompany, List<Long> filterSchool, Long page) throws ServiceException {
+    public PaginateList get(final List<String> filterCompany, final List<Long> filterSchool,
+                            final String filter, final Integer page) throws ServiceException {
         try {
             return PaginateList.builder()
-                .count(volunteerRepository.count(filterCompany, filterSchool))
+                .count(volunteerRepository.count(filterCompany, filterSchool, filter))
                 .data(
-                    volunteerRepository.get(filterCompany, filterSchool, null)
+                    volunteerRepository.get(filterCompany, filterSchool, filter, page)
                         .stream()
                         .map(volunteer -> {
                             try {

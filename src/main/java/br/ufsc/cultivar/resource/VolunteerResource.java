@@ -38,16 +38,18 @@ public class VolunteerResource {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List get(
             @RequestParam(value = "cod_cnpj", required = false) final List<String> filterCompany,
-            @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool) throws ServiceException{
-        return volunteerService.get(filterCompany, filterSchool, null).getData();
+            @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool,
+            @RequestParam(required = false) final String filter) throws ServiceException{
+        return volunteerService.get(filterCompany, filterSchool, filter, null).getData();
     }
 
     @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public PaginateList get(
             @RequestParam(value = "cod_cnpj", required = false) final List<String> filterCompany,
             @RequestParam(value = "cod_school", required = false) final List<Long> filterSchool,
-            @PathVariable final Long page) throws ServiceException{
-        return volunteerService.get(filterCompany, filterSchool, page);
+            @RequestParam(required = false) final String filter,
+            @PathVariable final Integer page) throws ServiceException{
+        return volunteerService.get(filterCompany, filterSchool, filter, page);
     }
 
 

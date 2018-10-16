@@ -37,25 +37,23 @@ public class SchoolRepository {
                 .longValue();
     }
 
-    public List<School> get(final Map<String, Object> filter, final Long page) {
-        val sql = new StringBuilder("select * from school where 1=1");
+    public List<School> get(final String filter, final Long page) {
+        val sql = new StringBuilder("select * from school");
         val params = new MapSqlParameterSource();
         Optional.ofNullable(filter)
-                .ifPresent(
-                        map -> map.forEach(
-                                (key, value) -> {
-                                    sql.append(" and ")
-                                            .append(key)
-                                            .append("=:")
-                                            .append(key);
-                                    params.addValue(key, value);
-                                }
-                        )
-                );
-        if (Objects.nonNull(page)){
-            sql.append(" limit 5 offset :offset");
-            params.addValue("offset", page*5);
-        }
+            .ifPresent(
+                s -> {
+                    sql.append(" where nm_school like :nm_school");
+                    params.addValue("nm_school", filter + "%");
+                }
+            );
+        Optional.ofNullable(page)
+            .ifPresent(
+                aLong -> {
+                    sql.append(" limit 5 offset :offset");
+                    params.addValue("offset", page * 5);
+                }
+            );
         return jdbcTemplate.query(
                 sql.toString(),
                 params,
@@ -63,20 +61,14 @@ public class SchoolRepository {
         );
     }
 
-    public Integer count(final Map<String, Object> filter) {
-        val sql = new StringBuilder("select count(cod_school) from school where 1=1");
+    public Integer count(final String filter) {
+        val sql = new StringBuilder("select count(cod_school) from school");
         val params = new MapSqlParameterSource();
         Optional.ofNullable(filter)
-                .ifPresent(
-                        map -> map.forEach(
-                                (key, value) -> {
-                                    sql.append(" and ")
-                                            .append(key)
-                                            .append("=:")
-                                            .append(key);
-                                    params.addValue(key, value);
-                                }
-                        )
+                .ifPresent(s -> {
+                            sql.append(" where nm_school like :nm_school");
+                            params.addValue("nm_school", filter + "%");
+                        }
                 );
         return jdbcTemplate.queryForObject(sql.toString(), params, Integer.class);
     }

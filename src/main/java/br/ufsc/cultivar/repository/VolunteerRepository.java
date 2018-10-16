@@ -30,7 +30,8 @@ public class VolunteerRepository {
                 .execute(getParams(volunteer));
     }
 
-    public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool, final Integer page) {
+    public List<Volunteer> get(final List<String> filterCompany, final List<Long> filterSchool,
+                               final String filter, final Integer page) {
         val sql = new StringBuilder("select * from volunteer where 1=1");
         val params = new MapSqlParameterSource();
 
@@ -48,10 +49,20 @@ public class VolunteerRepository {
             sql.append(" and cod_school in(:cod_school)");
             params.addValue("cod_school", filterSchool);
         }
-        if (Objects.nonNull(page)){
-            sql.append(" limit 5 offset :offset");
-            params.addValue("offset", page*5);
-        }
+        Optional.ofNullable(filter)
+            .ifPresent(
+                s -> {
+                    sql.append(" and nm_volunteer like :nm_volunteer");
+                    params.addValue("nm_volunteer", filter + "%");
+                }
+            );
+        Optional.ofNullable(page)
+            .ifPresent(
+                aLong -> {
+                    sql.append(" limit 5 offset :offset");
+                    params.addValue("offset", page * 5);
+                }
+            );
         return jdbcTemplate.query(
                 sql.toString(),
                 params,
@@ -122,7 +133,7 @@ public class VolunteerRepository {
                 .build();
     }
 
-    public Integer count(List<String> filterCompany, List<Long> filterSchool) {
+    public Integer count(final List<String> filterCompany, final List<Long> filterSchool, final String filter) {
         val sql = new StringBuilder("select count(cod_cpf) from volunteer where 1=1");
         val params = new MapSqlParameterSource();
 
@@ -140,6 +151,13 @@ public class VolunteerRepository {
             sql.append(" and cod_school in(:cod_school)");
             params.addValue("cod_school", filterSchool);
         }
+        Optional.ofNullable(filter)
+                .ifPresent(
+                        s -> {
+                            sql.append(" and nm_volunteer like :nm_volunteer");
+                            params.addValue("nm_volunteer", filter + "%");
+                        }
+                );
         return jdbcTemplate.queryForObject(sql.toString(), params, Integer.class);
     }
 }

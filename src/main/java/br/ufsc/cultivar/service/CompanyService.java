@@ -41,7 +41,7 @@ public class CompanyService {
         );
     }
 
-    public PaginateList get(final Map<String, Object> filter, final Long page) throws ServiceException {
+    public PaginateList get(final String filter, final Long page) throws ServiceException {
         return PaginateList.builder()
             .count(companyRepository.count(filter))
             .data(

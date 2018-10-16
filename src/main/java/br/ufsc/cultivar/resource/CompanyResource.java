@@ -30,18 +30,18 @@ public class CompanyResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List get(@RequestParam final Map<String, Object> filter) throws ServiceException{
+    public List get(@RequestParam(required=false) String filter) throws ServiceException{
         return service.get(filter, null).getData();
     }
 
     @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public PaginateList get(@RequestParam final Map<String, Object> filter,
+    public PaginateList get(@RequestParam(required=false) final String filter,
                             @PathVariable final Long page) throws ServiceException{
         return service.get(filter, page);
     }
 
     @GetMapping(path = "/{cnpj}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Company get(@PathVariable final String cnpj) throws ServiceException{
+    public Company getOne(@PathVariable final String cnpj) throws ServiceException{
         return service.get(cnpj);
     }
 

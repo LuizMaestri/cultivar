@@ -33,12 +33,12 @@ public class SchoolResource {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List get(@RequestParam final Map<String, Object> filter) throws ServiceException{
+    public List get(@RequestParam(required=false) String filter) throws ServiceException{
         return service.get(filter, null).getData();
     }
 
     @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public PaginateList get(@RequestParam final Map<String, Object> filter, @PathVariable final Long page) throws ServiceException{
+    public PaginateList get(@RequestParam(required=false) String filter, @PathVariable final Long page) throws ServiceException{
         return service.get(filter, page);
     }
 
