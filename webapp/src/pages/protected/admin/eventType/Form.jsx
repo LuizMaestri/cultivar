@@ -8,8 +8,9 @@ import { Input, FileInput, Switch } from '../../../../components';
 export default class extends Component{
     constructor(){
         super();
-        this.state= {
+        this.state = {
             typeEvent: new EventType(),
+            files: []
         };
         this.handlerName = this.handlerName.bind(this);
         this.handlerAdd = this.handlerAdd.bind(this);
@@ -37,23 +38,34 @@ export default class extends Component{
     handlerNameAttachemnt(event, index) {
         const { typeEvent } = this.state;
         typeEvent.trainings[index].name = event.target.value;
-        this.setState({ event });
+        /*const training = typeEvent.trainings[index];
+        training.name = event.target.value;
+        if(training.isFile && files[index]){
+            this.upload()
+        } else{
+            this.setState({ typeEvent });
+        }*/
+        this.setState({ typeEvent });
     }
 
     handlerLinkAttachemnt(event, index) {
         const { typeEvent } = this.state;
         typeEvent.trainings[index].link = event.target.value;
-        this.setState({ event });
+        this.setState({ typeEvent });
     }
 
     handlerUploadAttachemnt(event, index) {
         const file = event.target.files[0];
         console.log(file);
+
     }
+
+    /*upload(index){
+        a
+    }*/
 
     handlerRemove(index) {
         const { typeEvent } = this.state;
-        const training = typeEvent.trainings[index];
         typeEvent.trainings.splice(index, 1);
         this.setState({ typeEvent });
     }
@@ -66,8 +78,8 @@ export default class extends Component{
 
     handlerSubmit(){
         const { afterSubmit } = this.props;
-        const { typeEvent, file } = this.state;
-        const json = JSON.stringify(typeEvent);
+        const { typeEvent } = this.state;
+        /*const json = JSON.stringify(typeEvent);
         const blob = new Blob([json], {
             type: 'application/json'
         });
@@ -75,15 +87,14 @@ export default class extends Component{
         form.append('typeEvent', blob);
         if(file){
             form.append('file', file);
-        }
-        postRequest('/typeEvent', form, () => {
+        }*/
+        postRequest('/typeEvent', typeEvent, () => {
             afterSubmit();
             this.setState({ typeEvent: new EventType() });
         })
     }
 
     render(){
-        const { isOpen, close } = this.props;
         const { typeEvent } = this.state;
         const { trainings } = typeEvent;
         return (

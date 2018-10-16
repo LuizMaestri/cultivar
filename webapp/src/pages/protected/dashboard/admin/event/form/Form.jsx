@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { postRequest, getRequest } from '../../../../../../utils/http';
 import formatter from '../../../../../../utils/formatter';
 import { Event,  School, Training } from '../../../../../../model';
-import { Row, Col, Modal, ModalHeader, ModalBody, Button, Label } from 'reactstrap';
+import { Row, Col, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
 import { Wizard, Input, Switch, FileInput } from '../../../../../../components';
 import axios from 'axios';
 import './form.css';
@@ -63,13 +63,24 @@ export default class extends Component {
     }
 
     handlerType(userEvent){
-        const { event } = this.state;
+        const { event, typesEvent } = this.state;
         const { value } = userEvent.target;
-        event.type = value;
-        getRequest(
-            `/typeEvent/${value}/trainings`,
-            res => this.setState({ trainingsOfType: res.data, event })
-        );
+        event.type = null;
+        if(value){
+            for (const key in typesEvent) {
+                if (typesEvent.hasOwnProperty(key)) {
+                    const typeEvent = typesEvent[key];
+                    if(typeEvent.type === parseInt(value, 10)){
+                        event.type = typeEvent;
+                    }
+                }
+            }
+            getRequest(
+                `/typeEvent/${value}/trainings`,
+                res => this.setState({ trainingsOfType: res.data, event }),
+                () => this.setState({ trainingsOfType: [], event })
+            );
+        }
     }
 
     //address
@@ -183,7 +194,6 @@ export default class extends Component {
 
     handlerRemove(index){
         const { event } = this.state;
-        const training = event.trainings[index];
         event.trainings.splice(index, 1);
         this.setState({event});
     }
@@ -225,7 +235,7 @@ export default class extends Component {
                             <h3>Dados do evento</h3>
                             <Row>
                                 <Col>
-                                    <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={type} onChange={this.handlerType} required >
+                                    <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={type.type} onChange={this.handlerType} required >
                                         <option value="">Selecione</option>
                                         {
                                             typesEvent.map(

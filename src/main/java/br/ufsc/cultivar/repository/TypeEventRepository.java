@@ -27,7 +27,7 @@ public class TypeEventRepository {
                 .withTableName("type_event")
                 .usingGeneratedKeyColumns("tp_event")
                 .executeAndReturnKey(
-                        new MapSqlParameterSource("tp_event", name)
+                        new MapSqlParameterSource("nm_type", name)
                 ).longValue();
     }
 

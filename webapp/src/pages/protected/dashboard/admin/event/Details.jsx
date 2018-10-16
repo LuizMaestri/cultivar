@@ -50,13 +50,6 @@ export default class extends Component{
             );
             const address = new Address();
             Object.assign(address, eventAddress);
-            participants.push(
-                participants[0],
-                participants[0],
-                participants[0],
-                participants[0],
-                participants[0],
-            )
             return (
                 <Modal toggle={close} isOpen={isOpen} >
                     <ModalHeader toggle={close}>{eventDetails.title}</ModalHeader>

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { Button, Tooltip } from 'reactstrap';
-import training from '../../../../model/training';
+import {  getRequest } from '../../../../utils/http';
 
 export default class extends Component{
     constructor(){
@@ -19,11 +19,15 @@ export default class extends Component{
 
     handlerTrainings(){
         const { isOpen } = this.state;
-        let trainings = [];
+        const { type } = this.props;
         if (!isOpen){
-            //TODO 
+            getRequest(
+                `/typeEvent/${type}/trainings`,
+                res => this.setState({ isOpen: !isOpen, trainings: res.data })
+            );
+        } else {
+            this.setState({ isOpen: !isOpen, trainings: [] });
         }
-        this.setState({ isOpen: !isOpen, trainings });
     }
 
     render(){

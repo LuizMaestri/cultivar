@@ -35,7 +35,7 @@ public class EventRepository {
     }
 
     public List<Event> get(final List<String> filterVolunteer,  final List<Long> filterSchool, final Long filterProject) {
-        val sql = new StringBuilder("select e.* from event e natural join participation where 1=1");
+        val sql = new StringBuilder("select e.*, te.nm_type from event e join participation natural join type_event te  where 1=1");
         val params = new MapSqlParameterSource();
         if (!Optional.ofNullable(filterVolunteer)
                 .orElseGet(ArrayList::new)
@@ -64,7 +64,7 @@ public class EventRepository {
 
     public Event get(final Long codEvent) {
         return jdbcTemplate.query(
-                "select * from event where cod_event=:cod_event",
+                "select e.*, te.nm_type from event e natural join type_event te where cod_event=:cod_event",
                 new MapSqlParameterSource("cod_event", codEvent),
                 this::build
         );
@@ -100,6 +100,7 @@ public class EventRepository {
                 .type(
                         TypeEvent.builder()
                                 .type(rs.getLong("tp_event"))
+                                .name(rs.getString("nm_type"))
                                 .build()
                 )
                 .address(

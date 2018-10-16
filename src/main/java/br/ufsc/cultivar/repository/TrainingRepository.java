@@ -29,7 +29,7 @@ public class TrainingRepository {
                 .usingGeneratedKeyColumns("cod_training")
                 .executeAndReturnKey(
                         new MapSqlParameterSource()
-                                .addValue("cod_event", codEvent)
+                                .addValue("tp_event", codEvent)
                                 .addValue("nm_training", training.getName())
                                 .addValue("dsc_path", training.getPath())
                                 .addValue("dsc_link", training.getLink())
