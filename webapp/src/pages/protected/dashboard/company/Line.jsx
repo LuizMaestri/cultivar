@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import { Button, Label } from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';
-import Details from './Details.jsx';
-import Recommend from './Recommend.jsx'
+import Details from './Details';
+import Recommend from './Recommend'
+import Paticipation from './Paricipations'
 import formatter from '../../../../utils/formatter';
 import { deleteRequest } from '../../../../utils/http';
 import { Status } from '../../../../model';
@@ -81,6 +82,9 @@ export default class extends Component{
                             <Details close={this.toggleDetails} openForm={openForm} cpf={user.cpf} isOpen={true} closeRecommend={this.toggleRecommend} deleteFunc={this.handlerDelete}/>
                         )
                     }
+                </td>
+                <td>
+                    <Paticipation cpf={user.cpf}/>
                 </td>
                 <td style={{ width: user.status === Status.WAIT_COMPANY ? '60px': '200px' }}>
                     {

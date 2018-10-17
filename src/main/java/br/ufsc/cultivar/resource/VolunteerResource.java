@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.dto.PaginateList;
+import br.ufsc.cultivar.dto.ParticipationDTO;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.*;
 import br.ufsc.cultivar.service.DispatchService;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping(path = "/volunteer")
@@ -91,5 +93,10 @@ public class VolunteerResource {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void evaluate(@RequestBody final Rating rating, @PathVariable String cpf) throws ServiceException {
         ratingService.create(rating, cpf);
+    }
+
+    @GetMapping(path = "/{cpf}/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public Set<ParticipationDTO> getVolunteerLocals(@PathVariable final String cpf){
+        return eventService.getVolunteerLocals(cpf);
     }
 }

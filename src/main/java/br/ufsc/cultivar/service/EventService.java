@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.ParticipationDTO;
 import br.ufsc.cultivar.dto.UserEventsDTO;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
@@ -96,6 +97,10 @@ public class EventService {
             throw new ServiceException(null, null, null);
         }
         eventRepository.update(event);
+    }
+
+    public Set<ParticipationDTO> getVolunteerLocals(final String codCpf){
+        return new HashSet<>(participationRepository.getVolunteerLocals(codCpf));
     }
 
     public List<Event> eventsByVolunteer(final String cpf, final Long type) {

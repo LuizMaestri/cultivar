@@ -62,6 +62,7 @@ export default class extends Component{
                                     </th>
                                     <th>Status</th>
                                     <th>Detalhes</th>
+                                    <th>Participações</th>
                                     <th colSpan="2"></th>
                                 </tr>
                             </thead>
