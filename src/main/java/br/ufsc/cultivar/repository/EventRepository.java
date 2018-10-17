@@ -29,8 +29,15 @@ public class EventRepository {
         return new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("event")
                 .usingGeneratedKeyColumns("cod_event")
-                .usingColumns("dt_start_occurrence", "dt_end_occurrence", "fl_all_day", "tp_event", "cod_address", "fl_evaluate")
-                .executeAndReturnKey(getParams(event))
+                .usingColumns(
+                        "dt_start_occurrence",
+                        "dt_end_occurrence",
+                        "fl_all_day",
+                        "tp_event",
+                        "cod_address",
+                        "fl_evaluate",
+                        "cod_school"
+                ).executeAndReturnKey(getParams(event))
                 .longValue();
     }
 
@@ -80,7 +87,8 @@ public class EventRepository {
     public void update(final Event event) {
         jdbcTemplate.update(
                 "update event set dt_start_occurrence=:dt_start_occurrence, dt_end_occurrence=:dt_end_occurrence," +
-                        "tp_event=:tp_event, fl_all_day=:fl_all_day, cod_address=:cod_address where cod_event=:cod_event",
+                        "tp_event=:tp_event, fl_all_day=:fl_all_day, cod_address=:cod_address, fl_evaluate=:fl_evaluate," +
+                        "cod_school=:cod_school where cod_event=:cod_event",
                 getParams(event)
         );
     }
