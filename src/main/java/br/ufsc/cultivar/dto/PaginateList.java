@@ -11,7 +11,7 @@ import java.util.List;
 
 @Value
 @Builder(builderClassName = "Builder")
-@JsonDeserialize(builder = Answer.Builder.class)
+@JsonDeserialize(builder = PaginateList.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class PaginateList<T> {
     Integer count;

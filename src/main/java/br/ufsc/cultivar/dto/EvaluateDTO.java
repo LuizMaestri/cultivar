@@ -15,7 +15,7 @@ import java.util.List;
 
 @Value
 @Builder(builderClassName = "Builder")
-@JsonDeserialize(builder = Answer.Builder.class)
+@JsonDeserialize(builder = EvaluateDTO.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class EvaluateDTO {
 
