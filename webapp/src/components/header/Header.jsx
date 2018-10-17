@@ -4,7 +4,7 @@ import { NavLink } from 'react-router-dom';
 import logo from './logo.png';
 import { Roles } from '../../model';
 
-export default ({role, name, logged}) => (
+export default ({role, name, logged, logout}) => (
     <Navbar color="light" light>
         <NavbarBrand tag="button" className="btn btn-outline-secondary" style={{ borderWidth: '0'} }>
             <NavLink to="/">
@@ -31,7 +31,7 @@ export default ({role, name, logged}) => (
                                 </Fragment>
                             )
                         }
-                            <DropdownItem>
+                            <DropdownItem onClick={logout}>
                                 Sair
                             </DropdownItem>
                         </DropdownMenu>

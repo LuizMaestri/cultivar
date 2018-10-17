@@ -37,7 +37,7 @@ export default class extends Component{
     }
     
     render(){
-        const { role } = this.props;
+        const { role, logged } = this.props;
         const { show } = this.state;
         if (role === Roles.ADMIN) {
             return (
@@ -90,8 +90,9 @@ export default class extends Component{
                 </Row>
             );
         }
-        return (
-            <Redirect to="/dashboard" />
-        )
+        if(logged){
+            return <Redirect to="/dashboard" />
+        }
+        return <Redirect to="/login" />
     }
 }

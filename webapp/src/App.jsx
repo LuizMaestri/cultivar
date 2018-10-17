@@ -17,6 +17,7 @@ export default class App extends Component {
 			user: user ? user : new User()
 		};
 		this.handlerLogin = this.handlerLogin.bind(this);
+		this.handlerLogout = this.handlerLogout.bind(this);
   	}
 
 	handlerLogin(user){
@@ -25,19 +26,26 @@ export default class App extends Component {
 		this.setState({ logged: true, user });
 	}
 
+	handlerLogout(){
+		let user = new User();
+		saveObject('user', user);
+		saveObject('logged', false);
+		this.setState({ logged: false, user });
+	}
+
 	render() {
 		const { logged, user } = this.state;
 		return (
 			<BrowserRouter>
 				<div>
-					<Header role={user.role} logged={logged} name={user.name}/>
+					<Header role={user.role} logged={logged} logout={this.handlerLogout} name={user.name}/>
 					<Container style={{ margin: '3% 0' }} fluid>
 						<Row>
 							<Col>
-								<Route path="/dashboard" render={() => (<Dashboard cpf={user.cpf} role={user.role}/>)}/>
+								<Route path="/dashboard" render={() => (<Dashboard logged={logged} cpf={user.cpf} role={user.role}/>)}/>
 								<Route path="/login" render={() => <Login logged={logged} afterLogin={this.handlerLogin}/>}/>
 								<Route path="/cadastrar" render={() => <Register afterSubmit={this.handlerLogin}/>}/>
-								<Route path="/admin" render={()=> <Admin role={user.role}/>}/>
+								<Route path="/admin" render={() => <Admin logged={logged} role={user.role}/>}/>
 								<Route exact path="/" render={() => <Redirect to="/login"/>}/>
 							</Col>
 						</Row>

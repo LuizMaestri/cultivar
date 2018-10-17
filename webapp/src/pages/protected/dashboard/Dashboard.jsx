@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react';
+import { Redirect } from 'react-router-dom';
 import AdminDashboard from './admin';
 import VolunteerDashboard from './volunteer';
 import CompanyDashboard from './company';
 import SchoolDashboard from './school';
 import { Roles } from '../../../model';
 
-export default ({cpf, role}) => {
-    return (
+export default ({cpf, role, logged}) => {
+    return logged ? (
         <Fragment>
             {
                 role === Roles.ADMIN && (
@@ -29,5 +30,5 @@ export default ({cpf, role}) => {
                 )
             }
         </Fragment>
-    )
+    ) : <Redirect to='/login'/>
 }
