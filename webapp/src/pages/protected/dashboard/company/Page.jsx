@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Row, Col, Table } from 'reactstrap';
+import { Filter } from '../../../../components';
 import Line from './Line.jsx';
 import { getRequest } from '../../../../utils/http';
 
@@ -7,10 +8,12 @@ export default class extends Component{
     constructor(){
         super();
         this.state = {
+            filter: '',
             company: null,
             volunteers: []
         };
         this.listVolunteers = this.listVolunteers.bind(this);
+        this.handlerFilter = this.handlerFilter.bind(this);
     }
 
     componentWillMount(){
@@ -26,15 +29,25 @@ export default class extends Component{
         )
     }
 
-    listVolunteers(company){
+    handlerFilter(event) {
+        const { company } = this.state;
+        const filter = event.target.value;
+        if (filter.length >= 3 || filter.length === 0){
+            this.listVolunteers(company, filter);
+        } else {
+            this.setState({filter});
+        }
+    }
+
+    listVolunteers(company, filter=''){
         getRequest(
-            `/volunteer?cod_cnpj=${company.cnpj}`,
-            res => this.setState({ company, volunteers: res.data })
+            `/volunteer?cod_cnpj=${company.cnpj}&filter=${filter}`,
+            res => this.setState({ company, filter, volunteers: res.data })
         )
     }
 
     render(){
-        const { company, volunteers } = this.state;
+        const { company, volunteers, filter } = this.state;
         if ( company ){
             return (
                 <Row>
@@ -44,7 +57,9 @@ export default class extends Component{
                             <thead>
                                 <tr>
                                     <th>CPF</th>
-                                    <th>Nome</th>
+                                    <th>
+                                        <Filter label="Nome&nbsp;" value={filter} handlerFilter={this.handlerFilter}/>
+                                    </th>
                                     <th>Status</th>
                                     <th>Detalhes</th>
                                     <th colSpan="2"></th>
@@ -66,8 +81,6 @@ export default class extends Component{
                                 }
                             </tbody>
                         </Table>
-                    </Col>
-                    <Col md="3">
                     </Col>
                     <Col md="1"/>
                 </Row>
