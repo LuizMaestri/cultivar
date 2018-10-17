@@ -29,6 +29,7 @@ public class EventService {
     RatingRepository ratingRepository;
     UserRepository userRepository;
     ParticipationRepository participationRepository;
+    TrainingRepository trainingRepository;
 
     public String upload(MultipartFile file, Long codEvent) throws ServiceException{
         try {
@@ -62,18 +63,25 @@ public class EventService {
     }
 
     public Event get(final Long codEvent) throws ServiceException {
-        val event = eventRepository.get(codEvent);
-        if (Objects.isNull(event)){
-            throw new ServiceException(null, null, null);
-        }
+        val event = Optional.ofNullable(eventRepository.get(codEvent))
+            .orElseThrow(() -> new ServiceException(null, null, null));
+        val type = event.getType();
         return event.withAddress(
-                addressRepository.get(
-                        event.getAddress().getCodAddress()
-                )
+            addressRepository.get(
+                event.getAddress().getCodAddress()
+            )
         ).withParticipants(
-                userRepository.getParticipants(codEvent)
+            userRepository.getParticipants(codEvent)
         ).withRatings(
-                ratingRepository.get(codEvent)
+            ratingRepository.get(codEvent)
+        ).withTrainings(
+            trainingRepository.getByEvent(codEvent)
+        ).withType(
+            type.withTrainings(
+                trainingRepository.getByTypeEvent(
+                    type.getType()
+                )
+            )
         );
     }
 

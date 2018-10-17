@@ -42,7 +42,7 @@ public class TypeEventService {
 
     public TypeEvent get(Long tpEvent) {
         return typeEventRepository.get(tpEvent)
-                .withTrainings(trainingRepository.getByEvent(tpEvent));
+                .withTrainings(trainingRepository.getByTypeEvent(tpEvent));
     }
 
     public TypeEvent delete(Long tpEvent) {
@@ -52,6 +52,6 @@ public class TypeEventService {
     }
 
     public List<Training> getTrainings(Long tpEvent) {
-        return trainingRepository.getByEvent(tpEvent);
+        return trainingRepository.getByTypeEvent(tpEvent);
     }
 }

@@ -29,17 +29,24 @@ public class TrainingRepository {
                 .usingGeneratedKeyColumns("cod_training")
                 .executeAndReturnKey(
                         new MapSqlParameterSource()
-                                .addValue("tp_event", codEvent)
                                 .addValue("nm_training", training.getName())
                                 .addValue("dsc_path", training.getPath())
                                 .addValue("dsc_link", training.getLink())
                 ).longValue();
     }
 
-    public List<Training> getByEvent(final Long tpEvent) {
+    public List<Training> getByTypeEvent(final Long tpEvent) {
         return jdbcTemplate.query(
-                "select * from training where tp_event=:tp_event",
+                "select t.* from training t natural join type_event_training where tp_event=:tp_event",
                 new MapSqlParameterSource("tp_event", tpEvent),
+                (rs, i) -> this.build(rs)
+        );
+    }
+
+    public List<Training> getByEvent(final Long codEvent) {
+        return jdbcTemplate.query(
+                "select t.* from training t natural join event_training where cod_event=:cod_event",
+                new MapSqlParameterSource("cod_event", codEvent),
                 (rs, i) -> this.build(rs)
         );
     }
