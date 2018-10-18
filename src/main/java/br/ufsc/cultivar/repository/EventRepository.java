@@ -142,24 +142,28 @@ public class EventRepository {
     }
 
     public List<Event> eventsByVolunteer(final String cpf, final Long type) {
-        val sb = new StringBuilder("select e.* from event e natural join participation p where cod_cpf=:cod_cpf");
+        val sb = new StringBuilder("select e.*, te.nm_type from event e natural join participation p natural join type_event te where cod_cpf=:cod_cpf");
         val params = new MapSqlParameterSource("cod_cpf", cpf);
-        if (Objects.nonNull(type)){
-            sb.append(" and tp_event=:tp_event");
-            params.addValue("tp_event", type);
-        }
-
+        Optional.ofNullable(type)
+            .ifPresent(
+                aLong -> {
+                    sb.append(" and te.tp_event=:tp_event");
+                    params.addValue("tp_event", type);
+                }
+            );
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
     }
 
     public List<Event> eventsBySchool(Long codSchool, Long type) {
-        val sb = new StringBuilder("select e.* from event e where cod_school=:cod_school");
+        val sb = new StringBuilder("select * from event e natural join type_event te  where cod_school=:cod_school");
         val params = new MapSqlParameterSource("cod_school", codSchool);
-        if (Objects.nonNull(type)){
-            sb.append(" and tp_event=:tp_event");
-            params.addValue("tp_event", type);
-        }
-
+        Optional.ofNullable(type)
+            .ifPresent(
+                aLong -> {
+                    sb.append(" and te.tp_event=:tp_event");
+                    params.addValue("tp_event", type);
+                }
+            );
         return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
     }
 
@@ -190,5 +194,9 @@ public class EventRepository {
                             .build()
                     ).build()
         );
+    }
+
+    public List<Event> getEventsToEvaluateByVolunteer(final String cpf) {
+        return null;
     }
 }

@@ -91,8 +91,14 @@ public class VolunteerResource {
     
     @PutMapping(path = "/{cpf}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void evaluate(@RequestBody final Rating rating, @PathVariable String cpf) throws ServiceException {
+    public void evaluate(@RequestBody final Rating rating, @PathVariable final String cpf) throws ServiceException {
         ratingService.create(rating, cpf);
+    }
+
+    @GetMapping(path = "/{cpf}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(code = HttpStatus.NO_CONTENT)
+    public List<Event> evaluate(@PathVariable final String cpf) throws ServiceException {
+        return eventService.getEventsToEvaluateByVolunteer(cpf);
     }
 
     @GetMapping(path = "/{cpf}/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

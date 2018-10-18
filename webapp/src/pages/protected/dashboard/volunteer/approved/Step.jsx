@@ -1,8 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component,Fragment } from 'react';
 import { Calendar } from '../../../../../components';
 import { Row, Col, Label } from 'reactstrap';
 import BigCalendar from 'react-big-calendar';
-import Details from './Details.jsx'
+import Details from './Details'
+import Evaluate from './Evaluate'
 import { Volunteer } from '../../../../../model';
 import { getRequest } from '../../../../../utils/http';
 import axios from 'axios';
@@ -22,6 +23,7 @@ export default class extends Component{
         super();
         this.state = {
             events: [],
+            evaluates: [],
             isOpenDetails: false,
             codEvent: null,
             volunteer: new Volunteer()
@@ -40,14 +42,17 @@ export default class extends Component{
                 res => res.data
             )
         ]).then(
-            res => this.setState({
-                volunteer: res[0],
-                events: mapEvents(res[1]),
-                isOpenDetails: false,
-                codEvent: null
-            })
+            res => {
+                const events = mapEvents(res[1]); 
+                this.setState({
+                    volunteer: res[0],
+                    isOpenDetails: false,
+                    codEvent: null,
+                    evaluates: events.filter(event => event.evaluate),
+                    events
+                });
+            }
         );
-        ;
     }
 
     getLabel(){
@@ -68,9 +73,13 @@ export default class extends Component{
         }
 
         return (
-            <Label className={`btn btn-${className}`} style={{ cursor: 'default', width: 'inherit', height: '40px'}}>
-                {text}
-            </Label>
+            <Row>
+                <Col>
+                    <Label className={`btn btn-${className}`} style={{ cursor: 'default', width: 'inherit', height: '40px'}}>
+                        {text}
+                    </Label>
+                </Col>
+            </Row>
         );
     }
 
@@ -84,8 +93,8 @@ export default class extends Component{
     }
 
     render(){
-        const { events, isOpenDetails,  codEvent, volunteer } = this.state;
-        const { ratings } = volunteer;
+        const { events, isOpenDetails, codEvent, evaluates, volunteer } = this.state;
+        const { cpf } = volunteer.user;
         return (
             <Row style={{ height: '600px', marginBottom: '1%' }}>
                 <Col>
@@ -98,9 +107,9 @@ export default class extends Component{
                 </Col>
                 <Col md="2">
                     <h3 className="text-center">Avaliações</h3>
-                    {
-                        this.getLabel()
-                    }
+                    {this.getLabel()}
+                    <br/>
+                    {evaluates.length ? evaluates.map(evaluate => <Evaluate evaluate={evaluate} cpf={cpf} afterSubmit={()=> null}/>) : null}
                 </Col>
             </Row>
         );

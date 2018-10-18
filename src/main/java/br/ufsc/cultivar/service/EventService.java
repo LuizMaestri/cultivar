@@ -124,4 +124,8 @@ public class EventService {
                         ).build()
             ).collect(Collectors.toList());
     }
+
+    public List<Event> getEventsToEvaluateByVolunteer(final String cpf) {
+        return eventRepository.getEventsToEvaluateByVolunteer(cpf);
+    }
 }
