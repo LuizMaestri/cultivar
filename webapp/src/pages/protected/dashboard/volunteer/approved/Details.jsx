@@ -16,8 +16,7 @@ export default class extends Component{
     static propTypes = {
         code: PropTypes.number.isRequired,
         isOpen: PropTypes.bool.isRequired,
-        close: PropTypes.func.isRequired,
-        afterDelete: PropTypes.func.isRequired, 
+        close: PropTypes.func.isRequired
     };
 
     componentWillMount() {
@@ -93,9 +92,6 @@ export default class extends Component{
                     </ModalBody>
                     <ModalFooter style={{display: 'inline'}}>
                         <Row>
-                            <Col>
-                                <Button color="danger" onClick={this.handlerDelete}>Excluir</Button>
-                            </Col>
                             <Col>
                                 <Button color="primary" className="float-right" onClick={close}>Fechar</Button>
                             </Col>
