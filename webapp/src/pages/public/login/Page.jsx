@@ -37,7 +37,7 @@ export default class extends Component{
                 <Col md="4" sm="10">
                     <Row>
                         <Col>
-                            <Form>
+                            <Form onKeyPress={({ key }) => key === 'Enter' && this.handlerSubmit()}>
                                 <Input id="login" label="Usuário" value={cpf} onChange={this.handlerUsername}/>
                                 <Input id="password" label="Senha" type="password" value={password} onChange={this.handlerPassword}/>
                                 <Button type="button" color="primary" size="lg" onClick={this.handlerSubmit} block>Entrar</Button>
