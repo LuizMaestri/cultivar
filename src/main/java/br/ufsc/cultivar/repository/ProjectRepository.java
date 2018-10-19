@@ -58,7 +58,7 @@ public class ProjectRepository {
     }
 
     public Integer count(final String filter) {
-        val sql = new StringBuilder("select * from project ");
+        val sql = new StringBuilder("select count(cod_project) from project ");
         val params = new MapSqlParameterSource();
         Optional.ofNullable(filter)
                 .ifPresent(
