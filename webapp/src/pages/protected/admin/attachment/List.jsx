@@ -69,14 +69,20 @@ export default class extends Component{
         const { attachments, filter, pages, count } = this.state;
         return (
             <div>
-                <Filter label={<h3>Anexos&nbsp;&nbsp;&nbsp;&nbsp;</h3>} value={filter} handlerFilter={this.handlerFilter.bind(this)} />
+                <Row>
+                    <Col>
+                        <h3>Anexos</h3>
+                    </Col>
+                </Row>
                 <br/>
                 <Row>
                     <Col>
                         <Table striped>
                             <thead>
                                 <tr>
-                                    <th>Nome</th>
+                                    <th>
+                                        <Filter label="Nome&nbsp;&nbsp;" value={filter} handlerFilter={this.handlerFilter.bind(this)} />
+                                    </th>
                                     <th>Obrigatório</th>
                                     <th></th>
                                 </tr>
