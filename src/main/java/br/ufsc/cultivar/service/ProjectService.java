@@ -26,6 +26,7 @@ public class ProjectService {
 
     public PaginateList get(final String filter, final Long page) {
         return PaginateList.builder()
+                .count(projectRepository.count(filter))
                 .data(
                     new ArrayList<>(projectRepository.get(filter, page))
                 ).build();
