@@ -5,6 +5,7 @@ import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -34,11 +36,38 @@ public class ProjectRepository {
             );
     }
 
-    public List<Project> get() {
-        return jdbcTemplate.query(
-            "select * from project",
-            (rs, i) -> this.build(rs)
-        );
+    public List<Project> get(final String filter, final Long page) {
+        val sql = new StringBuilder("select * from project ");
+        val params = new MapSqlParameterSource();
+        Optional.ofNullable(filter)
+            .ifPresent(
+                s -> {
+                    sql.append("where nm_project like :nm_project ");
+                    params.addValue("nm_project", filter + "%");
+                }
+            );
+        sql.append("order by dt_start desc ");
+        Optional.ofNullable(page)
+            .ifPresent(
+                aLong -> {
+                    sql.append("limit 20 offset :offset");
+                    params.addValue("offset", page*20);
+                }
+            );
+        return jdbcTemplate.query(sql.toString(), params, (rs, i) -> this.build(rs));
+    }
+
+    public Integer count(final String filter) {
+        val sql = new StringBuilder("select * from project ");
+        val params = new MapSqlParameterSource();
+        Optional.ofNullable(filter)
+                .ifPresent(
+                        s -> {
+                            sql.append("where nm_project like :nm_project ");
+                            params.addValue("nm_project", filter + "%");
+                        }
+                );
+        return jdbcTemplate.queryForObject(sql.toString(), params, Integer.class);
     }
 
     public Project get(Long codProject) {

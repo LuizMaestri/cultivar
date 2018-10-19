@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.model.Project;
 import br.ufsc.cultivar.repository.ProjectRepository;
 import lombok.AccessLevel;
@@ -9,6 +10,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,8 +24,11 @@ public class ProjectService {
         projectRepository.create(project);
     }
 
-    public List<Project> get() {
-        return projectRepository.get();
+    public PaginateList get(final String filter, final Long page) {
+        return PaginateList.builder()
+                .data(
+                    new ArrayList<>(projectRepository.get(filter, page))
+                ).build();
     }
 
     public Project get(Long codProject) {

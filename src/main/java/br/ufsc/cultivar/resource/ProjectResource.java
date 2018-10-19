@@ -1,5 +1,7 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.PaginateList;
+import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Project;
 import br.ufsc.cultivar.service.ProjectService;
 import lombok.AccessLevel;
@@ -27,9 +29,14 @@ public class ProjectResource {
         projectService.create(project);
     }
 
+    @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public PaginateList get(@RequestParam(required = false) final String filter, @PathVariable final Long page) throws ServiceException {
+        return projectService.get(filter, page);
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Project> get(){
-        return projectService.get();
+    public List get(){
+        return projectService.get(null, null).getData();
     }
 
     @GetMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
