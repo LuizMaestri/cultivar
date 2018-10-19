@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Status;
@@ -41,9 +42,9 @@ public class AttachmentResource {
         return service.getAsFile(codAttachment);
     }
 
-    @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Attachment> get() throws ServiceException{
-        return service.get();
+    @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public PaginateList get(@RequestParam(required = false) final String filter, @PathVariable final Long page) throws ServiceException{
+        return service.get(filter, page);
     }
 
     @DeleteMapping(path = "/{codAttachment}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

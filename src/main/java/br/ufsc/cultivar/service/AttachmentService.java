@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
@@ -16,6 +17,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -42,8 +44,13 @@ public class AttachmentService {
         }
     }
 
-    public List<Attachment> get() throws ServiceException {
-        return repository.get();
+    public PaginateList get(final String filter, final Long page) throws ServiceException {
+        return PaginateList.builder()
+                .data(
+                        new ArrayList<>(repository.get(filter, page))
+                ).count(
+                        repository.count(filter)
+                ).build();
     }
     public List<Attachment> get(final Status status) throws ServiceException {
         return repository.get(status);
