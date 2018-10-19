@@ -13,13 +13,13 @@ export default class Example extends React.Component {
 
     increment(){
         const page = this.state.page + 1;
-        this.props.changePage(page);
+        this.props.onChangePage(page);
         this.setState({page});
     }
 
     decrement() {
         const page = this.state.page - 1;
-        this.props.changePage(page);
+        this.props.onChangePage(page);
         this.setState({ page });
     }
 
