@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Training;
 import br.ufsc.cultivar.model.TypeEvent;
@@ -28,9 +29,14 @@ public class TypeEventResource {
         typeEventService.create(typeEvent);
     }
 
+    @GetMapping(path = "/page/{page}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public PaginateList get(@RequestParam(required = false) final String filter, @PathVariable final Long page) throws ServiceException {
+        return typeEventService.get(filter, page);
+    }
+
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<TypeEvent> get() throws ServiceException{
-        return typeEventService.get();
+    public List get() throws ServiceException{
+        return typeEventService.get(null, null).getData();
     }
 
     @GetMapping(path = "/{tpEvent}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

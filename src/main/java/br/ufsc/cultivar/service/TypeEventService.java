@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Training;
@@ -13,6 +14,7 @@ import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,16 +30,16 @@ public class TypeEventService {
         val tpEvent = typeEventRepository.create(typeEvent.getName());
         typeEvent.getTrainings()
                 .forEach(
-                        training -> trainingRepository.create(training, tpEvent)
+                    training -> trainingRepository.create(training, tpEvent)
                 );
     }
 
-    public List<TypeEvent> get() throws ServiceException {
-        return Optional.ofNullable(
-            typeEventRepository.get()
-        ).orElseThrow(
-            () -> new ServiceException(null, null, Type.NOT_FOUND)
-        );
+    public PaginateList get(final String filter, final Long page) {
+        return PaginateList.builder()
+                .count(typeEventRepository.count(filter))
+                .data(
+                    new ArrayList<>(typeEventRepository.get(filter, page))
+                ).build();
     }
 
     public TypeEvent get(Long tpEvent) {
