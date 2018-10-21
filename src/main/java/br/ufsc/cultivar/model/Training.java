@@ -21,6 +21,7 @@ public class Training {
     @Valid
     @NotNull
     String name;
+    boolean isFile;
     String path;
     String link;
 

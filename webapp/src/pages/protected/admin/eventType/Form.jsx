@@ -3,6 +3,7 @@ import { EventType, Training } from '../../../../model';
 import PropTypes from 'prop-types';
 import { postRequest } from '../../../../utils/http';
 import { Row, Col, Button, Form, Card, CardBody } from 'reactstrap';
+import { ClipLoader } from 'react-spinners';
 import { Input, FileInput, Switch } from '../../../../components';
 
 export default class extends Component{
@@ -10,9 +11,15 @@ export default class extends Component{
         super();
         this.state = {
             typeEvent: new EventType(),
-            files: []
+            files: [],
+            loading: false,
+            success: false
         };
         this.handlerName = this.handlerName.bind(this);
+        this.handlerLinkAttachemnt = this.handlerLinkAttachemnt.bind(this);
+        this.handlerUploadAttachemnt = this.handlerUploadAttachemnt.bind(this);
+        this.handlerRemove = this.handlerRemove.bind(this);
+        this.handlerIsFile = this.handlerIsFile.bind(this);
         this.handlerAdd = this.handlerAdd.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
     }
@@ -38,13 +45,6 @@ export default class extends Component{
     handlerNameAttachemnt(event, index) {
         const { typeEvent } = this.state;
         typeEvent.trainings[index].name = event.target.value;
-        /*const training = typeEvent.trainings[index];
-        training.name = event.target.value;
-        if(training.isFile && files[index]){
-            this.upload()
-        } else{
-            this.setState({ typeEvent });
-        }*/
         this.setState({ typeEvent });
     }
 
@@ -56,13 +56,11 @@ export default class extends Component{
 
     handlerUploadAttachemnt(event, index) {
         const file = event.target.files[0];
-        console.log(file);
-
+        const { files, typeEvent } = this.state;
+        typeEvent.trainings[index].path = file.name;
+        files.push(file);
+        this.setState({ files  });
     }
-
-    /*upload(index){
-        a
-    }*/
 
     handlerRemove(index) {
         const { typeEvent } = this.state;
@@ -77,25 +75,29 @@ export default class extends Component{
     }
 
     handlerSubmit(){
+        this.setState({ loading: true });
         const { afterSubmit } = this.props;
-        const { typeEvent } = this.state;
-        /*const json = JSON.stringify(typeEvent);
+        const { typeEvent, files } = this.state;
+        const json = JSON.stringify(typeEvent);
         const blob = new Blob([json], {
             type: 'application/json'
         });
         let form = new FormData();
         form.append('typeEvent', blob);
-        if(file){
-            form.append('file', file);
-        }*/
-        postRequest('/typeEvent', typeEvent, () => {
-            afterSubmit();
-            this.setState({ typeEvent: new EventType() });
-        })
+        files.forEach( file => form.append('files', file));
+        postRequest(
+            '/typeEvent',
+            form,
+            () => {
+                afterSubmit();
+                this.setState({ typeEvent: new EventType(), loading: false, success: true });
+            },
+            () => this.setState({ loading: false })
+        );
     }
 
     render(){
-        const { typeEvent } = this.state;
+        const { typeEvent, loading, success } = this.state;
         const { trainings } = typeEvent;
         return (
             <Card>
@@ -129,7 +131,14 @@ export default class extends Component{
                                                     {
                                                         training.isFile ?
                                                             (
-                                                                <FileInput id={`upload-${index}`} label="Anexar arquivo" invalidMessage="Upload é Obrigatório" onChange={event => this.handlerUploadAttachemnt(event, index)} accept="application/pdf" required />
+                                                                <Row>
+                                                                    <Col md="9">
+                                                                        <FileInput id={`upload-${index}`} label="Anexar arquivo" invalidMessage="Upload é Obrigatório" disabled={loading || success || !training.name} onChange={event => this.handlerUploadAttachemnt(event, index)} accept="application/pdf" required />
+                                                                    </Col>
+                                                                    <Col md="2">
+                                                                        <ClipLoader sizeUnit="px" size={30} color="#007bff" loading={loading} />
+                                                                    </Col>
+                                                                </Row>
                                                             ) : (
                                                                 <Input id={`link-${index}`} label="Link" invalidMessage="Link é Obrigatório" value={training.link} onChange={event => this.handlerLinkAttachemnt(event, index)} required />
                                                             )

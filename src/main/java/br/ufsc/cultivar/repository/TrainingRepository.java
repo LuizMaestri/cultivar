@@ -23,7 +23,7 @@ public class TrainingRepository {
     NamedParameterJdbcTemplate jdbcTemplate;
 
 
-    public Long create(final Training training, final Long codEvent) {
+    public Long create(final Training training) {
         return new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("training")
                 .usingGeneratedKeyColumns("cod_training")
@@ -33,6 +33,15 @@ public class TrainingRepository {
                                 .addValue("dsc_path", training.getPath())
                                 .addValue("dsc_link", training.getLink())
                 ).longValue();
+    }
+
+    public void associateTypeEvent(final Long codTraining, final Long tpEvent){
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+            .withTableName("type_event_training")
+            .execute(
+                new MapSqlParameterSource("cod_training", codTraining)
+                    .addValue("tp_event", tpEvent)
+            );
     }
 
     public List<Training> getByTypeEvent(final Long tpEvent) {

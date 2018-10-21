@@ -36,7 +36,18 @@ export default class extends Component{
         return (
             <Fragment>
                 <Button id={`type-${type}`} type="button" color="info" onClick={this.handlerTrainings}>Anexos</Button>
-                { isOpen && <Tooltip target={`type-${type}`} isOpen={isOpen}>{ trainings.map(training => training.name) }</Tooltip> }
+                { isOpen && <Tooltip target={`type-${type}`} isOpen={isOpen}>
+                    {
+                        trainings.map(
+                            (training, index) => (
+                                <Fragment>
+                                    { index + 1 } º -  { training.name}
+                                    <br/>
+                                </Fragment>
+                            )
+                        )
+                    }
+                    </Tooltip> }
             </Fragment>
         );
     }

@@ -44,10 +44,32 @@ public class FileUtils {
         return save(new File(path), multipartFile);
     }
 
+    public String save(final MultipartFile multipartFile, final String dir, final Long code, final String filename) throws UploadException {
+        val path = String.format("./files/%s/%d/%s.pdf", dir, code, filename);
+        val file = new File(path);
+        try {
+            if (file.getParentFile().mkdirs()){
+                log.info("create dir: " + file.getParent());
+            }
+            Files.copy(multipartFile.getInputStream(), Paths.get(file.toURI()));
+            return path;
+        } catch (IOException e) {
+            throw new UploadException(String.format("Não foi possível salvar o arquivo %s.", file.getPath()), e);
+        }
+    }
+
     public String saveAttachment(final MultipartFile multipartFile, final Long codAttachment) throws UploadException {
         val path = String.format(
                 "./files/attachments/%d.pdf",
                 codAttachment
+        );
+        return save(new File(path), multipartFile);
+    }
+
+    public String save(final MultipartFile multipartFile, final String filename) throws UploadException {
+        val path = String.format(
+                "./files/trainings/%s.pdf",
+                filename
         );
         return save(new File(path), multipartFile);
     }
@@ -69,6 +91,10 @@ public class FileUtils {
                 "./files/attachments/%d.pdf",
                 codAttachment
         );
+        return new FileSystemResource(path);
+    }
+
+    public FileSystemResource get(final String path) {
         return new FileSystemResource(path);
     }
 }
