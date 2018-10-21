@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { getRequest } from '../../../../../utils/http';
 import { Address } from '../../../../../model';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
+import Downloader from './Downloader';
 
 
 export default class extends Component{
@@ -35,7 +36,9 @@ export default class extends Component{
         const { isOpen, close } = this.props;
         const { eventDetails } = this.state;
         if (eventDetails){
-            const { address: eventAddress, trainings } = eventDetails;
+            const { address: eventAddress, trainings: eventTrainings, type } = eventDetails;
+            const { trainings: typeTrainings } = type;
+            const trainings = eventTrainings.concat(typeTrainings);
             const duration = Math.ceil(
                 Math.abs(
                     eventDetails.startOccurrence - eventDetails.endOccurrence
@@ -80,6 +83,7 @@ export default class extends Component{
                                                         training => (
                                                             <Col key={training.codTraining}>
                                                                 {training.link && <a className="btn btn-info" href={training.link} target="_blank">{training.name}</a>}
+                                                                {training.path && <Downloader codTraining={training.codTraining} name={training.name} />}
                                                             </Col>
                                                         )
                                                     )
