@@ -1,4 +1,4 @@
-import React, { Component,Fragment } from 'react';
+import React, { Component } from 'react';
 import { Calendar } from '../../../../../components';
 import { Row, Col, Label } from 'reactstrap';
 import BigCalendar from 'react-big-calendar';

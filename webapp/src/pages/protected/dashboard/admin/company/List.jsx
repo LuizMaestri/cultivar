@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { getRequest } from '../../../../../utils/http';
-import { Row, Col, ListGroup, ListGroupItem, Form } from 'reactstrap';
+import { Row, Col, ListGroup, ListGroupItem } from 'reactstrap';
 import { Pagination, Filter } from '../../../../../components';
 import CompanyItem from './ListItem.jsx';
 import Add from './Add.jsx';

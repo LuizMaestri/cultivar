@@ -1,5 +1,5 @@
 import React, { Component, Fragment } from 'react';
-import { Question, Roles } from '../../../../model';
+import { Roles } from '../../../../model';
 import { getRequest, deleteRequest } from '../../../../utils/http';
 import { Row, Col, Table} from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';

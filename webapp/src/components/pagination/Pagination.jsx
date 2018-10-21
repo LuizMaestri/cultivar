@@ -33,14 +33,14 @@ export default class Example extends React.Component {
                         <PaginationItem disabled={page === 0}>
                             <PaginationLink previous href="#" onClick={this.decrement}/>
                         </PaginationItem>
-                        <PaginationItem disabled={page === parseInt(pages)}>
+                        <PaginationItem disabled={page === parseInt(pages, 10)}>
                             <PaginationLink next href="#"  onClick={this.increment}/>
                         </PaginationItem>
                     </Pagination>
                 </Col>
                 <Col>
                     <strong className="float-right" style={{fontSize: '.8rem'}}>
-                        Página {page + 1} de {parseInt(pages) + 1}
+                        Página {page + 1} de {parseInt(pages, 10) + 1}
                         <br/>
                         {count} Registros
                     </strong>
