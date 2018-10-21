@@ -59,7 +59,7 @@ export default class extends Component{
         const { files, typeEvent } = this.state;
         typeEvent.trainings[index].path = file.name;
         files.push(file);
-        this.setState({ files  });
+        this.setState({ files, typeEvent  });
     }
 
     handlerRemove(index) {

@@ -1,9 +1,7 @@
 package br.ufsc.cultivar.repository;
 
-import br.ufsc.cultivar.model.Project;
 import br.ufsc.cultivar.model.TypeEvent;
 import br.ufsc.cultivar.utils.DatabaseUtils;
-import javafx.scene.chart.PieChartBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;

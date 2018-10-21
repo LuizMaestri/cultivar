@@ -65,4 +65,11 @@ public class AddressRepository {
                 .addValue("nm_street", address.getStreet())
                 .addValue("nu_street", address.getNumber());
     }
+
+    public void delete(final Long codAddress) {
+        jdbcTemplate.update(
+                "delete from address where cod_address=:cod_address",
+                new MapSqlParameterSource("cod_address", codAddress)
+        );
+    }
 }

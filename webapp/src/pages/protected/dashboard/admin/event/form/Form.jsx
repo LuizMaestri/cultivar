@@ -4,7 +4,9 @@ import { postRequest, getRequest } from '../../../../../../utils/http';
 import formatter from '../../../../../../utils/formatter';
 import { Event,  School, Training } from '../../../../../../model';
 import { Row, Col, Modal, ModalHeader, ModalBody, Button } from 'reactstrap';
+import { ClipLoader } from 'react-spinners';
 import { Wizard, Input, Switch, FileInput } from '../../../../../../components';
+import Downloader from '../Downloader';
 import axios from 'axios';
 import './form.css';
 
@@ -16,7 +18,10 @@ export default class extends Component {
             volunteers: [],
             schools: [],
             typesEvent: [],
-            trainingsOfType: []
+            trainingsOfType: [],
+            files: [],
+            loading: false,
+            success: false
         };
         this.handlerType = this.handlerType.bind(this);
         this.handlerCity = this.handlerCity.bind(this);
@@ -27,8 +32,8 @@ export default class extends Component {
         this.handlerSelectSchool = this.handlerSelectSchool.bind(this);
         this.handlerAdd = this.handlerAdd.bind(this);
         this.handlerRemove = this.handlerRemove.bind(this);
-        this.handlerNameAttachemnt = this.handlerNameAttachemnt.bind(this);
-        this.handlerLinkAttachemnt = this.handlerLinkAttachemnt.bind(this);
+        this.handlerNameTraining = this.handlerNameTraining.bind(this);
+        this.handlerLinkTraining = this.handlerLinkTraining.bind(this);
         this.handlerIsFile = this.handlerIsFile.bind(this);
         this.handlerEvaluate = this.handlerEvaluate.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
@@ -175,21 +180,24 @@ export default class extends Component {
         this.setState({event})
     }
 
-    handlerNameAttachemnt(userEvent, index){
+    handlerNameTraining(userEvent, index){
         const { event } = this.state;
         event.trainings[index].name = userEvent.target.value;
         this.setState({event});
     }
 
-    handlerLinkAttachemnt(userEvent, index) {
+    handlerLinkTraining(userEvent, index) {
         const { event } = this.state;
         event.trainings[index].link = userEvent.target.value;
         this.setState({ event });
     }
 
-    handlerUploadAttachemnt(userEvent, index){
+    handlerUploadTraining(userEvent, index) {
         const file = userEvent.target.files[0];
-        console.log(file);
+        const { files, event } = this.state;
+        event.trainings[index].path = file.name;
+        files.push(file);
+        this.setState({ files, event });
     }
 
     handlerRemove(index){
@@ -205,22 +213,43 @@ export default class extends Component {
     }
 
     handlerSubmit(){
-        const { afterSubmit } = this.props
-        let { event } = this.state;
-        const [start, end] = [ event.startOccurrence, event.endOccurrence ] 
+        this.setState({ loading: true });
+        const { afterSubmit } = this.props;
+        const { event, files } = this.state;
+        const [start, end] = [event.startOccurrence, event.endOccurrence]
         event.startOccurrence = event.startOccurrence.toJSON()
         event.endOccurrence = event.endOccurrence.toJSON()
+        const json = JSON.stringify(event);
+        const blob = new Blob([json], {
+            type: 'application/json'
+        });
+        let form = new FormData();
+        form.append('event', blob);
+        files.forEach(file => form.append('files', file));
         postRequest(
             '/event',
-            event,
-            afterSubmit,
-            () => [event.startOccurrence, event.endOccurrence] = [start, end]
+            form,
+            () => {
+                afterSubmit();
+            },
+            () => {
+                [event.startOccurrence, event.endOccurrence] = [start, end];
+                this.setState({ loading: false });
+            }
         );
     }
 
     render(){
         const { isOpen, close } = this.props;
-        const { event, volunteers, schools, typesEvent, trainingsOfType } = this.state;
+        const { 
+            event,
+            volunteers,
+            schools,
+            typesEvent,
+            trainingsOfType,
+            loading,
+            success
+        } = this.state;
         const dateTitle = event.allDay ? 
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
@@ -286,12 +315,19 @@ export default class extends Component {
                             <h3>Materias</h3>
                             {
                                 trainingsOfType.length?
-                                    trainingsOfType.map(
-                                        training => (
-                                                <Col key={training.codTraining}>
-                                                    {training.link && <a className="btn btn-info" href={training.link} target="_blank">{training.name}</a>}
-                                                </Col>
-                                            )
+                                    (
+                                        <Row>
+                                            {
+                                                trainingsOfType.map(
+                                                    training => (
+                                                        <Col key={training.codTraining} md="3">
+                                                            {training.link && <a className="btn btn-info" href={training.link} target="_blank">{training.name}</a>}
+                                                            {training.path && <Downloader codTraining={training.codTraining} name={training.name} />}
+                                                        </Col>
+                                                    )
+                                                )
+                                            }
+                                        </Row>
                                     ) : (
                                         <div>
                                             <strong>Para esse tipo de evento não há materiais préviamente cadastrados</strong>
@@ -307,7 +343,7 @@ export default class extends Component {
                                     <Fragment>
                                         <Row>
                                             <Col>
-                                                <Input id={`training-${index}`} label="Nome" invalidMessage="Nome é Obrigatório" value={training.name} onChange={event => this.handlerNameAttachemnt(event, index)} required/>
+                                                <Input id={`training-${index}`} label="Nome" invalidMessage="Nome é Obrigatório" value={training.name} onChange={event => this.handlerNameTraining(event, index)} required/>
                                             </Col>
                                             <Col md="5">
                                                 <Switch id={`file-${index}`} label="Arquivo pra Upload" value={training.isFile} onChange={value => this.handlerIsFile(value, index)} />
@@ -318,9 +354,16 @@ export default class extends Component {
                                                 {
                                                     training.isFile ? 
                                                         (
-                                                            <FileInput id={`upload-${index}`} label="Anexar arquivo" invalidMessage="Upload é Obrigatório" onChange={event => this.handlerUploadAttachemnt(event, index)} accept="application/pdf" required/>
+                                                            <Row>
+                                                                <Col md="9">
+                                                                    <FileInput id={`upload-${index}`} label="Anexar arquivo" invalidMessage="Upload é Obrigatório" disabled={loading || success || !training.name} onChange={event => this.handlerUploadTraining(event, index)} accept="application/pdf" required />
+                                                                </Col>
+                                                                <Col md="2">
+                                                                    <ClipLoader sizeUnit="px" size={30} color="#007bff" loading={loading} />
+                                                                </Col>
+                                                            </Row>
                                                         ) : (
-                                                            <Input id={`link-${index}`} label="Link" invalidMessage="Link é Obrigatório" value={training.link} onChange={event => this.handlerLinkAttachemnt(event, index)} required/>
+                                                            <Input id={`link-${index}`} label="Link" invalidMessage="Link é Obrigatório" value={training.link} onChange={event => this.handlerLinkTraining(event, index)} required/>
                                                         )
                                                 }
                                             </Col>

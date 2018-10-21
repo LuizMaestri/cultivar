@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { getRequest, deleteRequest } from '../../../../../utils/http';
 import { Address } from '../../../../../model';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
+import Downloader from './Downloader';
 
 
 export default class extends Component{
@@ -104,8 +105,9 @@ export default class extends Component{
                                             {
                                                 trainings.map(
                                                     training => (
-                                                        <Col key={training.codTraining}>
+                                                        <Col key={training.codTraining} md="3">
                                                             {training.link && <a className="btn btn-info" href={training.link} target="_blank">{training.name}</a>}
+                                                            {training.path && <Downloader codTraining={training.codTraining} name={training.name} />}
                                                         </Col>
                                                     )
                                                 )

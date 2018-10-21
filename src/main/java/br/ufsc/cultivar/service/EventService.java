@@ -6,6 +6,7 @@ import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Event;
+import br.ufsc.cultivar.model.Training;
 import br.ufsc.cultivar.repository.*;
 import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
@@ -18,6 +19,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static br.ufsc.cultivar.exception.Type.FILE;
+import static br.ufsc.cultivar.exception.Type.INVALID;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -32,30 +36,50 @@ public class EventService {
     ParticipationRepository participationRepository;
     TrainingRepository trainingRepository;
 
-    public String upload(MultipartFile file, Long codEvent) throws ServiceException{
+    private Training saveFile(final Training training, final Long codEvent, final List<MultipartFile> files) {
         try {
-            return fileUtils.save(file, codEvent);
+            for (MultipartFile file : files) {
+                if (file.getOriginalFilename().equals(training.getPath())) {
+                    return training.withPath(fileUtils.save(file, "event", codEvent, training.getName()));
+                }
+            }
         } catch (UploadException e) {
-            throw new ServiceException(e.getMessage(), e, Type.FILE);
+            throw new RuntimeException(e);
         }
+        throw new IllegalArgumentException();
     }
 
-    public void create(final Event event) throws ServiceException {
+    public void create(final Event event, final List<MultipartFile> files) throws ServiceException {
         val address = event.getAddress();
+        val codAddress = addressRepository.create(address);
         val codEvent = eventRepository.create(
-                event.withAddress(
-                        address.withCodAddress(
-                                addressRepository.create(
-                                        address
-                                )
-                        )
-                )
+            event.withAddress(
+                address.withCodAddress(codAddress)
+            )
         );
         Optional.ofNullable(event.getParticipants())
                 .orElseGet(ArrayList::new)
                 .forEach(
-                        user -> participationRepository.create(codEvent, user.getCpf())
+                    user -> participationRepository.create(codEvent, user.getCpf())
                 );
+        try {
+            event.getTrainings()
+                    .parallelStream()
+                    .map(training -> training.isFile() ? saveFile(training, codEvent, files) : training)
+                    .forEach(
+                            training -> trainingRepository.associateEvent(
+                                    trainingRepository.create(training), codEvent)
+                    );
+        } catch (IllegalArgumentException e){
+            eventRepository.delete(codEvent);
+            addressRepository.delete(codAddress);
+            throw new ServiceException(null, e, INVALID);
+        } catch (RuntimeException e) {
+            eventRepository.delete(codEvent);
+            addressRepository.delete(codAddress);
+            val cause = e.getCause();
+            throw new ServiceException(cause.getMessage(), cause, FILE);
+        }
     }
 
     public Set<Event> get(final List<String> filterVolunteer, final List<Long> filterSchool,

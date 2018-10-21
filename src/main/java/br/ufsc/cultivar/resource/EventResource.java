@@ -27,10 +27,10 @@ public class EventResource {
     EventService eventService;
     RatingService ratingService;
 
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void create(@RequestBody final Event event) throws ServiceException {
-        eventService.create(event);
+    @PostMapping(consumes = MediaType.ALL_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void create(@RequestPart final Event event, @RequestPart final List<MultipartFile> files) throws ServiceException {
+        eventService.create(event, files);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
@@ -56,12 +56,6 @@ public class EventResource {
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
     public void update(@RequestBody final Event event, @PathVariable final Long codEvent)throws ServiceException{
         eventService.update(event, codEvent);
-    }
-
-    @PostMapping(path="/{codEvent}/upload", consumes = MediaType.APPLICATION_PDF_VALUE,
-            produces = MediaType.TEXT_PLAIN_VALUE)
-    public String upload(@RequestPart final MultipartFile file, @PathVariable final Long codEvent) throws ServiceException {
-        return eventService.upload(file, codEvent);
     }
 
     @PutMapping(path = "/{codEvent}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)

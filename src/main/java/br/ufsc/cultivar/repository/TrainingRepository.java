@@ -44,6 +44,15 @@ public class TrainingRepository {
             );
     }
 
+    public void associateEvent(final Long codTraining, final Long codEvent){
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("event_training")
+                .execute(
+                        new MapSqlParameterSource("cod_training", codTraining)
+                                .addValue("cod_event", codEvent)
+                );
+    }
+
     public List<Training> getByTypeEvent(final Long tpEvent) {
         return jdbcTemplate.query(
                 "select t.* from training t natural join type_event_training where tp_event=:tp_event",
