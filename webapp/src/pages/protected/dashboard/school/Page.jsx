@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Row, Col } from 'reactstrap';
 import VolunteerList from './volunteer';
 import EventList from './event';
+import EvaluateList from './evaluate';
 import { getRequest } from '../../../../utils/http';
 
 export default class extends Component{
@@ -28,7 +29,16 @@ export default class extends Component{
                         <EventList codSchool={school.codSchool}/>
                     </Col>
                     <Col md="3">
-                        <VolunteerList codSchool={school.codSchool}/>
+                        <Row style={{height:'450px'}}>
+                            <Col>
+                                <VolunteerList codSchool={school.codSchool}/>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <EvaluateList codSchool={school.codSchool}/>
+                            </Col>
+                        </Row>
                     </Col>
                     <Col md="1"/>
                 </Row>
