@@ -9,7 +9,8 @@ export {
     Option,
     Switch,
     Required,
-    Checkbox
+    Checkbox,
+    Radio
 } from './form';
 export { default as Calendar } from './calender';
 export { default as Pagination } from './pagination';

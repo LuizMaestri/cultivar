@@ -7,12 +7,18 @@ import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 @Value
 @Builder(builderClassName = "Builder")
-@JsonDeserialize(builder = AnswerPersonality.Builder.class)
+@JsonDeserialize(builder = AnswerMentoring.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class AnswerPersonality {
-    Personality question;
+public class AnswerMentoring {
+
+    @Valid
+    Mentoring mentoring;
+    @NotNull
     AnswerAgreeEnum answer;
 
     @JsonPOJOBuilder(withPrefix = "")

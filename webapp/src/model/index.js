@@ -13,3 +13,8 @@ export { default as EventType } from './eventType';
 export { default as Attachment } from './attachment';
 export { default as Training } from './training';
 export { default as Project } from './project';
+export { default as AnswerTechnology } from './answerTechnology';
+export { default as AnswerAgree } from './answerAgree';
+export { default as Difficulty } from './difficulty';
+export { default as Enjoy } from './enjoy';
+export { default as Expectation } from './expectation';

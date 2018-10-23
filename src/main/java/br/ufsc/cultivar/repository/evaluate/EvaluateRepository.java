@@ -88,7 +88,7 @@ public class EvaluateRepository {
                                 .question(rs.getString("dsc_question"))
                                 .build()
                         ).answer(
-                            AnswerPersonalityEnum
+                            AnswerAgreeEnum
                                 .valueOf(rs.getString("dsc_answer"))
                         ).build()
         );

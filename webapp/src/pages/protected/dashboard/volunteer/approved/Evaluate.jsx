@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { Row, Col, Button } from 'reactstrap';
-import Form from './Form';
+import Form from './form';
 
 export default class extends Component{
     constructor(){
@@ -28,7 +28,7 @@ export default class extends Component{
                         </Button>
                     </Col>
                 </Row>
-                {isOpen && <Form cpf={cpf} afterSubmit={afterSubmit} isOpen={isOpen} close={this.toggle}/>}
+                {isOpen && <Form title={evaluate.title} cpf={cpf} afterSubmit={afterSubmit} isOpen={isOpen} close={this.toggle}/>}
                 <br />
             </Fragment>
         )

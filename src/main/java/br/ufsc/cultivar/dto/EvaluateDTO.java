@@ -1,9 +1,6 @@
 package br.ufsc.cultivar.dto;
 
-import br.ufsc.cultivar.model.Answer;
-import br.ufsc.cultivar.model.evaluate.AnswerTechnology;
-import br.ufsc.cultivar.model.evaluate.AnswerPersonality;
-import br.ufsc.cultivar.model.evaluate.Experience;
+import br.ufsc.cultivar.model.evaluate.*;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AccessLevel;
@@ -24,6 +21,8 @@ public class EvaluateDTO {
     List<AnswerTechnology> technologies;
     List<AnswerPersonality> answerPersonalities;
     Experience experience;
+    List<AnswerMentoring> mentoring;
+    List<Skill> skills;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{
