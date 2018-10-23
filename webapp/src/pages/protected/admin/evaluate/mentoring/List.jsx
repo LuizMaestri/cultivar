@@ -15,7 +15,7 @@ export default class extends Component{
     }
 
     componentWillMount(){
-        getRequest('/mentoring', res => this.setState({ personalities: res.data }));
+        getRequest('/mentoring', res => this.setState({ mentorings: res.data }));
     }
 
     handlerDelete(codQuestion){
@@ -53,7 +53,7 @@ export default class extends Component{
                                             )
                                     ) : (
                                         <ListGroupItem>
-                                            <strong>Nenhuma questão sobre a personalidade do voluntário encontrada</strong>
+                                            <strong>Nenhuma questão sobre o feedback de evolução do voluntário encontrada</strong>
                                         </ListGroupItem>
                                     )
 
