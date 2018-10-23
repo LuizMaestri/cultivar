@@ -63,4 +63,9 @@ public class SchoolResource {
     public void update(@RequestBody final School school, @PathVariable final Long codSchool)throws ServiceException{
         service.update(school, codSchool);
     }
+
+    @GetMapping(path = "/{codSchool}/evaluate")
+    public List<Event> evaluate(@PathVariable final Long codSchool) throws ServiceException {
+        return eventService.getEventsToEvaluateBySchool(codSchool);
+    }
 }

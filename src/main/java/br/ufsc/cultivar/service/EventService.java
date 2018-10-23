@@ -6,6 +6,7 @@ import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Event;
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.Training;
 import br.ufsc.cultivar.repository.*;
 import br.ufsc.cultivar.utils.FileUtils;
@@ -22,6 +23,7 @@ import java.util.stream.Collectors;
 
 import static br.ufsc.cultivar.exception.Type.FILE;
 import static br.ufsc.cultivar.exception.Type.INVALID;
+import static br.ufsc.cultivar.exception.Type.NOT_FOUND;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -89,7 +91,7 @@ public class EventService {
 
     public Event get(final Long codEvent) throws ServiceException {
         val event = Optional.ofNullable(eventRepository.get(codEvent))
-            .orElseThrow(() -> new ServiceException(null, null, null));
+            .orElseThrow(() -> new ServiceException(null, null, NOT_FOUND));
         val type = event.getType();
         return event.withAddress(
             addressRepository.get(
@@ -131,13 +133,23 @@ public class EventService {
         return eventRepository.eventsByVolunteer(cpf, type);
     }
 
-    public List<Event> eventsBySchool(Long codSchool, Long type) {
-        return eventRepository.eventsBySchool(codSchool, type);
+    public List<Event> eventsBySchool(final Long codSchool, final Long type) {
+        return eventRepository.eventsBySchool(codSchool, type)
+            .parallelStream()
+            .map(
+                event -> event.withParticipants(
+                    userRepository.getParticipants(
+                        event.getCodEvent()
+                    )
+                )
+            ).collect(Collectors.toList());
     }
 
     public List<UserEventsDTO> getEventsToAlert() {
-        return userRepository.get((Map<String, Object>) null)
-            .stream()
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("dsc_role", Role.VOLUNTEER);
+        return userRepository.get(map)
+            .parallelStream()
             .map(
                 user ->
                     UserEventsDTO.builder()
@@ -151,5 +163,9 @@ public class EventService {
 
     public List<Event> getEventsToEvaluateByVolunteer(final String cpf) {
         return eventRepository.getEventsToEvaluateByVolunteer(cpf);
+    }
+
+    public List<Event> getEventsToEvaluateBySchool(final Long codSchool) {
+        return eventRepository.getEventsToEvaluateBySchool(codSchool);
     }
 }

@@ -197,6 +197,29 @@ public class EventRepository {
     }
 
     public List<Event> getEventsToEvaluateByVolunteer(final String cpf) {
-        return null;
+        val sql = "select e.*, te.nm_type from event e" +
+                "  natural join type_event te" +
+                "  join participation p on e.cod_event = p.cod_event " +
+                "where cod_cpf=:cod_cpf and e.fl_evaluate = true" +
+                "  and dt_end_occurrence < current_date" +
+                "  and fl_fault = false and p.fl_evaluate = false";
+        return jdbcTemplate.query(
+                sql,
+                new MapSqlParameterSource("cod_cpf", cpf),
+                (rs, i) -> this.build(rs)
+        );
+    }
+
+    public List<Event> getEventsToEvaluateBySchool(final Long codSchool) {
+        val sql = "select e.*, te.nm_type from event e" +
+                "  natural join type_event te " +
+                "where cod_school=:cod_school and e.fl_evaluate = true" +
+                "  and dt_end_occurrence < current_date" +
+                "  and fl_school_evaluate = false";
+        return jdbcTemplate.query(
+                sql,
+                new MapSqlParameterSource("cod_school", codSchool),
+                (rs, i) -> this.build(rs)
+        );
     }
 }

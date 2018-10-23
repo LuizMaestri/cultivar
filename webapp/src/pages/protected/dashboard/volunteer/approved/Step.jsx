@@ -37,18 +37,17 @@ export default class extends Component{
         const { cpf } = this.props;
         axios.all([
             getRequest(`/volunteer/${cpf}`, res => res.data),
-            getRequest(
-                `/volunteer/${cpf}/event`,
-                res => res.data
-            )
+            getRequest(`/volunteer/${cpf}/event`, res => res.data),
+            getRequest(`/volunteer/${cpf}/evaluate`, res => res.data)
         ]).then(
             res => {
                 const events = mapEvents(res[1]); 
+                const evaluates = mapEvents(res[2]);
                 this.setState({
                     volunteer: res[0],
                     isOpenDetails: false,
                     codEvent: null,
-                    evaluates: events.filter(event => event.evaluate),
+                    evaluates,
                     events
                 });
             }
