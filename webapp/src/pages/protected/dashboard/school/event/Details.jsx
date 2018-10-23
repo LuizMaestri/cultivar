@@ -36,7 +36,7 @@ export default class extends Component{
         const { isOpen, close } = this.props;
         const { eventDetails } = this.state;
         if (eventDetails){
-            const { address: eventAddress, trainings: eventTrainings, participants, type } = eventDetails;
+            const { address: eventAddress, trainings: eventTrainings, type } = eventDetails;
             const { trainings: typeTrainings } = type;
             const trainings = eventTrainings.concat(typeTrainings);
             const duration = Math.ceil(
