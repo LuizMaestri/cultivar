@@ -3,7 +3,15 @@ import PropTypes from 'prop-types';
 import { postRequest, getRequest } from '../../../../../../utils/http';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Wizard } from '../../../../../../components';
-import { Advertising, Technology, Personality, Experience, Result, Mentoring } from './steps';
+import {
+    Advertising,
+    Technology,
+    Personality,
+    Experience,
+    Result,
+    Mentoring,
+    Again
+} from './steps';
 import axios from 'axios';
 import './form.css'
 
@@ -69,9 +77,9 @@ export default class extends Component{
                     skills:[],
                     again: {
                         interest: null,
-                        others: [],
+                        activities: [],
                         comment: ''
-                    }
+                    },
                     cpf
                 }
                 this.setState({
@@ -116,6 +124,7 @@ export default class extends Component{
                             <Experience evaluate={evaluate} update={this.updateEvaluate} title={title}/>
                             <Result evaluate={evaluate} update={this.updateEvaluate}/>
                             <Mentoring evaluate={evaluate} mentoringQuestions={mentoringQuestions} update={this.updateEvaluate}/>
+                            <Again evaluate={evaluate} update={this.updateEvaluate}/>
                         </Wizard>
                     </ModalBody>
                 </Modal>
