@@ -12,7 +12,7 @@ export default class extends Component{
     }
 
     componentWillMount() {
-        getRequest('/skill', res => this.setState({ activities: res.data }));
+        getRequest('/activity', res => this.setState({ activities: res.data }));
     }
 
     handlerInterest(value){
@@ -59,7 +59,7 @@ export default class extends Component{
                     {
                         activities.map(
                             activity => (
-                                <Col md="3" key={`activity-${activity.codActivity}`}>
+                                <Col md="4" key={`activity-${activity.codActivity}`}>
                                     <Switch id={`activity-${activity.codActivity}`} label={activity.name} onChange={value => this.handleActivities(value, activity)} />
                                 </Col>
                             )

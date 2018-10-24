@@ -33,7 +33,7 @@ public class ActivityRepository {
             "select * from activity",
             (rs, i) -> Activity.builder()
                 .name(
-                    rs.getString("nm_user")
+                    rs.getString("nm_activity")
                 ).codActivity(
                     rs.getLong("cod_activity")
                 ).build()
