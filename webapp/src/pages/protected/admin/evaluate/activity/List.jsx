@@ -15,7 +15,7 @@ export default class extends Component{
     }
 
     componentWillMount(){
-        getRequest('/activity', res => this.setState({ personalities: res.data }));
+        getRequest('/activity', res => this.setState({ activities: res.data }));
     }
 
     handlerDelete(codActivity){
