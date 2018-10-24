@@ -9,7 +9,7 @@ import lombok.experimental.FieldDefaults;
 
 @Value
 @Builder(builderClassName = "Builder")
-@JsonDeserialize(builder = Technology.Builder.class)
+@JsonDeserialize(builder = AnswerTechnology.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AnswerTechnology {
     Technology technology;

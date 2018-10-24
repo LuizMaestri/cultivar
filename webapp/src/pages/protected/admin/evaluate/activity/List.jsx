@@ -8,27 +8,27 @@ export default class extends Component{
     constructor(){
         super();
         this.state = {
-            tasks: []
+            activities: []
         };
         this.handlerDelete = this.handlerDelete.bind(this);
         this.componentWillMount = this.componentWillMount.bind(this);
     }
 
     componentWillMount(){
-        getRequest('/task', res => this.setState({ personalities: res.data }));
+        getRequest('/activity', res => this.setState({ personalities: res.data }));
     }
 
-    handlerDelete(codTask){
-        deleteRequest(`/task/${codTask}`, this.componentWillMount);
+    handlerDelete(codActivity){
+        deleteRequest(`/activity/${codActivity}`, this.componentWillMount);
     }
 
     render(){
-        const { tasks } = this.state;
+        const { activities } = this.state;
         return (
             <Fragment>
                 <Row>
                     <Col>
-                        <h3>Feedback do Voluntário</h3>
+                        <h3>Atividades Auxiliares</h3>
                     </Col>
                 </Row>
                 <br/>
@@ -36,24 +36,24 @@ export default class extends Component{
                     <Col>
                         <ListGroup>
                             {
-                                tasks.length ?
-                                    tasks.map(
-                                        task => 
+                                activities.length ?
+                                    activities.map(
+                                        activity => 
                                             (
-                                                <ListGroupItem key={task.codTask}>
+                                                <ListGroupItem key={activity.codActivity}>
                                                     <Row>
                                                         <Col>
-                                                            <strong>{task.question}</strong>
+                                                            <strong>{activity.name}</strong>
                                                         </Col>
                                                         <Col md="1">
-                                                            <FaTrash style={{ cursor: 'pointer' }} color="red" onClick={() => this.handlerDelete(task.codTask)}/>
+                                                            <FaTrash style={{ cursor: 'pointer' }} color="red" onClick={() => this.handlerDelete(activity.codActivity)}/>
                                                         </Col>
                                                     </Row>
                                                 </ListGroupItem>
                                             )
                                     ) : (
                                         <ListGroupItem>
-                                            <strong>Nenhuma questão sobre a personalidade do voluntário encontrada</strong>
+                                            <strong>Nenhuma atividades auxiliar do voluntário encontrada</strong>
                                         </ListGroupItem>
                                     )
 

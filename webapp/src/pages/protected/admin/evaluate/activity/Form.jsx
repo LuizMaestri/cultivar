@@ -10,11 +10,11 @@ export default class extends Component{
             value : '',
             invalid: false
         };
-        this.handlerQuestion = this.handlerQuestion.bind(this);
+        this.handlerActivity = this.handlerActivity.bind(this);
         this.handlerSubmit = this.handlerSubmit.bind(this);
     }
 
-    handlerQuestion(event){
+    handlerActivity(event){
         this.setState({ value: event.target.value, invalid: false });
     }
 
@@ -25,8 +25,8 @@ export default class extends Component{
         }
         const { afterSubmit } = this.props;
         postRequest(
-            '/task',
-            { task: value },
+            '/activity',
+            { name: value },
             () => {
                 this.setState({value: ''});
                 afterSubmit();
@@ -39,7 +39,7 @@ export default class extends Component{
             <Card>
                 <CardBody>
                     <Form>
-                        <Input id="mentoring" label="Questão" {...this.state } invalidMessage="Campo Obrigatório" onChange={this.handlerQuestion} required />
+                        <Input id="mentoring" label="Atividade" {...this.state } invalidMessage="Campo Obrigatório" onChange={this.handlerActivity} required />
                         <Button type="button" color="primary" className="float-right" onClick={this.handlerSubmit}>Cadastrar</Button>
                     </Form>
                 </CardBody>

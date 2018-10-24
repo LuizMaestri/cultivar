@@ -4,6 +4,7 @@ import ListPersonality from './personality';
 import ListSkill from './skill';
 import ListTechnology from './technology';
 import ListMentoring from './mentoring';
+import ListAcitivity from './activity';
 
 const styleButton = {
     width: '100%'
@@ -18,7 +19,7 @@ export default class extends Component {
                 personality: false,
                 skill: false,
                 mentoring: false,
-                others: false
+                activities: false
             }
         };
     }
@@ -57,7 +58,7 @@ export default class extends Component {
                         </Col>
                         <Col md="1" />
                         <Col>
-                            <Button type="button" color="info" style={styleButton} onClick={() => this.changeShow('others')}>Avaliação</Button>
+                            <Button type="button" color="info" style={styleButton} onClick={() => this.changeShow('activities')}>Atividades</Button>
                         </Col>
                     </Row>
                     <br />
@@ -75,8 +76,8 @@ export default class extends Component {
                             <Collapse isOpen={show.mentoring}>
                                 <ListMentoring/>
                             </Collapse>
-                            <Collapse isOpen={show.others}>
-                                teste
+                            <Collapse isOpen={show.activities}>
+                                <ListAcitivity/>
                             </Collapse>
                         </Col>
                     </Row>
