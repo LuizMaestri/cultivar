@@ -48,7 +48,7 @@ export default class extends Component{
                 <h3>Continuação das atividades</h3>
                 <Row>
                     <Col>
-                        <Switch id="interest" label="Você tem interesse em atuar novamente como mentor na iniciativa Computação na Escola?&nbsp;&nbsp;" onChange={this.handlerInterest} />
+                        <Switch id="interest" label="Você tem interesse em atuar novamente como mentor na iniciativa Computação na Escola?&nbsp;&nbsp;" onChange={this.handlerInterest.bind(this)} />
                     </Col>
                 </Row>
                 <br/>
@@ -67,7 +67,7 @@ export default class extends Component{
                     }
                 </Row>
                 <br/>
-                <Input id="comment" label="Mais algum comentário?" type="textarea" value={comment} onChange={this.handlerComment} />
+                <Input id="comment" label="Mais algum comentário?" type="textarea" value={comment} onChange={this.handlerComment.bind(this)} />
                 <hr className="row" />
             </div>
         );

@@ -4,10 +4,7 @@ import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.dto.ParticipationDTO;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.*;
-import br.ufsc.cultivar.service.DispatchService;
-import br.ufsc.cultivar.service.EventService;
-import br.ufsc.cultivar.service.RatingService;
-import br.ufsc.cultivar.service.VolunteerService;
+import br.ufsc.cultivar.service.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,9 +24,9 @@ import java.util.Set;
 public class VolunteerResource {
 
     VolunteerService volunteerService;
-    RatingService ratingService;
     DispatchService dispatchService;
     EventService eventService;
+    ProjectService projectService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -89,15 +86,14 @@ public class VolunteerResource {
         dispatchService.save(attachment, file, cpf);
     }
 
-    @PutMapping(path = "/{cpf}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void evaluate(@RequestBody final Rating rating, @PathVariable final String cpf) throws ServiceException {
-        ratingService.create(rating, cpf);
+    @GetMapping(path = "/{cpf}/event/evaluate")
+    public List<Event> evaluateEvent(@PathVariable final String cpf) throws ServiceException {
+        return eventService.getEventsToEvaluateByVolunteer(cpf);
     }
 
-    @GetMapping(path = "/{cpf}/evaluate")
-    public List<Event> evaluate(@PathVariable final String cpf) throws ServiceException {
-        return eventService.getEventsToEvaluateByVolunteer(cpf);
+    @GetMapping(path = "/{cpf}/project/evaluate")
+    public List<Project> evaluateProject(@PathVariable final String cpf) throws ServiceException {
+        return projectService.getProjectToEvaluateByVolunteer(cpf);
     }
 
     @GetMapping(path = "/{cpf}/participations", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

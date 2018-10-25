@@ -41,4 +41,8 @@ public class ProjectService {
         projectRepository.delete(codProject);
         return project;
     }
+
+    public List<Project> getProjectToEvaluateByVolunteer(final String cpf) {
+        return projectRepository.getProjectToEvaluateByVolunteer(cpf);
+    }
 }

@@ -49,4 +49,13 @@ public class ParticipationRepository {
                         .build()
         );
     }
+
+    public void updateEvaluate(Long codEvent, String cpf) {
+        jdbcTemplate.update(
+                "update participation set fl_evaluate=true where cod_event=:cod_event and cod_cpf=:cod_cpf",
+                new MapSqlParameterSource()
+                    .addValue("cod_cpf", cpf)
+                    .addValue("cod_event", codEvent)
+        );
+    }
 }

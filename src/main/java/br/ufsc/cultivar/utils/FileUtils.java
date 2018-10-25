@@ -49,7 +49,7 @@ public class FileUtils {
         val file = new File(path);
         try {
             if (file.getParentFile().mkdirs()){
-                log.info("create dir: " + file.getParent());
+                log.info("createevaluateProject dir: " + file.getParent());
             }
             Files.copy(multipartFile.getInputStream(), Paths.get(file.toURI()));
             return path;
@@ -77,7 +77,7 @@ public class FileUtils {
     private String save(final File file, final MultipartFile multipart) throws UploadException{
         try {
             if (file.getParentFile().mkdirs()){
-                log.info("create dir: " + file.getParent());
+                log.info("createevaluateProject dir: " + file.getParent());
             }
             Files.copy(multipart.getInputStream(), Paths.get(file.toURI()));
             return file.getName();

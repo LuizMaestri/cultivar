@@ -38,11 +38,21 @@ export default class extends Component{
         axios.all([
             getRequest(`/volunteer/${cpf}`, res => res.data),
             getRequest(`/volunteer/${cpf}/event`, res => res.data),
-            getRequest(`/volunteer/${cpf}/evaluate`, res => res.data)
+            getRequest(`/volunteer/${cpf}/event/evaluate`, res => res.data),
+            getRequest(`/volunteer/${cpf}/project/evaluate`, res => res.data)
         ]).then(
             res => {
                 const events = mapEvents(res[1]); 
-                const evaluates = mapEvents(res[2]);
+                const evaluates = mapEvents(res[2])
+                    .concat(
+                        res[3].map(
+                            project => {
+                                project.isProject = true;
+                                project.title = project.name
+                                return project;
+                            }
+                        )
+                    );
                 this.setState({
                     volunteer: res[0],
                     isOpenDetails: false,
@@ -108,7 +118,7 @@ export default class extends Component{
                     <h3 className="text-center">Avaliações</h3>
                     {this.getLabel()}
                     <br/>
-                    {evaluates.length ? evaluates.map(evaluate => <Evaluate evaluate={evaluate} cpf={cpf} afterSubmit={()=> null}/>) : null}
+                    {evaluates.length ? evaluates.map(evaluate => <Evaluate evaluate={evaluate} cpf={cpf} afterSubmit={this.componentWillMount}/>) : null}
                 </Col>
             </Row>
         );

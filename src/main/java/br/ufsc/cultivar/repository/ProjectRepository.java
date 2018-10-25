@@ -96,4 +96,36 @@ public class ProjectRepository {
             .end(rs.getDate("dt_end"))
             .build();
     }
+
+    public List<Project> getProjectToEvaluateByVolunteer(String cpf) {
+        val sql = "select p.* from project p" +
+                "  natural join event e" +
+                "  natural join participation p2" +
+                "  join project_volunteer pv on p.cod_project = pv.cod_project " +
+                "where p.dt_end < current_date" +
+                "      and p2.cod_cpf=:cod_cpf" +
+                "      and fl_school_evaluate = true" +
+                "      and pv.fl_evaluate = false;";
+        return jdbcTemplate.query(sql, new MapSqlParameterSource("cod_cpf", cpf), (rs, i) -> build(rs));
+    }
+
+    public void updateEvaluate(Long codProject, String cpf) {
+        jdbcTemplate.update(
+                "update project_volunteer set fl_evaluate=true where cod_project=:cod_project and cod_cpf=:cod_cpf",
+                new MapSqlParameterSource()
+                        .addValue("cod_cpf", cpf)
+                        .addValue("cod_project", codProject)
+        );
+    }
+
+    public void associate(Long codProject, String cpf) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("project_volunteer")
+                .usingColumns("cod_project", "cod_cpf")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_project",codProject)
+                                .addValue("cod_cpf", cpf)
+                );
+    }
 }

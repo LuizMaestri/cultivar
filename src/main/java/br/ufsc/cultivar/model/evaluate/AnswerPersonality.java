@@ -12,7 +12,7 @@ import lombok.experimental.FieldDefaults;
 @JsonDeserialize(builder = AnswerPersonality.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class AnswerPersonality {
-    Personality question;
+    Personality personality;
     AnswerAgreeEnum answer;
 
     @JsonPOJOBuilder(withPrefix = "")

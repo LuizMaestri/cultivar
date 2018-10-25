@@ -20,53 +20,110 @@ public class EvaluateRepository {
 
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void saveTechnology(AnswerTechnology answerTechnology, Long codProject, String cpf) {
+    public void saveTechnology(AnswerTechnology answerTechnology, Long codEvent, Long codProject, String cpf) {
         val technology = answerTechnology.getTechnology();
         val answer = answerTechnology.getAnswer();
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
-            .withTableName("answer_technology")
-            .execute(
-                new MapSqlParameterSource()
-                    .addValue("cod_technology", technology.getCodTechnology())
-                    .addValue("cod_project", codProject)
-                    .addValue("cod_cpf", cpf)
-                    .addValue("dsc_answer", answer.name())
-            );
+                .withTableName("answer_technology")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_technology", technology.getCodTechnology())
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_cpf", cpf)
+                                .addValue("dsc_answer", answer.name())
+                );
     }
 
-    public void saveAnswerVolunteer(AnswerPersonality answerPersonality, Long codProject, String cpf) {
-        val question = answerPersonality.getQuestion();
+    public void savePersonality(AnswerPersonality answerPersonality, Long codEvent, Long codProject, String cpf) {
+        val personality = answerPersonality.getPersonality();
         val answer = answerPersonality.getAnswer();
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
-            .withTableName("answer_technology")
-            .execute(
-                new MapSqlParameterSource()
-                    .addValue("cod_question", question.getCodQuestion())
-                    .addValue("cod_project", codProject)
-                    .addValue("cod_cpf", cpf)
-                    .addValue("dsc_answer", answer.name())
-            );
+                .withTableName("answer_personality")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_question", personality.getCodQuestion())
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_cpf", cpf)
+                                .addValue("dsc_answer", answer.name())
+                );
     }
 
-    public void saveExperience(Experience experience, Long codProject, String cpf) {
+    public void saveExperience(Experience experience, Long codEvent, Long codProject, String cpf) {
         val difficulty = experience.getDifficulty();
         val enjoy = experience.getFlEnjoy();
         val expectation = experience.getExpectation();
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
-            .withTableName("experience")
-            .execute(
-                new MapSqlParameterSource()
-                    .addValue("cod_project", codProject)
-                    .addValue("cod_cpf", cpf)
-                    .addValue("dsc_experience", experience.getExperience())
-                    .addValue("dsc_difficulty", difficulty.name())
-                    .addValue("fl_enjoy", enjoy.name())
-                    .addValue("dsc_enjoy", experience.getEnjoy())
-                    .addValue("dsc_not_enjoy", experience.getNotEnjoy())
-                    .addValue("dsc_suggest", experience.getSuggest())
-                    .addValue("dsc_expectation", expectation.name())
-            );
+                .withTableName("experience")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_cpf", cpf)
+                                .addValue("dsc_experience", experience.getExperience())
+                                .addValue("dsc_difficulty", difficulty.name())
+                                .addValue("fl_enjoy", enjoy.name())
+                                .addValue("dsc_enjoy", experience.getEnjoy())
+                                .addValue("dsc_not_enjoy", experience.getNotEnjoy())
+                                .addValue("dsc_suggest", experience.getSuggest())
+                                .addValue("dsc_expectation", expectation.name())
+                );
     }
+
+    public void saveSkill(Long codSkill, Long codEvent, Long codProject, String cpf) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("skill_volunteer")
+                .execute(
+                        new MapSqlParameterSource()
+                            .addValue("cod_skill", codSkill)
+                            .addValue("cod_event", codEvent)
+                            .addValue("cod_project", codProject)
+                            .addValue("cod_cpf", cpf)
+                );
+    }
+
+    public void saveMentoring(AnswerMentoring answerMentoring, Long codEvent, Long codProject, String cpf) {
+        val mentoring = answerMentoring.getMentoring();
+        val answer = answerMentoring.getAnswer();
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("answer_mentoring")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_question", mentoring.getCodQuestion())
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_cpf", cpf)
+                                .addValue("dsc_answer", answer.name())
+                );
+    }
+
+    public void saveAgain(Continue again, Long codEvent, Long codProject, String cpf) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("continues")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("txt_comment", again.getComment())
+                                .addValue("fl_interest", again.getInterest())
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_cpf", cpf)
+                );
+
+    }
+
+    public void saveActivity(Long codActivity, Long codEvent, Long codProject, String cpf) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("activity_volunteer")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_activity", codActivity)
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_cpf", cpf)
+                );
+    }
+
+
 
     public List<String> getCpfs(Long codProject) {
         return jdbcTemplate.queryForList(
@@ -81,31 +138,31 @@ public class EvaluateRepository {
                 "select av.dsc_answer, vq.* from answer_personality av natural join personality vq where cod_project=:cod_project and cod_cpf=:cod_cpf",
                 new MapSqlParameterSource("cod_project", codProject).addValue("cod_cpf", cpf),
                 (rs, i) ->
-                    AnswerPersonality.builder()
-                        .question(
-                            Personality.builder()
-                                .codQuestion(rs.getLong("cod_question"))
-                                .question(rs.getString("dsc_question"))
-                                .build()
-                        ).answer(
-                            AnswerAgreeEnum
-                                .valueOf(rs.getString("dsc_answer"))
+                        AnswerPersonality.builder()
+                                .personality(
+                                        Personality.builder()
+                                                .codQuestion(rs.getLong("cod_question"))
+                                                .question(rs.getString("dsc_question"))
+                                                .build()
+                                ).answer(
+                                AnswerAgreeEnum
+                                        .valueOf(rs.getString("dsc_answer"))
                         ).build()
         );
     }
 
     public List<AnswerTechnology> getAnswersTechnologies(Long codProject, String cpf) {
         return jdbcTemplate.query(
-            "select at.dsc_answer ,t.* from answer_technology at natural join technology t where cod_project=:cod_project and cod_cpf=:cod_cpf",
+                "select at.dsc_answer ,t.* from answer_technology at natural join technology t where cod_project=:cod_project and cod_cpf=:cod_cpf",
                 new MapSqlParameterSource("cod_project", codProject).addValue("cod_cpf", cpf),
                 (rs, i) ->
-                    AnswerTechnology.builder()
-                            .technology(
-                                    Technology.builder()
-                                            .name("")
-                                            .build()
-                            )
-                            .build()
+                        AnswerTechnology.builder()
+                                .technology(
+                                        Technology.builder()
+                                                .name("")
+                                                .build()
+                                )
+                                .build()
         );
     }
 }

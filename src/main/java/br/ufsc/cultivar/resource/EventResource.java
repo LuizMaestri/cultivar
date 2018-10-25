@@ -1,10 +1,12 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.EvaluateDTO;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.Rating;
 import br.ufsc.cultivar.service.EventService;
 import br.ufsc.cultivar.service.RatingService;
+import br.ufsc.cultivar.service.evaluate.EvaluateService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -25,7 +27,7 @@ import java.util.Set;
 public class EventResource {
 
     EventService eventService;
-    RatingService ratingService;
+    EvaluateService evaluateService;
 
     @PostMapping(consumes = MediaType.ALL_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
@@ -58,9 +60,9 @@ public class EventResource {
         eventService.update(event, codEvent);
     }
 
-    @PutMapping(path = "/{codEvent}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @PostMapping(path = "/{codEvent}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void evaluate(@RequestBody final Rating rating, @PathVariable Long codEvent){
-        ratingService.create(rating, codEvent);
+    public void evaluate(@RequestBody final EvaluateDTO evaluate, @PathVariable Long codEvent) throws ServiceException {
+        evaluateService.createEvaluate(evaluate, codEvent, null);
     }
 }

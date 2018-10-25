@@ -17,7 +17,6 @@ import java.util.List;
 public class EvaluateDTO {
 
     String cpf;
-    Long project;
     List<AnswerTechnology> technologies;
     List<AnswerPersonality> answerPersonalities;
     Experience experience;

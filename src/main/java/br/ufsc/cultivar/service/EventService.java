@@ -3,7 +3,6 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.dto.ParticipationDTO;
 import br.ufsc.cultivar.dto.UserEventsDTO;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.Role;
@@ -21,9 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static br.ufsc.cultivar.exception.Type.FILE;
-import static br.ufsc.cultivar.exception.Type.INVALID;
-import static br.ufsc.cultivar.exception.Type.NOT_FOUND;
+import static br.ufsc.cultivar.exception.Type.*;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -33,10 +30,11 @@ public class EventService {
     FileUtils fileUtils;
     EventRepository eventRepository;
     AddressRepository addressRepository;
-    RatingRepository ratingRepository;
     UserRepository userRepository;
     ParticipationRepository participationRepository;
     TrainingRepository trainingRepository;
+    ProjectRepository projectRepository;
+
 
     private Training saveFile(final Training training, final Long codEvent, final List<MultipartFile> files) {
         try {
@@ -59,10 +57,15 @@ public class EventService {
                 address.withCodAddress(codAddress)
             )
         );
+        val project = event.getProject();
         Optional.ofNullable(event.getParticipants())
                 .orElseGet(ArrayList::new)
                 .forEach(
-                    user -> participationRepository.create(codEvent, user.getCpf())
+                    user -> {
+                        val cpf = user.getCpf();
+                        participationRepository.create(codEvent, cpf);
+                        Optional.ofNullable(project).ifPresent(project1 -> projectRepository.associate(project.getCodProject(), cpf));
+                    }
                 );
         try {
             event.getTrainings()
@@ -99,8 +102,6 @@ public class EventService {
             )
         ).withParticipants(
             userRepository.getParticipants(codEvent)
-        ).withRatings(
-            ratingRepository.get(codEvent)
         ).withTrainings(
             trainingRepository.getByEvent(codEvent)
         ).withType(

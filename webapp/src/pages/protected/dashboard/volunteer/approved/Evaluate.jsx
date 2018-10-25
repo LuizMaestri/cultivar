@@ -28,7 +28,7 @@ export default class extends Component{
                         </Button>
                     </Col>
                 </Row>
-                {isOpen && <Form title={evaluate.title} cpf={cpf} afterSubmit={afterSubmit} isOpen={isOpen} close={this.toggle}/>}
+                {isOpen && <Form title={evaluate.title} code={evaluate.codEvent || evaluate.codProject} cpf={cpf} afterSubmit={afterSubmit} isOpen={isOpen} close={this.toggle} isProject={evaluate.isProject}/>}
                 <br />
             </Fragment>
         )

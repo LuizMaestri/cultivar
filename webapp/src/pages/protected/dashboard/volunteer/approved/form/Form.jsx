@@ -97,10 +97,11 @@ export default class extends Component{
     }
 
     handlerSubmit(){
-        const { afterSubmit, close } = this.props;
+        const { afterSubmit, close, isProject, code } = this.props;
         const { evaluate } = this.state;
+        const url = isProject ? `/project/${code}/evaluate` : `/event/${code}/evaluate`
         postRequest(
-            '/company',
+            url,
             evaluate,
             () => {
                 afterSubmit();

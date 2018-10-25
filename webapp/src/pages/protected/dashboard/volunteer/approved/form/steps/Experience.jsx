@@ -11,6 +11,7 @@ export default class extends Component{
         this.onCheckFlEnjoy = this.onCheckFlEnjoy.bind(this);
         this.handlerEnjoy = this.handlerEnjoy.bind(this);
         this.handlerNotEnjoy = this.handlerNotEnjoy.bind(this);
+        this.handlerSuggest = this.handlerSuggest.bind(this);
         this.onCheckExpectation = this.onCheckExpectation.bind(this);
     }
 
@@ -42,6 +43,13 @@ export default class extends Component{
         update(evaluate);
     }
 
+    handlerSuggest(event) {
+        const { evaluate, update } = this.props;
+        const { experience } = evaluate;
+        experience.suggest = event.target.value;
+        update(evaluate);
+    }
+
     onCheckDifficulty(event){
         const { evaluate, update } = this.props;
         const { experience } = evaluate;
@@ -57,20 +65,20 @@ export default class extends Component{
     }
 
     render(){
-        const { experience, title } = this.props.evaluate;
+        const { evaluate, title } = this.props;
         const {
-            experience: ex,
+            experience,
             difficulty,
             expectation,
             flEnjoy,
             enjoy,
             notEnjoy,
             suggest
-        } = experience
+        } = evaluate.experience
         return (
             <div>
                 <h3>Você acabou de participar de {title}</h3>
-                <Input id="experience" label="O que você achou desta experiência?" type="textarea" value={ex} onChange={this.handlerExperience}/>
+                <Input id="experience" label="O que você achou desta experiência?" type="textarea" value={experience} onChange={this.handlerExperience}/>
                 <br />
                 <Row>
                     <Col />

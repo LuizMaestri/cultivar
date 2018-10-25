@@ -1,9 +1,11 @@
 package br.ufsc.cultivar.resource;
 
+import br.ufsc.cultivar.dto.EvaluateDTO;
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Project;
 import br.ufsc.cultivar.service.ProjectService;
+import br.ufsc.cultivar.service.evaluate.EvaluateService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -22,6 +24,7 @@ import java.util.List;
 public class ProjectResource {
 
     ProjectService projectService;
+    EvaluateService evaluateService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -47,5 +50,11 @@ public class ProjectResource {
     @DeleteMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public Project delete(@PathVariable final Long codProject){
         return projectService.delete(codProject);
+    }
+
+    @PostMapping(path = "/{codProject}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @ResponseStatus(HttpStatus.CREATED)
+    public void evaluate(@Valid @RequestBody final EvaluateDTO evaluate, @PathVariable final Long codProject) throws ServiceException {
+        evaluateService.createEvaluate(evaluate, null, codProject);
     }
 }
