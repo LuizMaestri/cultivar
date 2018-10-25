@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -42,7 +43,7 @@ public class UserResource {
     @PutMapping(path = "/{cpf}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody final User user, @PathVariable final String cpf)throws ServiceException{
+    public void update(@Valid @RequestBody final User user, @PathVariable final String cpf)throws ServiceException{
         service.update(user, cpf);
     }
 }

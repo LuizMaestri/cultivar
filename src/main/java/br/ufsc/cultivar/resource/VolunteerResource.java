@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Set;
 
@@ -30,7 +31,7 @@ public class VolunteerResource {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void create(@RequestBody final Volunteer volunteer) throws ServiceException {
+    public void create(@Valid @RequestBody final Volunteer volunteer) throws ServiceException {
         volunteerService.create(volunteer);
     }
 
@@ -65,7 +66,7 @@ public class VolunteerResource {
     @PutMapping(path = "/{cpf}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody final Volunteer volunteer, @PathVariable final String cpf)throws ServiceException{
+    public void update(@Valid @RequestBody final Volunteer volunteer, @PathVariable final String cpf)throws ServiceException{
         volunteerService.update(volunteer, cpf);
     }
 
@@ -81,18 +82,18 @@ public class VolunteerResource {
 
     @PostMapping(path="/{cpf}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public void upload(@RequestPart final Attachment attachment, @RequestPart final MultipartFile file,
-                           @PathVariable final String cpf) throws ServiceException {
+    public void upload(@Valid @RequestPart final Attachment attachment, @RequestPart final MultipartFile file,
+                       @PathVariable final String cpf) throws ServiceException {
         dispatchService.save(attachment, file, cpf);
     }
 
     @GetMapping(path = "/{cpf}/event/evaluate")
-    public List<Event> evaluateEvent(@PathVariable final String cpf) throws ServiceException {
+    public List<Event> evaluateEvent(@PathVariable final String cpf){
         return eventService.getEventsToEvaluateByVolunteer(cpf);
     }
 
     @GetMapping(path = "/{cpf}/project/evaluate")
-    public List<Project> evaluateProject(@PathVariable final String cpf) throws ServiceException {
+    public List<Project> evaluateProject(@PathVariable final String cpf){
         return projectService.getProjectToEvaluateByVolunteer(cpf);
     }
 

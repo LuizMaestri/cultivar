@@ -16,6 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -31,7 +32,7 @@ public class EventResource {
 
     @PostMapping(consumes = MediaType.ALL_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void create(@RequestPart final Event event, @RequestPart final List<MultipartFile> files) throws ServiceException {
+    public void create(@Valid @RequestPart final Event event, @RequestPart final List<MultipartFile> files) throws ServiceException {
         eventService.create(event, files);
     }
 
@@ -62,7 +63,7 @@ public class EventResource {
 
     @PostMapping(path = "/{codEvent}/evaluate", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void evaluate(@RequestBody final EvaluateDTO evaluate, @PathVariable Long codEvent) throws ServiceException {
+    public void evaluate(@Valid @RequestBody final EvaluateDTO evaluate, @PathVariable Long codEvent) throws ServiceException {
         evaluateService.createEvaluate(evaluate, codEvent, null);
     }
 }

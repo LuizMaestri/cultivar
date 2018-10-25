@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +29,7 @@ public class SchoolResource {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void create(@RequestBody final School school) throws ServiceException {
+    public void create(@Valid @RequestBody final School school) throws ServiceException {
         service.create(school);
     }
 
@@ -60,12 +61,12 @@ public class SchoolResource {
     @PutMapping(path = "/{codSchool}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody final School school, @PathVariable final Long codSchool)throws ServiceException{
+    public void update(@Valid @RequestBody final School school, @PathVariable final Long codSchool)throws ServiceException{
         service.update(school, codSchool);
     }
 
     @GetMapping(path = "/{codSchool}/evaluate")
-    public List<Event> evaluate(@PathVariable final Long codSchool) throws ServiceException {
+    public List<Event> evaluate(@PathVariable final Long codSchool){
         return eventService.getEventsToEvaluateBySchool(codSchool);
     }
 }

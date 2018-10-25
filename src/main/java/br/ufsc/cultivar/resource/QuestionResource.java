@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class QuestionResource {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void create(@RequestBody final Question question) throws ServiceException {
+    public void create(@Valid @RequestBody final Question question){
         service.create(question);
     }
 
@@ -47,7 +48,7 @@ public class QuestionResource {
     @PutMapping(path = "/{codQuestion}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody final Question question, @PathVariable final Long codQuestion)throws ServiceException{
+    public void update(@Valid @RequestBody final Question question, @PathVariable final Long codQuestion)throws ServiceException{
         service.update(question, codQuestion);
     }
 }

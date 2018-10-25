@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class CompanyResource {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void create(@RequestBody final Company company) throws ServiceException {
+    public void create(@Valid @RequestBody final Company company) throws ServiceException {
         service.create(company);
     }
 
@@ -53,7 +54,7 @@ public class CompanyResource {
     @PutMapping(path = "/{cnpj}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody final Company company, @PathVariable final String cnpj)throws ServiceException{
+    public void update(@Valid @RequestBody final Company company, @PathVariable final String cnpj)throws ServiceException{
         service.update(company, cnpj);
     }
 }

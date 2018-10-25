@@ -16,6 +16,7 @@ import org.springframework.lang.Nullable;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -28,7 +29,7 @@ public class AttachmentResource {
 
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void create(@RequestPart final Attachment attachment, @RequestPart(required=false) final MultipartFile file) throws ServiceException {
+    public void create(@Valid @RequestPart final Attachment attachment, @RequestPart(required=false) final MultipartFile file) throws ServiceException {
         service.create(attachment, file);
     }
 
@@ -55,7 +56,7 @@ public class AttachmentResource {
     @PutMapping(path = "/{codAttachment}", consumes = MediaType.APPLICATION_JSON_UTF8_VALUE,
             produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
-    public void update(@RequestBody final Attachment attachment, @PathVariable final Long codAttachment)throws ServiceException{
+    public void update(@Valid @RequestBody final Attachment attachment, @PathVariable final Long codAttachment)throws ServiceException{
         service.update(attachment, codAttachment);
     }
 }

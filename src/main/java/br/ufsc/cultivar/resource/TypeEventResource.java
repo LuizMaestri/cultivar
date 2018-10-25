@@ -14,6 +14,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,7 +27,7 @@ public class TypeEventResource {
 
     @PostMapping(consumes = MediaType.ALL_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void create(@RequestPart final TypeEvent typeEvent, @RequestPart final List<MultipartFile> files) throws ServiceException {
+    public void create(@Valid @RequestPart final TypeEvent typeEvent, @RequestPart final List<MultipartFile> files) throws ServiceException {
         typeEventService.create(typeEvent, files);
     }
 
@@ -51,9 +52,8 @@ public class TypeEventResource {
     }
 
     @GetMapping(path = "/{tpEvent}/trainings", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public List<Training> getTrainings(@PathVariable final Long tpEvent) throws ServiceException{
+    public List<Training> getTrainings(@PathVariable final Long tpEvent){
         return typeEventService.getTrainings(tpEvent);
     }
-
 
 }
