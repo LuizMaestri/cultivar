@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.repository.evaluate;
 
 import br.ufsc.cultivar.model.evaluate.Personality;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -32,24 +31,18 @@ public class PersonalityRepository {
     }
 
     public List<Personality> get() {
-        return jdbcTemplate.query(
-                "select * from personality",
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query("select * from personality", this::build);
     }
 
     public Personality get(Long codQuestion) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from personality where cod_question=:cod_question",
                 new MapSqlParameterSource("cod_question", codQuestion),
                 this::build
         );
     }
 
-    private Personality build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Personality build(ResultSet rs , int i) throws SQLException {
         return Personality.builder()
                 .codQuestion(rs.getLong("cod_question"))
                 .question(rs.getString("dsc_question"))

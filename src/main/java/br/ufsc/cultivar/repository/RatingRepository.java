@@ -52,15 +52,4 @@ public class RatingRepository {
                         .build()
         );
     }
-
-    public List<Rating> get(Long codEvent) {
-        return jdbcTemplate.query(
-                "select * from rating where cod_event=:cod_event",
-                new MapSqlParameterSource("cod_event", codEvent),
-                (rs, i) -> Rating.builder()
-                        .comment(rs.getString("dsc_rating"))
-                        .grade(rs.getInt("vl_rating"))
-                        .build()
-        );
-    }
 }

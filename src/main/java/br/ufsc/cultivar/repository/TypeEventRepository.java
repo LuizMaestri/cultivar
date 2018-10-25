@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.TypeEvent;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -50,21 +49,18 @@ public class TypeEventRepository {
                     params.addValue("offset", page*20);
                 }
             );
-        return jdbcTemplate.query(sql.toString(), params, (rs, i) -> this.build(rs));
+        return jdbcTemplate.query(sql.toString(), params, this::build);
     }
 
     public TypeEvent get(Long tpEvent) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from type_event where tp_event=:tp_event",
                 new MapSqlParameterSource("tp_event", tpEvent),
                 this::build
         );
     }
 
-    private TypeEvent build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private TypeEvent build(ResultSet rs, int i) throws SQLException {
         return TypeEvent.builder()
                 .type(rs.getLong("tp_event"))
                 .name(rs.getString("nm_type"))

@@ -2,7 +2,6 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.dto.EventDTO;
 import br.ufsc.cultivar.model.*;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import br.ufsc.cultivar.utils.DateUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -62,15 +61,11 @@ public class EventRepository {
             sql.append(" and cod_project in(:cod_project)");
             params.addValue("cod_project", filterProject);
         }
-        return jdbcTemplate.query(
-                sql.toString(),
-                params,
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query(sql.toString(), params, this::build);
     }
 
     public Event get(final Long codEvent) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select e.*, te.nm_type from event e natural join type_event te where cod_event=:cod_event",
                 new MapSqlParameterSource("cod_event", codEvent),
                 this::build
@@ -93,10 +88,7 @@ public class EventRepository {
         );
     }
 
-    private Event build(final ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Event build(final ResultSet rs, int i) throws SQLException {
         val codProject = rs.getLong("cod_project");
         val isNull = rs.wasNull();
         return Event.builder()
@@ -151,7 +143,7 @@ public class EventRepository {
                     params.addValue("tp_event", type);
                 }
             );
-        return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
+        return jdbcTemplate.query(sb.toString(), params, this::build);
     }
 
     public List<Event> eventsBySchool(Long codSchool, Long type) {
@@ -164,7 +156,7 @@ public class EventRepository {
                     params.addValue("tp_event", type);
                 }
             );
-        return jdbcTemplate.query(sb.toString(), params, (rs, i) -> this.build(rs));
+        return jdbcTemplate.query(sb.toString(), params, this::build);
     }
 
     public List<EventDTO> getEventsToAlert(String cpf) {
@@ -203,11 +195,7 @@ public class EventRepository {
                 "where cod_cpf=:cod_cpf and e.fl_evaluate = true" +
                 "  and dt_end_occurrence < current_date" +
                 "  and fl_fault = false and p.fl_evaluate = false";
-        return jdbcTemplate.query(
-                sql,
-                new MapSqlParameterSource("cod_cpf", cpf),
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query(sql, new MapSqlParameterSource("cod_cpf", cpf), this::build);
     }
 
     public List<Event> getEventsToEvaluateBySchool(final Long codSchool) {
@@ -216,10 +204,6 @@ public class EventRepository {
                 "where cod_school=:cod_school and e.fl_evaluate = true" +
                 "  and dt_end_occurrence < current_date" +
                 "  and fl_school_evaluate = false";
-        return jdbcTemplate.query(
-                sql,
-                new MapSqlParameterSource("cod_school", codSchool),
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query(sql, new MapSqlParameterSource("cod_school", codSchool), this::build);
     }
 }

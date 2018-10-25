@@ -4,7 +4,6 @@ import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.model.SchoolType;
 import br.ufsc.cultivar.model.User;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -54,11 +51,7 @@ public class SchoolRepository {
                     params.addValue("offset", page * 5);
                 }
             );
-        return jdbcTemplate.query(
-                sql.toString(),
-                params,
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query(sql.toString(), params, this::build);
     }
 
     public Integer count(final String filter) {
@@ -74,7 +67,7 @@ public class SchoolRepository {
     }
 
     public School get(final Long codSchool) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from school where cod_school=:cod_school",
                 new MapSqlParameterSource("cod_school", codSchool),
                 this::build
@@ -105,10 +98,7 @@ public class SchoolRepository {
                 .addValue("tp_school", school.getType().name());
     }
 
-    private School build(final ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private School build(final ResultSet rs, int i) throws SQLException {
         return School.builder()
                 .codSchool(rs.getLong("cod_school"))
                 .name(rs.getString("nm_school"))

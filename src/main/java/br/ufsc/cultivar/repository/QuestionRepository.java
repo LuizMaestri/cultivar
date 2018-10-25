@@ -2,7 +2,6 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Question;
 import br.ufsc.cultivar.model.Role;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -34,22 +33,19 @@ public class QuestionRepository {
     }
 
     public List<Question> get() {
-        return jdbcTemplate.query(
-                "select * from question",
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query("select * from question", this::build);
     }
 
     public List<Question> get(final Role responds) {
         return jdbcTemplate.query(
                 "select * from question where dsc_responds=:dsc_responds",
                 new MapSqlParameterSource("dsc_responds", responds.name()),
-                (rs, i) -> this.build(rs)
+                this::build
         );
     }
 
     public Question get(final Long codQuestion) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from question where cod_question=:cod_question",
                 new MapSqlParameterSource("cod_question", codQuestion),
                 this::build
@@ -71,10 +67,7 @@ public class QuestionRepository {
         );
     }
 
-    private Question build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Question build(ResultSet rs, int i) throws SQLException {
         return Question.builder()
                 .codQuestion(rs.getLong("cod_question"))
                 .question(rs.getString("dsc_question"))

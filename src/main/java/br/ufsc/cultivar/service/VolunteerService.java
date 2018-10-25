@@ -13,11 +13,11 @@ import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.context.Context;
 import org.thymeleaf.spring5.SpringTemplateEngine;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -66,29 +66,31 @@ public class VolunteerService {
     }
 
     public Volunteer get(final String cpf) throws ServiceException {
-        val volunteer = volunteerRepository.get(cpf);
-        return Optional.ofNullable(volunteer)
-                .orElseThrow(() -> new ServiceException(null, null, Type.NOT_FOUND))
-                .withUser(
-                    userService.get(cpf)
-                ).withCompany(
-                    companyService.get(
-                            volunteer.getCompany().getCnpj()
-                    )
-                ).withAnswers(
-                    answerRepository.get(cpf)
-                        .stream()
-                        .map(answer -> answer.withQuestion(
-                                questionRepository.get(
-                                        answer.getQuestion().getCodQuestion()
-                                )
+        try {
+            val volunteer = volunteerRepository.get(cpf);
+            return volunteer.withUser(
+                            userService.get(cpf)
+                    ).withCompany(
+                            companyService.get(
+                                    volunteer.getCompany().getCnpj()
                             )
-                        ).collect(Collectors.toList())
-                ).withRatings(
-                    ratingRepository.get(cpf)
-                ).withDispatches(
-                    dispatchService.get(cpf)
-                );
+                    ).withAnswers(
+                            answerRepository.get(cpf)
+                                    .stream()
+                                    .map(answer -> answer.withQuestion(
+                                            questionRepository.get(
+                                                    answer.getQuestion().getCodQuestion()
+                                            )
+                                            )
+                                    ).collect(Collectors.toList())
+                    ).withRatings(
+                            ratingRepository.get(cpf)
+                    ).withDispatches(
+                            dispatchService.get(cpf)
+                    );
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public Volunteer delete(final String cpf) throws ServiceException {
@@ -146,7 +148,7 @@ public class VolunteerService {
                         }).collect(Collectors.toList())
                 ).build();
         } catch (RuntimeException e){
-            throw new ServiceException(null, null, null);
+            throw new ServiceException(null, e, null);
         }
     }
 }

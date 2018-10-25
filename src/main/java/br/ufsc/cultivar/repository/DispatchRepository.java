@@ -2,7 +2,6 @@ package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Dispatch;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -36,12 +35,12 @@ public class DispatchRepository {
     }
 
     public Dispatch get(String cpf, Long codAttachment) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
             "select * from dispatch where cod_cpf=:cod_cpf and cod_attachment=:cod_attachment",
             new MapSqlParameterSource()
                 .addValue("cod_cpf", cpf)
                 .addValue("cod_attachment", codAttachment),
-            this::build
+            (rs, i) -> this.build(rs)
         );
     }
 
@@ -55,9 +54,6 @@ public class DispatchRepository {
     }
 
     private Dispatch build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
         return Dispatch.builder()
                 .attachment(
                         Attachment.builder()

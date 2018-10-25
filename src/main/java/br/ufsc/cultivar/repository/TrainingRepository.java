@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Training;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -57,7 +56,7 @@ public class TrainingRepository {
         return jdbcTemplate.query(
                 "select t.* from training t natural join type_event_training where tp_event=:tp_event",
                 new MapSqlParameterSource("tp_event", tpEvent),
-                (rs, i) -> this.build(rs)
+                this::build
         );
     }
 
@@ -65,31 +64,19 @@ public class TrainingRepository {
         return jdbcTemplate.query(
                 "select t.* from training t natural join event_training where cod_event=:cod_event",
                 new MapSqlParameterSource("cod_event", codEvent),
-                (rs, i) -> this.build(rs)
+                this::build
         );
     }
 
     public Training get(final Long codTraining) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from training where cod_training=:cod_training",
                 new MapSqlParameterSource("cod_training", codTraining),
                 this::build
         );
     }
 
-    public void deleteByEvent(final Long tpEvent) {
-        jdbcTemplate.update(
-                "select * from training where tp_event=:tp_event",
-                new MapSqlParameterSource("tp_event", tpEvent)
-        );
-    }
-
-
-
-    private Training build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Training build(ResultSet rs, int i) throws SQLException {
         return Training.builder()
                 .codTraining(rs.getLong("cod_training"))
                 .name(rs.getString("nm_training"))

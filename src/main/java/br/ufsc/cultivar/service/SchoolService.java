@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.SchoolRepository;
@@ -11,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -51,16 +53,20 @@ public class SchoolService {
     }
 
     public School get(final Long codSchool) throws ServiceException {
-        val school = schoolRepository.get(codSchool);
-        return school.withAddress(
-                addressRepository.get(
-                        school.getAddress().getCodAddress()
-                )
-        ).withResponsible(
-                userService.get(
-                        school.getResponsible().getCpf()
-                )
-        );
+        try {
+            val school = schoolRepository.get(codSchool);
+            return school.withAddress(
+                    addressRepository.get(
+                            school.getAddress().getCodAddress()
+                    )
+            ).withResponsible(
+                    userService.get(
+                            school.getResponsible().getCpf()
+                    )
+            );
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public School delete(final Long codSchool) throws ServiceException {

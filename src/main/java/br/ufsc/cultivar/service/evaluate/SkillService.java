@@ -3,12 +3,14 @@ package br.ufsc.cultivar.service.evaluate;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.evaluate.Skill;
+import br.ufsc.cultivar.model.evaluate.Technology;
 import br.ufsc.cultivar.repository.evaluate.SkillRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -29,12 +31,12 @@ public class SkillService {
     }
 
     public Skill delete(Long codSkill) throws ServiceException {
-        val skill = Optional.ofNullable(
-            repository.get(codSkill)
-        ).orElseThrow(
-            () -> new ServiceException(null, null, Type.NOT_FOUND)
-        );
-        repository.delete(codSkill);
-        return skill;
+        try {
+            Skill skill = repository.get(codSkill);
+            repository.delete(codSkill);
+            return skill;
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 }

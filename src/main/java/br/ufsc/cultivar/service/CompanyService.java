@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Company;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.CompanyRepository;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -50,27 +52,28 @@ public class CompanyService {
     }
 
     public Company get(final String cnpj) throws ServiceException {
-        val company = companyRepository.get(cnpj);
-        return Optional.ofNullable(company)
-                .orElseThrow(
-                    () -> new ServiceException(null, null, null)
-                ).withAddress(
+        try {
+            val company = companyRepository.get(cnpj);
+            return company.withAddress(
                     addressRepository.get(
-                        company.getAddress()
-                            .getCodAddress()
+                            company.getAddress()
+                                    .getCodAddress()
                     )
-                ).withResponsible(
+            ).withResponsible(
                     userService.get(
-                        company.getResponsible()
-                            .getCpf()
+                            company.getResponsible()
+                                    .getCpf()
                     )
-                );
+            );
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public Company delete(String cnpj) throws ServiceException {
         val company = get(cnpj);
         companyRepository.delete(cnpj);
-        return Optional.ofNullable(company).orElseThrow(() -> new ServiceException(null, null, null));
+        return company;
     }
 
     public void update(Company company, String cnpj) throws ServiceException {

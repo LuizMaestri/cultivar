@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.Project;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -54,7 +53,7 @@ public class ProjectRepository {
                     params.addValue("offset", page*20);
                 }
             );
-        return jdbcTemplate.query(sql.toString(), params, (rs, i) -> this.build(rs));
+        return jdbcTemplate.query(sql.toString(), params, this::build);
     }
 
     public Integer count(final String filter) {
@@ -71,7 +70,7 @@ public class ProjectRepository {
     }
 
     public Project get(Long codProject) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
             "select * from project where cod_project=:cod_project",
             new MapSqlParameterSource("cod_project", codProject),
             this::build
@@ -85,10 +84,7 @@ public class ProjectRepository {
         );
     }
 
-    private Project build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Project build(ResultSet rs, int i) throws SQLException {
         return Project.builder()
             .codProject(rs.getLong("cod_project"))
             .name(rs.getString("nm_project"))
@@ -106,7 +102,7 @@ public class ProjectRepository {
                 "      and p2.cod_cpf=:cod_cpf" +
                 "      and fl_school_evaluate = true" +
                 "      and pv.fl_evaluate = false;";
-        return jdbcTemplate.query(sql, new MapSqlParameterSource("cod_cpf", cpf), (rs, i) -> build(rs));
+        return jdbcTemplate.query(sql, new MapSqlParameterSource("cod_cpf", cpf), this::build);
     }
 
     public void updateEvaluate(Long codProject, String cpf) {

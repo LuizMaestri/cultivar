@@ -1,11 +1,14 @@
 package br.ufsc.cultivar.service.evaluate;
 
+import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.evaluate.Personality;
 import br.ufsc.cultivar.repository.evaluate.PersonalityRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,10 +27,13 @@ public class PersonalityService {
         return repository.get();
     }
 
-
-    public Personality delete(Long codQuestion) {
-        Personality question = repository.get(codQuestion);
-        repository.delete(codQuestion);
-        return question;
+    public Personality delete(Long codQuestion) throws ServiceException {
+        try {
+            Personality question = repository.get(codQuestion);
+            repository.delete(codQuestion);
+            return question;
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 }

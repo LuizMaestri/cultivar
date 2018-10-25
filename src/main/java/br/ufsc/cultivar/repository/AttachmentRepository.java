@@ -44,7 +44,7 @@ public class AttachmentRepository {
             );
         sql.append("limit 20 offset :offset");
         params.addValue("offset", page*20);
-        return jdbcTemplate.query(sql.toString(), params, (rs, i) -> this.build(rs));
+        return jdbcTemplate.query(sql.toString(), params,  this::build);
     }
 
     public Integer count(final String filter){
@@ -61,7 +61,7 @@ public class AttachmentRepository {
     }
 
     public Attachment get(final Long codAttachment) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from attachment where cod_attachment=:cod_attachment",
                 new MapSqlParameterSource("cod_attachment", codAttachment),
                 this::build
@@ -71,7 +71,7 @@ public class AttachmentRepository {
         return jdbcTemplate.query(
                 "select * from attachment where sta_user=:sta_user",
                 new MapSqlParameterSource("sta_user", status.name()),
-                (rs, i) -> this.build(rs)
+                this::build
         );
     }
 
@@ -90,10 +90,7 @@ public class AttachmentRepository {
         );
     }
 
-    private Attachment build(ResultSet rs) throws SQLException {
-        if(rs.isBeforeFirst()){
-            rs.first();
-        }
+    private Attachment build(ResultSet rs, int i) throws SQLException {
         return Attachment.builder()
                 .codAttachment(rs.getLong("cod_attachment"))
                 .name(rs.getString("nm_attachment"))

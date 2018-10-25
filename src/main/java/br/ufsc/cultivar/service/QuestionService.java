@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Question;
 import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.repository.QuestionRepository;
@@ -9,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -34,7 +36,11 @@ public class QuestionService {
     }
 
     public Question get(final Long codQuestion) throws ServiceException {
-        return repository.get(codQuestion);
+        try {
+            return repository.get(codQuestion);
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public Question delete(final Long codQuestion) throws ServiceException {

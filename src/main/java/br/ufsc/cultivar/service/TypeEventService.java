@@ -14,13 +14,12 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static br.ufsc.cultivar.exception.Type.FILE;
 import static br.ufsc.cultivar.exception.Type.INVALID;
@@ -76,9 +75,11 @@ public class TypeEventService {
     }
 
     public TypeEvent get(Long tpEvent) throws ServiceException {
-        return Optional.ofNullable(typeEventRepository.get(tpEvent))
-                .orElseThrow(() -> new ServiceException(null, null, Type.NOT_FOUND))
-                .withTrainings(trainingRepository.getByTypeEvent(tpEvent));
+        try {
+            return typeEventRepository.get(tpEvent).withTrainings(trainingRepository.getByTypeEvent(tpEvent));
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public TypeEvent delete(Long tpEvent) throws ServiceException {
@@ -89,13 +90,5 @@ public class TypeEventService {
 
     public List<Training> getTrainings(Long tpEvent) {
         return trainingRepository.getByTypeEvent(tpEvent);
-    }
-
-    public String upload(final String filename, final MultipartFile file) throws ServiceException {
-        try {
-            return fileUtils.save(file, filename);
-        } catch (UploadException e) {
-            throw new ServiceException(null, null, Type.FILE);
-        }
     }
 }

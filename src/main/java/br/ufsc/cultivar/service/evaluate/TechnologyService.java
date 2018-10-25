@@ -8,10 +8,10 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -19,7 +19,7 @@ import java.util.Optional;
 public class TechnologyService {
     TechnologyRepository repository;
 
-    public void create(Technology technology) throws ServiceException {
+    public void create(Technology technology){
         repository.create(technology);
     }
 
@@ -29,9 +29,12 @@ public class TechnologyService {
 
 
     public Technology delete(Long codTechnology) throws ServiceException {
-        Technology technology = repository.get(codTechnology);
-        Optional.ofNullable(technology).orElseThrow(() -> new ServiceException(null, null, Type.NOT_FOUND));
-        repository.delete(codTechnology);
-        return technology;
+        try {
+            Technology technology = repository.get(codTechnology);
+            repository.delete(codTechnology);
+            return technology;
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 }

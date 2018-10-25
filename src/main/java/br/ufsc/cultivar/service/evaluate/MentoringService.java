@@ -1,12 +1,16 @@
 package br.ufsc.cultivar.service.evaluate;
 
+import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.evaluate.Mentoring;
+import br.ufsc.cultivar.model.evaluate.Technology;
 import br.ufsc.cultivar.repository.evaluate.MentoringRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,9 +30,13 @@ public class MentoringService {
         return repository.get();
     }
 
-    public Mentoring delete(Long codQuestion){
-        val mentoring = repository.get(codQuestion);
-        repository.delete(codQuestion);
-        return mentoring;
+    public Mentoring delete(Long codQuestion) throws ServiceException{
+        try {
+            Mentoring mentoring = repository.get(codQuestion);
+            repository.delete(codQuestion);
+            return mentoring;
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 }

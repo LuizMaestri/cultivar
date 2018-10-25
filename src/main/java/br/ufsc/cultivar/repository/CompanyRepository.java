@@ -3,7 +3,6 @@ package br.ufsc.cultivar.repository;
 import br.ufsc.cultivar.model.Address;
 import br.ufsc.cultivar.model.Company;
 import br.ufsc.cultivar.model.User;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -18,8 +17,6 @@ import org.springframework.stereotype.Repository;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 @Repository
@@ -52,11 +49,7 @@ public class CompanyRepository {
                     params.addValue("offset", page*5);
                 }
         );
-        return jdbcTemplate.query(
-                sql.toString(),
-                params,
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query(sql.toString(), params, this::build);
     }
 
     public Integer count(final String filter) {
@@ -72,7 +65,7 @@ public class CompanyRepository {
     }
 
     public Company get(final String cnpj) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from company where cod_cnpj=:cod_cnpj",
                 new MapSqlParameterSource("cod_cnpj", cnpj),
                 this::build
@@ -103,10 +96,7 @@ public class CompanyRepository {
                 .addValue("cod_cpf", company.getResponsible().getCpf());
     }
 
-    private Company build(final ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Company build(final ResultSet rs, int i) throws SQLException {
         return Company.builder()
                 .cnpj(rs.getString("cod_cnpj"))
                 .name(rs.getString("nm_company"))

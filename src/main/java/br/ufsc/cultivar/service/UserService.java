@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.User;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.UserRepository;
@@ -10,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,12 +55,16 @@ public class UserService {
     }
 
     public User get(final String cpf) throws ServiceException {
-        val user = userRepository.get(cpf);
-        return user.withAddress(
-                addressRepository.get(
-                        user.getAddress().getCodAddress()
-                )
-        );
+        try {
+            val user = userRepository.get(cpf);
+            return user.withAddress(
+                    addressRepository.get(
+                            user.getAddress().getCodAddress()
+                    )
+            );
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public User delete(final String cpf) throws ServiceException {
@@ -75,9 +81,5 @@ public class UserService {
             throw new ServiceException(null, null, null);
         }
         userRepository.update(user);
-    }
-
-    List<User> getParticipants(final Long codEvent) {
-        return userRepository.getParticipants(codEvent);
     }
 }

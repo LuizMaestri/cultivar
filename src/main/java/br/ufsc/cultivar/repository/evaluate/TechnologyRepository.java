@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.repository.evaluate;
 
 import br.ufsc.cultivar.model.evaluate.Technology;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,13 +30,10 @@ public class TechnologyRepository {
     }
 
     public List<Technology> get() {
-        return jdbcTemplate.query("select * from technology", (rs, i) -> this.build(rs));
+        return jdbcTemplate.query("select * from technology", this::build);
     }
 
-    private Technology build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Technology build(ResultSet rs, int i) throws SQLException {
         return Technology.builder()
                 .codTechnology(rs.getLong("cod_technology"))
                 .name(rs.getString("nm_technology"))
@@ -52,7 +48,7 @@ public class TechnologyRepository {
     }
 
     public Technology get(Long codTechnology) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from technology where cod_technology=:cod_technology",
                 new MapSqlParameterSource("cod_technology", codTechnology),
                 this::build

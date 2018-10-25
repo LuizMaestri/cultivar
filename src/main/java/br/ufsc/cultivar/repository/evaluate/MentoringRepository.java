@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.repository.evaluate;
 
 import br.ufsc.cultivar.model.evaluate.Mentoring;
-import br.ufsc.cultivar.utils.DatabaseUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -31,14 +30,11 @@ public class MentoringRepository {
     }
 
     public List<Mentoring> get(){
-        return jdbcTemplate.query(
-                "select * from mentoring",
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query("select * from mentoring", this::build);
     }
 
     public Mentoring get(Long codQuestion){
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from mentoring where cod_question=:cod_question",
                 new MapSqlParameterSource("cod_question", codQuestion),
                 this::build
@@ -52,10 +48,7 @@ public class MentoringRepository {
         );
     }
 
-    private Mentoring build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Mentoring build(ResultSet rs, int i) throws SQLException {
         return Mentoring.builder()
                 .codQuestion(rs.getLong("cod_question"))
                 .question(rs.getString("dsc_question"))

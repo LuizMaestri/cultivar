@@ -1,8 +1,6 @@
 package br.ufsc.cultivar.repository;
 
 import br.ufsc.cultivar.model.*;
-import br.ufsc.cultivar.utils.DatabaseUtils;
-import javafx.scene.chart.PieChartBuilder;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -15,7 +13,10 @@ import org.springframework.stereotype.Repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Repository
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -63,15 +64,11 @@ public class VolunteerRepository {
                     params.addValue("offset", page * 5);
                 }
             );
-        return jdbcTemplate.query(
-                sql.toString(),
-                params,
-                (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query(sql.toString(), params, this::build);
     }
 
     public Volunteer get(String cpf) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
                 "select * from volunteer where cod_cpf=:cod_cpf",
                 new MapSqlParameterSource("cod_cpf", cpf),
                 this::build
@@ -107,10 +104,7 @@ public class VolunteerRepository {
                 .addValue("dsc_course", volunteer.getCourse());
     }
 
-    private Volunteer build(ResultSet rs) throws SQLException {
-        if(!DatabaseUtils.isNotEmpty(rs)){
-            return null;
-        }
+    private Volunteer build(ResultSet rs, int i) throws SQLException {
         return Volunteer.builder()
                 .user(
                         User.builder()

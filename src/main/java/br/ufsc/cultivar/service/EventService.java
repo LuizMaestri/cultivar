@@ -3,6 +3,7 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.dto.ParticipationDTO;
 import br.ufsc.cultivar.dto.UserEventsDTO;
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.Role;
@@ -14,6 +15,7 @@ import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -93,24 +95,27 @@ public class EventService {
     }
 
     public Event get(final Long codEvent) throws ServiceException {
-        val event = Optional.ofNullable(eventRepository.get(codEvent))
-            .orElseThrow(() -> new ServiceException(null, null, NOT_FOUND));
-        val type = event.getType();
-        return event.withAddress(
-            addressRepository.get(
-                event.getAddress().getCodAddress()
-            )
-        ).withParticipants(
-            userRepository.getParticipants(codEvent)
-        ).withTrainings(
-            trainingRepository.getByEvent(codEvent)
-        ).withType(
-            type.withTrainings(
-                trainingRepository.getByTypeEvent(
-                    type.getType()
-                )
-            )
-        );
+        try {
+            val event = eventRepository.get(codEvent);
+            val type = event.getType();
+            return event.withAddress(
+                    addressRepository.get(
+                            event.getAddress().getCodAddress()
+                    )
+            ).withParticipants(
+                    userRepository.getParticipants(codEvent)
+            ).withTrainings(
+                    trainingRepository.getByEvent(codEvent)
+            ).withType(
+                    type.withTrainings(
+                            trainingRepository.getByTypeEvent(
+                                    type.getType()
+                            )
+                    )
+            );
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public Event delete(final Long codEvent) throws ServiceException {

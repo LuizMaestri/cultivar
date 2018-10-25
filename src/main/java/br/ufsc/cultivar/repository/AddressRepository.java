@@ -31,21 +31,16 @@ public class AddressRepository {
     }
 
     public Address get(final Long codAddress) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
             "select * from address where cod_address=:cod_address",
             new MapSqlParameterSource("cod_address", codAddress),
-            rs -> {
-                if(rs.isBeforeFirst()){
-                    rs.first();
-                }
-                return Address.builder()
-                        .codAddress(codAddress)
-                        .city(rs.getString("nm_city"))
-                        .neighborhood(rs.getString("nm_neighborhood"))
-                        .street(rs.getString("nm_street"))
-                        .number(rs.getString("nu_street"))
-                        .build();
-            }
+            (rs, i) -> Address.builder()
+                    .codAddress(codAddress)
+                    .city(rs.getString("nm_city"))
+                    .neighborhood(rs.getString("nm_neighborhood"))
+                    .street(rs.getString("nm_street"))
+                    .number(rs.getString("nu_street"))
+                    .build()
         );
     }
 

@@ -43,12 +43,12 @@ public class ProjectResource {
     }
 
     @GetMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Project get(@PathVariable final Long codProject){
+    public Project get(@PathVariable final Long codProject) throws ServiceException {
         return projectService.get(codProject);
     }
 
     @DeleteMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Project delete(@PathVariable final Long codProject){
+    public Project delete(@PathVariable final Long codProject) throws ServiceException {
         return projectService.delete(codProject);
     }
 

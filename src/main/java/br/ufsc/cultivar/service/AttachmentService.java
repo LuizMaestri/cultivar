@@ -14,6 +14,7 @@ import lombok.experimental.FieldDefaults;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -57,18 +58,15 @@ public class AttachmentService {
     }
 
     public Attachment get(final Long codAttachment) throws ServiceException {
-        val attachment = repository.get(codAttachment);
-        return Optional.ofNullable(attachment)
-            .orElseThrow(() -> new ServiceException(null, null, null));
+        try {
+            return repository.get(codAttachment);
+        } catch (DataAccessException e){
+            throw new ServiceException(null, e, Type.NOT_FOUND);
+        }
     }
 
     public Resource getAsFile(final Long codAttachment) throws ServiceException {
-        return fileUtils.get(
-            Optional.ofNullable(repository.get(codAttachment))
-                .orElseThrow(
-                    () -> new ServiceException(null, null, Type.NOT_FOUND)
-                ).getCodAttachment()
-        );
+        return fileUtils.get(get(codAttachment).getCodAttachment());
     }
 
     public Attachment delete(final Long codAttachment) throws ServiceException {

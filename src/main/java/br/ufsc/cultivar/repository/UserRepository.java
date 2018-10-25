@@ -49,15 +49,11 @@ public class UserRepository {
                     }
                 )
             );
-        return jdbcTemplate.query(
-            sql.toString(),
-            params,
-            (rs, i) -> this.build(rs)
-        );
+        return jdbcTemplate.query(sql.toString(), params, this::build);
     }
 
     public User get(final String cpf) {
-        return jdbcTemplate.query(
+        return jdbcTemplate.queryForObject(
             "select * from users where cod_cpf=:cod_cpf",
             new MapSqlParameterSource("cod_cpf", cpf),
             this::build
@@ -83,7 +79,7 @@ public class UserRepository {
         return jdbcTemplate.query(
                 "select u.* from users u join participation p on u.cod_cpf=p.cod_cpf where p.cod_event=:cod_event",
                 new MapSqlParameterSource("cod_event", codEvent),
-                (rs, i) -> this.build(rs)
+                this::build
         );
     }
 
@@ -101,10 +97,7 @@ public class UserRepository {
             .addValue("dsc_phone", user.getPhone());
     }
 
-    private User build(final ResultSet rs) throws SQLException {
-        if(rs.isBeforeFirst()){
-            rs.first();
-        }
+    private User build(final ResultSet rs, int i) throws SQLException {
         return User.builder()
                 .cpf(rs.getString("cod_cpf"))
                 .name(rs.getString("nm_user"))
