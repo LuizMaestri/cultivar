@@ -1,7 +1,7 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.repository.TrainingRepository;
 import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
@@ -24,7 +24,7 @@ public class TrainingService {
         try {
             return fileUtils.get(trainingRepository.get(codTraining).getPath());
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 }

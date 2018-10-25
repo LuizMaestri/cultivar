@@ -5,7 +5,11 @@ import lombok.Getter;
 public class ServiceException extends Exception {
 
     @Getter
-    private final Type type;
+    private Type type;
+
+    public ServiceException(String message){
+        super(message);
+    }
 
     public ServiceException(String message, Throwable cause, Type type) {
         super(message, cause);

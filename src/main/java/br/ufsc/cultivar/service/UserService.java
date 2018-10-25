@@ -1,7 +1,6 @@
 package br.ufsc.cultivar.service;
 
-import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.exception.*;
 import br.ufsc.cultivar.model.User;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.UserRepository;
@@ -28,7 +27,7 @@ public class UserService {
     public void create(final User user) throws ServiceException {
         val address = user.getAddress();
         if (!ValidateUtils.isValid(address)) {
-            throw new ServiceException(null, null, null);
+            throw new InvalidException(null);
         }
         userRepository.create(
                 user.withAddress(
@@ -63,7 +62,7 @@ public class UserService {
                     )
             );
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
@@ -75,10 +74,10 @@ public class UserService {
 
     public void update(final User user, final String cpf) throws ServiceException {
         if (!user.getCpf().equals(cpf)) {
-            throw new ServiceException(null, null, null);
+            throw new ForbiddenException(null);
         }
         if (!get(cpf).getStatus().isValid(user.getStatus())){
-            throw new ServiceException(null, null, null);
+            throw new ConflictException(null);
         }
         userRepository.update(user);
     }

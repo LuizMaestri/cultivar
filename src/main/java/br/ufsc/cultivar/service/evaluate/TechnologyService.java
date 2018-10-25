@@ -1,7 +1,7 @@
 package br.ufsc.cultivar.service.evaluate;
 
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.evaluate.Technology;
 import br.ufsc.cultivar.repository.evaluate.TechnologyRepository;
 import lombok.AccessLevel;
@@ -34,7 +34,7 @@ public class TechnologyService {
             repository.delete(codTechnology);
             return technology;
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 }

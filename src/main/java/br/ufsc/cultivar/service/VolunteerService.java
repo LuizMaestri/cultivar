@@ -2,8 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.email.EmailClient;
-import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
+import br.ufsc.cultivar.exception.*;
 import br.ufsc.cultivar.model.Volunteer;
 import br.ufsc.cultivar.repository.*;
 import br.ufsc.cultivar.utils.ValidateUtils;
@@ -31,6 +30,7 @@ public class VolunteerService {
 
     VolunteerRepository volunteerRepository;
     UserService userService;
+    UserRepository userRepository;
     CompanyService companyService;
     RatingRepository ratingRepository;
     AnswerRepository answerRepository;
@@ -43,7 +43,7 @@ public class VolunteerService {
     public void create(final Volunteer volunteer) throws ServiceException {
         val user = volunteer.getUser();
         if (!ValidateUtils.isValid(user)) {
-            throw new ServiceException(null, null, null);
+            throw new InvalidException(null);
         }
         userService.create(user);
         volunteerRepository.create(volunteer);
@@ -89,7 +89,7 @@ public class VolunteerService {
                             dispatchService.get(cpf)
                     );
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
@@ -102,7 +102,7 @@ public class VolunteerService {
                 ).collect(Collectors.toList())
                 .isEmpty();
         if(hasEvents){
-            throw new ServiceException(null, null, null);
+            throw new PreconditionException(null);
         }
         val volunteer = get(cpf);
         volunteerRepository.delete(cpf);
@@ -112,9 +112,13 @@ public class VolunteerService {
     public void update(final Volunteer volunteer, final String cpf) throws ServiceException {
         val user = volunteer.getUser();
         if (!user.getCpf().equals(cpf)){
-            throw new ServiceException(null, null, null);
+            throw new ForbiddenException(null);
         }
-        userService.update(user, cpf);
+        val oldUser = userRepository.get(cpf);
+        if (!oldUser.getStatus().isValid(user.getStatus())){
+            throw new ConflictException(null);
+        }
+        userRepository.update(user);
         answerRepository.delete(cpf);
         volunteer.getAnswers()
                 .forEach(answer -> answerRepository.create(answer, cpf));
@@ -148,7 +152,12 @@ public class VolunteerService {
                         }).collect(Collectors.toList())
                 ).build();
         } catch (RuntimeException e){
-            throw new ServiceException(null, e, null);
+            val cause = e.getCause();
+            if (cause instanceof NotFoundException){
+                throw (NotFoundException) cause;
+            } else {
+                throw new ServiceException(null, e);
+            }
         }
     }
 }

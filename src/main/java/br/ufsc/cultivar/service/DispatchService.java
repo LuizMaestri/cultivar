@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -26,11 +25,7 @@ public class DispatchService {
     FileUtils fileUtils;
 
     public void save(final Attachment attachment, final MultipartFile file, final String cpf) throws ServiceException {
-        try {
-            repository.save(fileUtils.save(attachment, file, cpf), cpf);
-        } catch (UploadException e) {
-            throw new ServiceException(null, null, Type.FILE);
-        }
+        repository.save(fileUtils.save(attachment, file, cpf), cpf);
     }
 
     public Dispatch get(final String cpf, final Long codAttachment) {
@@ -38,7 +33,6 @@ public class DispatchService {
     }
 
     public List<Dispatch> get(String cpf) throws ServiceException {
-        return Optional.ofNullable(repository.get(cpf))
-                .orElseThrow(() -> new ServiceException(null, null, Type.NOT_FOUND));
+        return repository.get(cpf);
     }
 }

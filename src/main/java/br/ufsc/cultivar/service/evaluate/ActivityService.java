@@ -1,14 +1,12 @@
 package br.ufsc.cultivar.service.evaluate;
 
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.evaluate.Activity;
-import br.ufsc.cultivar.model.evaluate.Mentoring;
 import br.ufsc.cultivar.repository.evaluate.ActivityRepository;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
-import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
@@ -35,7 +33,7 @@ public class ActivityService {
             activityRepository.delete(codActivity);
             return activity;
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 }

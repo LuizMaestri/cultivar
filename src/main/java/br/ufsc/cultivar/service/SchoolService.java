@@ -1,8 +1,10 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.PaginateList;
+import br.ufsc.cultivar.exception.ForbiddenException;
+import br.ufsc.cultivar.exception.InvalidException;
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.SchoolRepository;
@@ -16,8 +18,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -31,7 +31,7 @@ public class SchoolService {
     public School create(final School school) throws ServiceException {
         val address = school.getAddress();
         if (!ValidateUtils.isValid(address)){
-            throw new ServiceException(null, null, null);
+            throw new InvalidException(null);
         }
         userService.create(school.getResponsible());
         return school.withCodSchool(
@@ -65,7 +65,7 @@ public class SchoolService {
                     )
             );
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
@@ -77,7 +77,7 @@ public class SchoolService {
 
     public void update(final School school, final Long codSchool) throws ServiceException {
         if (school.getCodSchool().equals(codSchool)){
-            throw new ServiceException(null, null, null);
+            throw new ForbiddenException(null);
         }
         schoolRepository.update(school);
     }

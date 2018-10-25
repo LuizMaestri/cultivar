@@ -1,8 +1,9 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.PaginateList;
+import br.ufsc.cultivar.exception.ForbiddenException;
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Company;
 import br.ufsc.cultivar.repository.AddressRepository;
 import br.ufsc.cultivar.repository.CompanyRepository;
@@ -15,10 +16,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -66,7 +63,7 @@ public class CompanyService {
                     )
             );
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
@@ -78,7 +75,7 @@ public class CompanyService {
 
     public void update(Company company, String cnpj) throws ServiceException {
         if(!company.getCnpj().equals(cnpj)){
-            throw new ServiceException(null, null, null);
+            throw new ForbiddenException(null);
         }
         addressRepository.update(company.getAddress());
         companyRepository.update(company);

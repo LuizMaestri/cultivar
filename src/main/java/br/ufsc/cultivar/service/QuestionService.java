@@ -1,7 +1,8 @@
 package br.ufsc.cultivar.service;
 
+import br.ufsc.cultivar.exception.ForbiddenException;
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.model.Question;
 import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.repository.QuestionRepository;
@@ -14,7 +15,6 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -23,7 +23,7 @@ public class QuestionService {
 
     QuestionRepository repository;
 
-    public void create(final Question question) throws ServiceException {
+    public void create(final Question question) {
         repository.create(question);
     }
 
@@ -39,7 +39,7 @@ public class QuestionService {
         try {
             return repository.get(codQuestion);
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
@@ -51,7 +51,7 @@ public class QuestionService {
 
     public void update(final Question question, final Long codQuestion) throws ServiceException {
         if (question.getCodQuestion().equals(codQuestion)){
-            throw new ServiceException(null, null, null);
+            throw new ForbiddenException(null);
         }
         repository.update(question);
     }

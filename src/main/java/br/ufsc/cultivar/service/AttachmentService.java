@@ -1,9 +1,10 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.PaginateList;
+import br.ufsc.cultivar.exception.ForbiddenException;
+import br.ufsc.cultivar.exception.InvalidException;
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
-import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Attachment;
 import br.ufsc.cultivar.model.Status;
 import br.ufsc.cultivar.repository.AttachmentRepository;
@@ -21,7 +22,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -33,15 +33,11 @@ public class AttachmentService {
 
     public void create(final Attachment attachment, final MultipartFile file) throws ServiceException {
         if(attachment.getDownload() && Objects.isNull(file)){
-            throw new ServiceException(null, null, null);
+            throw new InvalidException(null);
         }
         val codAttachment = repository.create(attachment);
         if (attachment.getDownload()){
-            try {
-                fileUtils.saveAttachment(file, codAttachment);
-            } catch (UploadException e) {
-                throw new ServiceException(e.getMessage(), e, Type.FILE);
-            }
+            fileUtils.saveAttachment(file, codAttachment);
         }
     }
 
@@ -61,7 +57,7 @@ public class AttachmentService {
         try {
             return repository.get(codAttachment);
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
@@ -77,7 +73,7 @@ public class AttachmentService {
 
     public void update(final Attachment attachment, final Long codAttachment) throws ServiceException {
         if (attachment.getCodAttachment().equals(codAttachment)){
-            throw new ServiceException(null, null, null);
+            throw new ForbiddenException(null);
         }
         repository.update(attachment);
     }

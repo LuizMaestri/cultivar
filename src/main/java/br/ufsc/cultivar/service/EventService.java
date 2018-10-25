@@ -2,9 +2,7 @@ package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.ParticipationDTO;
 import br.ufsc.cultivar.dto.UserEventsDTO;
-import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
-import br.ufsc.cultivar.exception.UploadException;
+import br.ufsc.cultivar.exception.*;
 import br.ufsc.cultivar.model.Event;
 import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.Training;
@@ -21,8 +19,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.*;
 import java.util.stream.Collectors;
-
-import static br.ufsc.cultivar.exception.Type.*;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -80,12 +76,16 @@ public class EventService {
         } catch (IllegalArgumentException e){
             eventRepository.delete(codEvent);
             addressRepository.delete(codAddress);
-            throw new ServiceException(null, e, INVALID);
+            throw new InvalidException(null, e);
         } catch (RuntimeException e) {
             eventRepository.delete(codEvent);
             addressRepository.delete(codAddress);
             val cause = e.getCause();
-            throw new ServiceException(cause.getMessage(), cause, FILE);
+            if (cause instanceof UploadException){
+                throw (UploadException) cause;
+            } else {
+                throw new ServiceException(null, e);
+            }
         }
     }
 
@@ -114,7 +114,7 @@ public class EventService {
                     )
             );
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
@@ -126,7 +126,7 @@ public class EventService {
 
     public void update(final Event event, final Long codEvent) throws ServiceException {
         if (event.getCodEvent().equals(codEvent)){
-            throw new ServiceException(null, null, null);
+            throw new ForbiddenException(null);
         }
         eventRepository.update(event);
     }

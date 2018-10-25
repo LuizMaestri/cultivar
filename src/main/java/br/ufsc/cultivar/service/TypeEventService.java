@@ -1,8 +1,9 @@
 package br.ufsc.cultivar.service;
 
 import br.ufsc.cultivar.dto.PaginateList;
+import br.ufsc.cultivar.exception.InvalidException;
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
-import br.ufsc.cultivar.exception.Type;
 import br.ufsc.cultivar.exception.UploadException;
 import br.ufsc.cultivar.model.Training;
 import br.ufsc.cultivar.model.TypeEvent;
@@ -20,9 +21,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static br.ufsc.cultivar.exception.Type.FILE;
-import static br.ufsc.cultivar.exception.Type.INVALID;
 
 @Service
 @AllArgsConstructor(onConstructor = @__(@Autowired))
@@ -45,11 +43,15 @@ public class TypeEventService {
                 );
         } catch (IllegalArgumentException e){
             typeEventRepository.delete(tpEvent);
-            throw new ServiceException(null, e, INVALID);
+            throw new InvalidException(null, e);
         } catch (RuntimeException e) {
             typeEventRepository.delete(tpEvent);
             val cause = e.getCause();
-            throw new ServiceException(cause.getMessage(), cause, FILE);
+            if (cause instanceof UploadException){
+                throw (UploadException) cause;
+            } else {
+                throw new ServiceException(null, e);
+            }
         }
     }
 
@@ -78,7 +80,7 @@ public class TypeEventService {
         try {
             return typeEventRepository.get(tpEvent).withTrainings(trainingRepository.getByTypeEvent(tpEvent));
         } catch (DataAccessException e){
-            throw new ServiceException(null, e, Type.NOT_FOUND);
+            throw new NotFoundException(null, e);
         }
     }
 
