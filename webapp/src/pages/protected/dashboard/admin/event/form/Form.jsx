@@ -20,10 +20,12 @@ export default class extends Component {
             typesEvent: [],
             trainingsOfType: [],
             files: [],
+            projects: [],
             loading: false,
             success: false
         };
         this.handlerType = this.handlerType.bind(this);
+        this.handlerProject = this.handlerProject.bind(this);
         this.handlerCity = this.handlerCity.bind(this);
         this.handlerNeighborhood = this.handlerNeighborhood.bind(this);
         this.handlerStreet = this.handlerStreet.bind(this);
@@ -49,14 +51,17 @@ export default class extends Component {
     componentWillMount(){
         const { event } = this.state;
         event.allDay = event.startOccurrence === event.endOccurrence;
+        event.evaluate = false;
         axios.all([
             getRequest('/school', res => res.data),
-            getRequest('/typeEvent', res => res.data)
+            getRequest('/typeEvent', res => res.data),
+            getRequest('/project', res => res.data)
         ]).then(
             res => this.setState({
                 event,
                 schools: res[0],
-                typesEvent: res[1]
+                typesEvent: res[1],
+                projects: res[2]
             })
         );
     }
@@ -65,6 +70,22 @@ export default class extends Component {
         const { event } = this.state;
         event.evaluate = value;
         this.setState({event});
+    }
+
+    handlerProject(userEvent){
+        const { event, projects } = this.state;
+        const { value } = userEvent.target;
+        event.project = null;
+        if (value) {
+            for (const key in projects) {
+                if (projects.hasOwnProperty(key)) {
+                    const project = projects[key];
+                    if (project.codProject === parseInt(value, 10)) {
+                        event.project = project;
+                    }
+                }
+            }
+        }
     }
 
     handlerType(userEvent){
@@ -247,6 +268,7 @@ export default class extends Component {
             schools,
             typesEvent,
             trainingsOfType,
+            projects,
             loading,
             success
         } = this.state;
@@ -254,7 +276,9 @@ export default class extends Component {
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
         const { codSchool } = event.school;
-        const { trainings, type, address } = event;
+        const { trainings, type, address, project } = event;
+        const codProject = project ? project.codProject : undefined;
+        const codType = type ? type.type : undefined;
         return (
             <Modal isOpen={isOpen} toggle={close} style={{width: 'max-content'}}>
                 <ModalHeader toggle={close}>Novo Evento - {dateTitle}</ModalHeader>
@@ -264,7 +288,7 @@ export default class extends Component {
                             <h3>Dados do evento</h3>
                             <Row>
                                 <Col>
-                                    <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={type.type} onChange={this.handlerType} required >
+                                    <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={codType} onChange={this.handlerType} required >
                                         <option value="">Selecione</option>
                                         {
                                             typesEvent.map(
@@ -277,6 +301,14 @@ export default class extends Component {
                                     <Switch id="evaluate" label="Avaliado" value={event.evaluate} onChange={this.handlerEvaluate} />
                                 </Col>
                             </Row>
+                            <Input id="project" type="select" label="Projeto" value={codProject} onChange={this.handlerProject}>
+                                <option value="">Selecione</option>
+                                {
+                                    projects.map(
+                                        project => <option key={project.codProject} value={project.codProject}>{project.name}</option>
+                                    )
+                                }
+                            </Input>
                             <Input id="filter" type="select" label="Escola" value={codSchool} onChange={this.handlerSelectSchool}>
                                 <option>Selecione</option>
                                 {

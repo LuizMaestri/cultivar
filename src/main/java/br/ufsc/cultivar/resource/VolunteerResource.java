@@ -2,6 +2,7 @@ package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.dto.ParticipationDTO;
+import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.*;
 import br.ufsc.cultivar.service.*;
@@ -76,7 +77,7 @@ public class VolunteerResource {
     }
 
     @GetMapping(path = "/{cpf}/attachment/{codAttachment}")
-    public Dispatch getDispatch(@PathVariable final String cpf, @PathVariable Long codAttachment){
+    public Dispatch getDispatch(@PathVariable final String cpf, @PathVariable Long codAttachment) throws NotFoundException {
         return dispatchService.get(cpf, codAttachment);
     }
 

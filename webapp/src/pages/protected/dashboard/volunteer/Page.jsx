@@ -34,7 +34,7 @@ export default class extends Component{
                             attachments.map(
                                 attachment => {
                                     return {
-                                        codAttachment: attachment.codAttachment,
+                                        attachment: attachment,
                                         required: attachment.required,
                                         send: false
                                     }
@@ -56,7 +56,7 @@ export default class extends Component{
         let conclude = true
         const { dispatches, volunteer } = this.state;
         for (const dispatch of dispatches) {
-            if (dispatch.codAttachment === codAttachment){
+            if (dispatch.attachment.codAttachment === codAttachment){
                 dispatch.send = true
             }
         }

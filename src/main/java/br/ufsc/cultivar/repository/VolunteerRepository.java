@@ -83,11 +83,13 @@ public class VolunteerRepository {
     }
 
     public void update(Volunteer volunteer) {
-        jdbcTemplate.update(
-                "update volunteer set dsc_schooling=:dsc_schooling, fl_conclusion=:fl_conclusion, " +
-                        "cod_rg=:cod_rg, cod_school=:cod_school where cod_cpf=:cod_cpf",
-                getParams(volunteer)
-        );
+        StringBuilder sql = new StringBuilder();
+        sql.append("update volunteer set dsc_schooling=:dsc_schooling, fl_conclusion=:fl_conclusion, cod_rg=:cod_rg");
+        if(volunteer.getSchool().getCodSchool() != 0){
+            sql.append(", cod_school=:cod_school");
+        }
+        sql.append(" where cod_cpf=:cod_cpf");
+        jdbcTemplate.update(sql.toString(), getParams(volunteer));
     }
 
     private MapSqlParameterSource getParams(Volunteer volunteer) {

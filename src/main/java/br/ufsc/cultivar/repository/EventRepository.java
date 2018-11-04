@@ -35,7 +35,8 @@ public class EventRepository {
                         "tp_event",
                         "cod_address",
                         "fl_evaluate",
-                        "cod_school"
+                        "cod_school",
+                        "cod_project"
                 ).executeAndReturnKey(getParams(event))
                 .longValue();
     }
@@ -134,7 +135,9 @@ public class EventRepository {
     }
 
     public List<Event> eventsByVolunteer(final String cpf, final Long type) {
-        val sb = new StringBuilder("select e.*, te.nm_type from event e natural join participation p natural join type_event te where cod_cpf=:cod_cpf");
+        val sb = new StringBuilder("select e.*, te.nm_type from event e ");
+        sb.append("join participation p on e.cod_event = p.cod_event ");
+        sb.append("natural join type_event te where cod_cpf=:cod_cpf");
         val params = new MapSqlParameterSource("cod_cpf", cpf);
         Optional.ofNullable(type)
             .ifPresent(

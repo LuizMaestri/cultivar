@@ -124,4 +124,18 @@ public class ProjectRepository {
                                 .addValue("cod_cpf", cpf)
                 );
     }
+
+    public Boolean alreadyAssociate(Long codProject, String cpf) {
+        String sql = "select" +
+                "  case" +
+                "    when exists(select 1 from project_volunteer where cod_cpf=:cod_cpf and cod_project=:cod_project) then true" +
+                "    else false" +
+                "  end " +
+                "from dual;";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new MapSqlParameterSource("cod_cpf", cpf).addValue("cod_project", codProject),
+                Boolean.class
+        );
+    }
 }

@@ -38,8 +38,6 @@ public class Volunteer {
     @NotBlank
     @NotNull
     String rg;
-    @Valid
-    @NotNull
     School school;
     List<@Valid Dispatch> dispatches;
     @NotNull

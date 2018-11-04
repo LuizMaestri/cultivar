@@ -62,7 +62,13 @@ public class EventService {
                     user -> {
                         val cpf = user.getCpf();
                         participationRepository.create(codEvent, cpf);
-                        Optional.ofNullable(project).ifPresent(project1 -> projectRepository.associate(project.getCodProject(), cpf));
+                        Optional.ofNullable(project)
+                                .ifPresent(
+                                        project1 -> {
+                                            if (!projectRepository.alreadyAssociate(project.getCodProject(), cpf))
+                                            projectRepository.associate(project.getCodProject(), cpf);
+                                        }
+                                );
                     }
                 );
         try {

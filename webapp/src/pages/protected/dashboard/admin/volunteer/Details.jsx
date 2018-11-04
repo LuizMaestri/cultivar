@@ -28,11 +28,13 @@ export default class extends Component{
         const { cpf } = this.props;
         axios.all([
             getRequest(`/volunteer/${cpf}`, res => res.data),
-            getRequest('/school', res => res.data)
+            getRequest('/school', res => res.data),
+            getRequest(`volunteer/${cpf}/event`, res => res.data)
         ]).then(
             res => this.setState({
                 volunteer: res[0],
-                schools: res[1]
+                schools: res[1],
+                trainings: res[2]
             })
         );
     }

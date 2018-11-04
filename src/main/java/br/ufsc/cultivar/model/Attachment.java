@@ -19,10 +19,8 @@ public class Attachment {
     @NotBlank
     @NotNull
     String name;
-    @NotBlank
     @NotNull
     Boolean required;
-    @NotBlank
     @NotNull
     Status status;
     Boolean download;

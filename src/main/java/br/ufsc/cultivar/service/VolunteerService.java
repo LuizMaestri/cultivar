@@ -3,6 +3,7 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.email.EmailClient;
 import br.ufsc.cultivar.exception.*;
+import br.ufsc.cultivar.model.Status;
 import br.ufsc.cultivar.model.Volunteer;
 import br.ufsc.cultivar.repository.*;
 import br.ufsc.cultivar.utils.ValidateUtils;
@@ -117,6 +118,9 @@ public class VolunteerService {
         val oldUser = userRepository.get(cpf);
         if (!oldUser.getStatus().isValid(user.getStatus())){
             throw new ConflictException(null);
+        }
+        if (user.getStatus().equals(Status.APPROVED) && ValidateUtils.isValid(volunteer.getSchool())){
+            throw new InvalidException(null, null);
         }
         userRepository.update(user);
         answerRepository.delete(cpf);

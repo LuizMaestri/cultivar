@@ -2,7 +2,6 @@ package br.ufsc.cultivar.resource.evaluate;
 
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.evaluate.Activity;
-import br.ufsc.cultivar.model.evaluate.Mentoring;
 import br.ufsc.cultivar.service.evaluate.ActivityService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

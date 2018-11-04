@@ -24,14 +24,11 @@ import java.util.Optional;
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class Event {
     Long codEvent;
-    @NotBlank
     @NotNull
     Date startOccurrence;
-    @NotBlank
     @NotNull
     Date endOccurrence;
     Date createAt;
-    @NotBlank
     @NotNull
     TypeEvent type;
     @NotNull
