@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import { Header, Footer } from './components';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
-import { Dashboard, Login, Register, Admin } from './pages';
+import { Dashboard, Login, Register, Admin, Report } from './pages';
 import { User } from './model';
 import { getAsObject, saveObject } from './utils/storage';
 import './App.css';
@@ -47,6 +47,7 @@ export default class App extends Component {
 								<Route path="/cadastrar" render={() => <Register afterSubmit={this.handlerLogin}/>}/>
 								<Route path="/admin" render={() => <Admin logged={logged} role={user.role}/>}/>
 								<Route exact path="/" render={() => <Redirect to="/login"/>}/>
+								<Route path="/relatorio" render={() => <Report logged={logged} role={user.role}/>}/>
 							</Col>
 						</Row>
 					</Container>

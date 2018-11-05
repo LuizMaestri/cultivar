@@ -1,43 +1,77 @@
-import React, { Fragment } from 'react';
-import { Navbar, NavbarBrand, Nav, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import { NavLink } from 'react-router-dom';
+import React, { Component, Fragment } from 'react';
+import {
+    Navbar,
+    NavbarBrand,
+    Nav,
+    NavItem,
+    NavLink,
+    NavbarToggler,
+    Collapse,
+    UncontrolledDropdown,
+    DropdownToggle,
+    DropdownMenu,
+    DropdownItem
+} from 'reactstrap';
 import logo from './logo.png';
 import { Roles } from '../../model';
 
-export default ({role, name, logged, logout}) => (
-    <Navbar color="light" light>
-        <NavbarBrand tag="button" className="btn btn-outline-secondary" style={{ borderWidth: '0'} }>
-            <NavLink to="/">
-                <img src={logo} alt="Logo" height="35px"/>
-            </NavLink>
-        </NavbarBrand>
-        {
-            logged && (
-                <Nav className="ml-auto" navbar>
-                    <UncontrolledDropdown nav inNavbar>
-                        <DropdownToggle nav caret>
-                            {name}
-                        </DropdownToggle>
-                        <DropdownMenu right>
-                        {
-                            role === Roles.ADMIN && (
-                                <Fragment>
-                                    <DropdownItem>
-                                        <NavLink to="/admin">
-                                            administração
+export default class extends Component{
+    constructor(props) {
+        super(props);
+
+        this.toggle = this.toggle.bind(this);
+        this.state = {
+            isOpen: false
+        };
+    }
+    toggle() {
+        const { isOpen } = this.state;
+        this.setState({
+            isOpen: !isOpen
+        });
+    }
+    render() {
+        const { role, name, logged, logout } = this.props;
+        return (
+            <Navbar color="light" light expand="md">
+                <NavbarBrand tag="button" className="btn btn-outline-secondary" style={{ borderWidth: '0'} }>
+                    <NavLink href="/">
+                        <img src={logo} alt="Logo" height="35px"/>
+                    </NavLink>
+                </NavbarBrand>
+                {
+                    logged && (
+                        <Fragment>
+                            <NavbarToggler onClick={this.toggle} />
+                            <Collapse isOpen={this.state.isOpen} navbar>
+                                <Nav className="ml-auto" navbar>
+                                    {
+                                        role === Roles.ADMIN && (
+                                            <Fragment>
+                                                <NavItem>
+                                                    <NavLink href="/admin">
+                                                        administração
+                                                    </NavLink>
+                                                </NavItem>
+                                                <NavItem>
+                                                    <NavLink href="/relatorio">
+                                                        Relátorios
+                                                    </NavLink>
+                                                </NavItem>
+                                            </Fragment>
+                                        )
+                                    }
+                                    <NavItem onClick={logout} style={{cursor: 'pointer'}}>
+                                        <NavLink>
+                                            Sair
                                         </NavLink>
-                                    </DropdownItem>
-                                    <DropdownItem divider />
-                                </Fragment>
-                            )
-                        }
-                            <DropdownItem onClick={logout}>
-                                Sair
-                            </DropdownItem>
-                        </DropdownMenu>
-                    </UncontrolledDropdown>
-                </Nav>
-            )
-        }
-    </Navbar>
-);
+                                    </NavItem>
+                                </Nav>
+                            </Collapse>
+                        </Fragment>
+                    )
+                }
+            </Navbar>
+        );
+    }
+}

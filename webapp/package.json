@@ -21,6 +21,7 @@
     "react-required-if": "^1.0.3",
     "react-router-dom": "^4.3.1",
     "react-spinners": "^0.4.5",
+    "react-star-rating-component": "^1.4.1",
     "reactstrap": "^6.3.1"
   },
   "scripts": {
