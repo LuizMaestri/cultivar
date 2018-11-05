@@ -56,6 +56,15 @@ public class EventService {
             )
         );
         val project = event.getProject();
+        Optional.ofNullable(project)
+                .ifPresent(
+                        project1 -> {
+                            val codProject = project.getCodProject();
+                            if (projectRepository.alreadyAssociate(codProject, event.getCodEvent())){
+                                projectRepository.associate(codProject, event.getSchool().getCodSchool());
+                            }
+                        }
+                );
         Optional.ofNullable(event.getParticipants())
                 .orElseGet(ArrayList::new)
                 .forEach(

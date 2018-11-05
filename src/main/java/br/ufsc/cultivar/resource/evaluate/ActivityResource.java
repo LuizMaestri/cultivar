@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.resource.evaluate;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.evaluate.Activity;
 import br.ufsc.cultivar.service.evaluate.ActivityService;
 import lombok.AccessLevel;
@@ -31,6 +32,11 @@ public class ActivityResource {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Activity> get() throws ServiceException{
         return service.get();
+    }
+
+    @GetMapping(path="/{responds}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Activity> get(@PathVariable Role responds) throws ServiceException{
+        return service.get(responds);
     }
 
     @DeleteMapping(path = "/{codQuestion}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

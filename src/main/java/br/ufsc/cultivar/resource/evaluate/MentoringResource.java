@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.resource.evaluate;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.evaluate.Mentoring;
 import br.ufsc.cultivar.model.evaluate.Personality;
 import br.ufsc.cultivar.service.evaluate.MentoringService;
@@ -32,6 +33,11 @@ public class MentoringResource {
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<Mentoring> get() throws ServiceException{
         return service.get();
+    }
+
+    @GetMapping(path="/{responds}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public List<Mentoring> get(@PathVariable Role responds) throws ServiceException{
+        return service.get(responds);
     }
 
     @DeleteMapping(path = "/{codQuestion}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

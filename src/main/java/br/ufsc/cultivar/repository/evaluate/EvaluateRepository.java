@@ -87,12 +87,38 @@ public class EvaluateRepository {
         val answer = answerMentoring.getAnswer();
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("answer_mentoring")
-                .execute(
+                .usingColumns(
+                        "cod_question",
+                        "cod_event",
+                        "cod_cpf",
+                        "dsc_answer"
+                ).execute(
                         new MapSqlParameterSource()
                                 .addValue("cod_question", mentoring.getCodQuestion())
                                 .addValue("cod_event", codEvent)
                                 .addValue("cod_project", codProject)
                                 .addValue("cod_cpf", cpf)
+                                .addValue("dsc_answer", answer.name())
+                );
+    }
+
+    public void saveMentoring(AnswerMentoring answerMentoring, Long codEvent, Long codProject, Long codSchool) {
+        val mentoring = answerMentoring.getMentoring();
+        val answer = answerMentoring.getAnswer();
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("answer_mentoring")
+                .usingColumns(
+                        "cod_question",
+                        "cod_event",
+                        "cod_project",
+                        "dsc_answer",
+                        "cod_school"
+                ).execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_question", mentoring.getCodQuestion())
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_school", codSchool)
                                 .addValue("dsc_answer", answer.name())
                 );
     }
@@ -120,6 +146,18 @@ public class EvaluateRepository {
                                 .addValue("cod_event", codEvent)
                                 .addValue("cod_project", codProject)
                                 .addValue("cod_cpf", cpf)
+                );
+    }
+
+    public void saveActivity(Long codActivity, Long codEvent, Long codProject, Long codSchool) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("activity_school")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_activity", codActivity)
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_school", codSchool)
                 );
     }
 
@@ -164,5 +202,17 @@ public class EvaluateRepository {
                                 )
                                 .build()
         );
+    }
+
+    public void saveSuggest(String suggest, Long codSchool, Long codProject, Long codEvent) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("suggest_school")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("dsc_suggest", suggest)
+                                .addValue("cod_event", codEvent)
+                                .addValue("cod_project", codProject)
+                                .addValue("cod_school", codSchool)
+                );
     }
 }

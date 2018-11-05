@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { postRequest, getRequest } from '../../../../../../utils/http';
 import { Modal, ModalHeader, ModalBody } from 'reactstrap';
 import { Wizard } from '../../../../../../components';
+import { Roles } from '../../../../../../model';
 import {
     Advertising,
     Technology,
@@ -36,7 +37,7 @@ export default class extends Component{
         axios.all([
             getRequest('/technology', res => res.data),
             getRequest('/personality', res => res.data),
-            getRequest('/mentoring', res => res.data)
+            getRequest(`/mentoring/${Roles.VOLUNTEER}`, res => res.data)
         ]).then(
             res => {
                 const { cpf } = this.props;
@@ -102,7 +103,9 @@ export default class extends Component{
         const url = isProject ? `/project/${code}/evaluate` : `/event/${code}/evaluate`
         postRequest(
             url,
-            evaluate,
+            {
+                volunteerDTO: evaluate
+            },
             () => {
                 afterSubmit();
                 close();

@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service.evaluate;
 
 import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.evaluate.Mentoring;
 import br.ufsc.cultivar.repository.evaluate.MentoringRepository;
 import lombok.AccessLevel;
@@ -36,5 +37,9 @@ public class MentoringService {
         } catch (DataAccessException e){
             throw new NotFoundException(null, e);
         }
+    }
+
+    public List<Mentoring> get(final Role role) {
+        return repository.get(role);
     }
 }

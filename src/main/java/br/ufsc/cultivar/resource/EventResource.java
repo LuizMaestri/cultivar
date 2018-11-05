@@ -1,11 +1,10 @@
 package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.dto.EvaluateDTO;
+import br.ufsc.cultivar.dto.EvaluateVolunteerDTO;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Event;
-import br.ufsc.cultivar.model.Rating;
 import br.ufsc.cultivar.service.EventService;
-import br.ufsc.cultivar.service.RatingService;
 import br.ufsc.cultivar.service.evaluate.EvaluateService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -18,7 +17,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 @RestController

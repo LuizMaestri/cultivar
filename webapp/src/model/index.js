@@ -18,3 +18,4 @@ export { default as AnswerAgree } from './answerAgree';
 export { default as Difficulty } from './difficulty';
 export { default as Enjoy } from './enjoy';
 export { default as Expectation } from './expectation';
+export { default as Rating } from './rating';

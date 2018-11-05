@@ -3,9 +3,11 @@ package br.ufsc.cultivar.resource;
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Event;
+import br.ufsc.cultivar.model.Project;
 import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.model.TypeEvent;
 import br.ufsc.cultivar.service.EventService;
+import br.ufsc.cultivar.service.ProjectService;
 import br.ufsc.cultivar.service.SchoolService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,6 +28,7 @@ import java.util.Map;
 public class SchoolResource {
     SchoolService service;
     EventService eventService;
+    ProjectService projectService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
     @ResponseStatus(code = HttpStatus.NO_CONTENT)
@@ -65,8 +68,13 @@ public class SchoolResource {
         service.update(school, codSchool);
     }
 
-    @GetMapping(path = "/{codSchool}/evaluate")
+    @GetMapping(path = "/{codSchool}/event/evaluate")
     public List<Event> evaluate(@PathVariable final Long codSchool){
         return eventService.getEventsToEvaluateBySchool(codSchool);
+    }
+
+    @GetMapping(path = "/{codSchool}/project/evaluate")
+    public List<Project> evaluateProject(@PathVariable final Long codSchool){
+        return projectService.getProjectToEvaluateBySchool(codSchool);
     }
 }

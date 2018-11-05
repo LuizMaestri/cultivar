@@ -2,6 +2,7 @@ package br.ufsc.cultivar.service.evaluate;
 
 import br.ufsc.cultivar.exception.NotFoundException;
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.evaluate.Activity;
 import br.ufsc.cultivar.repository.evaluate.ActivityRepository;
 import lombok.AccessLevel;
@@ -20,7 +21,7 @@ public class ActivityService {
     ActivityRepository activityRepository;
 
     public void create(final Activity activity){
-        activityRepository.create(activity.getName());
+        activityRepository.create(activity);
     }
 
     public List<Activity> get(){
@@ -35,5 +36,9 @@ public class ActivityService {
         } catch (DataAccessException e){
             throw new NotFoundException(null, e);
         }
+    }
+
+    public List<Activity> get(Role responds) {
+        return activityRepository.get(responds);
     }
 }

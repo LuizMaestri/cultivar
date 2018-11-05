@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.repository.evaluate;
 
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.evaluate.Mentoring;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -26,6 +27,7 @@ public class MentoringRepository {
             .usingGeneratedKeyColumns("cod_question")
             .execute(
                 new MapSqlParameterSource("dsc_question", mentoring.getQuestion())
+                    .addValue("dsc_responds", mentoring.getResponds().name())
             );
     }
 
@@ -53,5 +55,12 @@ public class MentoringRepository {
                 .codQuestion(rs.getLong("cod_question"))
                 .question(rs.getString("dsc_question"))
                 .build();
+    }
+
+    public List<Mentoring> get(Role role) {
+        return jdbcTemplate.query(
+                "select * from mentoring where dsc_responds=:dsc_responds",
+                new MapSqlParameterSource("dsc_responds", role.name()),
+                this::build);
     }
 }

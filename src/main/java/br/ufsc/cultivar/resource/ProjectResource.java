@@ -1,6 +1,7 @@
 package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.dto.EvaluateDTO;
+import br.ufsc.cultivar.dto.EvaluateVolunteerDTO;
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.exception.ServiceException;
 import br.ufsc.cultivar.model.Project;
@@ -39,12 +40,12 @@ public class ProjectResource {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List get(){
-        return projectService.get(null, null).getData();
+        return projectService.get((String)null, null).getData();
     }
 
     @GetMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-    public Project get(@PathVariable final Long codProject) throws ServiceException {
-        return projectService.get(codProject);
+    public Project get(@PathVariable final Long codProject, @RequestParam(required = false) Boolean withParticipants) throws ServiceException {
+        return projectService.get(codProject, withParticipants);
     }
 
     @DeleteMapping(path = "/{codProject}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.repository.evaluate;
 
+import br.ufsc.cultivar.model.Role;
 import br.ufsc.cultivar.model.evaluate.Activity;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -19,12 +20,13 @@ public class ActivityRepository {
 
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    public Long create(final String name){
+    public Long create(final Activity activity){
         return new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
             .withTableName("activity")
             .usingGeneratedKeyColumns("cod_activity")
             .executeAndReturnKey(
-                new MapSqlParameterSource("nm_activity", name)
+                new MapSqlParameterSource("nm_activity", activity.getName())
+                    .addValue("dsc_responds", activity.getResponds())
             ).longValue();
     }
 
@@ -55,6 +57,19 @@ public class ActivityRepository {
         jdbcTemplate.update(
             "delete from activity where cod_activity=:cod_activity",
             new MapSqlParameterSource("cod_activity", codActivity)
+        );
+    }
+
+    public List<Activity> get(Role responds) {
+        return jdbcTemplate.query(
+                "select * from activity where dsc_responds=:dsc_responds",
+                new MapSqlParameterSource("dsc_responds", responds.name()),
+                (rs, i) -> Activity.builder()
+                    .name(
+                        rs.getString("nm_activity")
+                    ).codActivity(
+                        rs.getLong("cod_activity")
+                    ).build()
         );
     }
 }

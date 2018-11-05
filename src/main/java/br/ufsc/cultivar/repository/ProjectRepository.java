@@ -114,6 +114,15 @@ public class ProjectRepository {
         );
     }
 
+    public void updateEvaluate(Long codProject, Long codSchool) {
+        jdbcTemplate.update(
+                "update project_school set fl_evaluate=true where cod_project=:cod_project and cod_school=:cod_school",
+                new MapSqlParameterSource()
+                        .addValue("cod_school", codSchool)
+                        .addValue("cod_project", codProject)
+        );
+    }
+
     public void associate(Long codProject, String cpf) {
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("project_volunteer")
@@ -125,8 +134,19 @@ public class ProjectRepository {
                 );
     }
 
+    public void associate(Long codProject, Long codSchool) {
+        new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
+                .withTableName("project_school")
+                .usingColumns("cod_project", "cod_school")
+                .execute(
+                        new MapSqlParameterSource()
+                                .addValue("cod_project",codProject)
+                                .addValue("cod_school", codSchool)
+                );
+    }
+
     public Boolean alreadyAssociate(Long codProject, String cpf) {
-        String sql = "select" +
+        val sql = "select" +
                 "  case" +
                 "    when exists(select 1 from project_volunteer where cod_cpf=:cod_cpf and cod_project=:cod_project) then true" +
                 "    else false" +
@@ -136,6 +156,33 @@ public class ProjectRepository {
                 sql,
                 new MapSqlParameterSource("cod_cpf", cpf).addValue("cod_project", codProject),
                 Boolean.class
+        );
+    }
+
+    public Boolean alreadyAssociate(Long codProject, Long codSchool) {
+        String sql = "select" +
+                "  case" +
+                "    when exists(select 1 from project_school where cod_school=:cod_school and cod_project=:cod_project) then true" +
+                "    else false" +
+                "  end " +
+                "from dual;";
+        return jdbcTemplate.queryForObject(
+                sql,
+                new MapSqlParameterSource("cod_school", codSchool).addValue("cod_project", codProject),
+                Boolean.class
+        );
+    }
+
+    public List<Project> getProjectToEvaluateBySchool(Long codSchool) {
+        val sql = "select p.* from project p" +
+                "  natural join project_school " +
+                "where p.dt_end < current_date" +
+                "      and cod_school=:cod_school" +
+                "      and fl_evaluate = false";
+        return jdbcTemplate.query(
+                sql,
+                new MapSqlParameterSource("cod_school", codSchool),
+                this::build
         );
     }
 }

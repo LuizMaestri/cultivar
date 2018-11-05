@@ -1,34 +1,29 @@
-package br.ufsc.cultivar.model;
+package br.ufsc.cultivar.dto;
 
+import br.ufsc.cultivar.model.evaluate.Activity;
+import br.ufsc.cultivar.model.evaluate.AnswerMentoring;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Value;
 import lombok.experimental.FieldDefaults;
-import lombok.experimental.Wither;
 
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Value
 @Builder(builderClassName = "Builder")
-@JsonDeserialize(builder = Project.Builder.class)
+@JsonDeserialize(builder = EvaluateSchoolDTO.Builder.class)
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
-public class Project {
+public class EvaluateSchoolDTO {
 
-    Long codProject;
-    @NotNull
-    @NotBlank
-    String name;
-    @NotNull
-    Date start;
-    @NotNull
-    Date end;
-    @Wither
-    List<User> participants;
+    Long codSchool;
+    List<AnswerMentoring> mentoring;
+    List<RatingDTO> ratings;
+    List<Activity> activities;
+    String suggest;
+    Boolean Project;
+
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{

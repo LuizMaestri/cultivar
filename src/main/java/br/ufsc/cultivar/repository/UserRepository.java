@@ -83,6 +83,14 @@ public class UserRepository {
         );
     }
 
+    public List<User> getParticipantsProject(final Long codProject) {
+        return jdbcTemplate.query(
+                "select u.* from project_volunteer natural join users u where cod_project=:cod_project;",
+                new MapSqlParameterSource("cod_project", codProject),
+                this::build
+        );
+    }
+
     private MapSqlParameterSource getParams(final User user){
         return new MapSqlParameterSource()
             .addValue("cod_cpf", user.getCpf())

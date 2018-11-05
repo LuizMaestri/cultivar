@@ -209,4 +209,11 @@ public class EventRepository {
                 "  and fl_school_evaluate = false";
         return jdbcTemplate.query(sql, new MapSqlParameterSource("cod_school", codSchool), this::build);
     }
+
+    public void updateEvaluate(Long codEvent) {
+        jdbcTemplate.update(
+                "update event set fl_school_evaluate=1 where cod_event=:cod_event",
+                new MapSqlParameterSource("cod_event", codEvent)
+        );
+    }
 }

@@ -20,26 +20,27 @@ public class RatingRepository {
 
     NamedParameterJdbcTemplate jdbcTemplate;
 
-    public void create(Rating rating, String cpf) {
+    public void createRatingOnEvent(Rating rating, String cpf, Long codEvent) {
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("rating")
-                .usingColumns("vl_rating", "dsc_rating", "cod_cpf")
-                .execute(getParams(rating, cpf));
+                .usingColumns("vl_rating", "dsc_rating", "cod_cpf", "cod_event")
+                .execute(getParams(rating, cpf, codEvent));
     }
 
-    public void create(Rating rating, Long codEvent) {
+    public void createRatingOnProject(Rating rating, String cpf, Long codProject) {
         new SimpleJdbcInsert(jdbcTemplate.getJdbcTemplate())
                 .withTableName("rating")
-                .usingColumns("vl_rating", "dsc_rating", "cod_event")
-                .execute(getParams(rating, codEvent));
+                .usingColumns("vl_rating", "dsc_rating", "cod_cpf", "cod_project")
+                .execute(getParams(rating, cpf, codProject));
     }
 
-    private SqlParameterSource getParams(Rating rating, Object cod) {
+    private SqlParameterSource getParams(Rating rating, String cpf, Long code) {
         return new MapSqlParameterSource()
                 .addValue("vl_rating", rating.getGrade())
                 .addValue("dsc_rating", rating.getComment())
-                .addValue("cod_cpf", cod)
-                .addValue("cod_event", cod);
+                .addValue("cod_cpf", cpf)
+                .addValue("cod_event", code)
+                .addValue("cod_project", code);
     }
 
     public List<Rating> get(String cpf) {

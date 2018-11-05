@@ -1,5 +1,6 @@
 package br.ufsc.cultivar.model.evaluate;
 
+import br.ufsc.cultivar.model.Role;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.AccessLevel;
@@ -15,6 +16,7 @@ public class Activity {
 
     Long codActivity;
     String name;
+    Role responds;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class Builder{

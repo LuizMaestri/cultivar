@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { getRequest } from '../../../../../../../utils/http';
 import { Row, Col } from 'reactstrap';
 import { Switch, Input } from '../../../../../../../components';
+import { Roles } from '../../../../../../../model';
 
 export default class extends Component{
     constructor(){
@@ -12,7 +13,7 @@ export default class extends Component{
     }
 
     componentWillMount() {
-        getRequest('/activity', res => this.setState({ activities: res.data }));
+        getRequest(`/activity/${Roles.VOLUNTEER}`, res => this.setState({ activities: res.data }));
     }
 
     handlerInterest(value){

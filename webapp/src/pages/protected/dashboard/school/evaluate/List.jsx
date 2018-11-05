@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import Evaluate from './Evaluate';
 import { getRequest } from '../../../../../utils/http';
+import axios from 'axios';
 
 export default class extends Component{
     constructor(){
@@ -12,16 +13,27 @@ export default class extends Component{
 
     componentWillMount(){
         const { codSchool } = this.props;
-        getRequest(
-            `/school/${codSchool}/evaluate`,
+        axios.all([
+            getRequest(`/school/${codSchool}/event/evaluate`, res => res.data),
+            getRequest(`/school/${codSchool}/project/evaluate`, res => res.data),
+        ]).then(
             res => this.setState({
-                evaluates: res.data.map(
+                evaluates: res[0].map(
                     event => {
                         event.end = new Date(event.endOccurrence);
                         event.start = new Date(event.startOccurrence);
                         event.title = event.type.name + ' - ' + event.start.toLocaleString()
+                        event.isProject = false;
                         return event
                     }
+                ).concat(
+                    res[1].map(
+                        project => {
+                            project.isProject = true;
+                            project.title = project.name
+                            return project;
+                        }
+                    )
                 )
             })
         );
