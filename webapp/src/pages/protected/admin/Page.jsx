@@ -90,9 +90,6 @@ export default class extends Component{
                 </Row>
             );
         }
-        if(logged){
-            return <Redirect to="/dashboard" />
-        }
-        return <Redirect to="/login" />
+        return <Redirect to="/" />
     }
 }

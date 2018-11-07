@@ -223,13 +223,10 @@ export default class extends Component{
     }
 
     render(){
-        if (this.state.register ) {
-            return <Redirect to="/dashboard"/>
+        const { questions, companies, volunteer, confirmPassword, register, cancel } = this.state;
+        if (register || cancel) {
+            return <Redirect to="/"/>
         }
-        if (this.state.cancel){
-            return <Redirect to="/login"/>
-        }
-        const { questions, companies, volunteer, confirmPassword } = this.state;
         const { user, company } = volunteer;
         const { address } = user;
         const maxDate = new Date().toJSON().split('T')[0];

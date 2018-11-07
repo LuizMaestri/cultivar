@@ -62,9 +62,6 @@ export default class extends Component{
                 return null;
             }
         }
-        if (logged) {
-            return <Redirect to="/dashboard" />
-        }
-        return <Redirect to="/login" />
+        return <Redirect to="/" />
     }
 }
