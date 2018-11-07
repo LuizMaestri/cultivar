@@ -1,2 +1,2 @@
-import Report from './Report';
+import Report from './Page';
 export default Report;
