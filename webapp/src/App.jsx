@@ -1,5 +1,5 @@
 // @flow
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { Header, Footer } from './components';
 import { BrowserRouter, Route, Redirect } from 'react-router-dom';
 import { Container, Row, Col } from 'reactstrap';
@@ -37,7 +37,7 @@ export default class App extends Component {
 		const { logged, user } = this.state;
 		return (
 			<BrowserRouter>
-				<div>
+				<Fragment>
 					<Header role={user.role} logged={logged} logout={this.handlerLogout} />
 					<Container style={{ margin: '3% 0' }} fluid>
 						<Row>
@@ -46,13 +46,13 @@ export default class App extends Component {
 								<Route path="/login" render={() => <Login logged={logged} afterLogin={this.handlerLogin}/>}/>
 								<Route path="/cadastrar" render={() => <Register afterSubmit={this.handlerLogin}/>}/>
 								<Route path="/admin" render={() => <Admin logged={logged} role={user.role}/>}/>
-								<Route exact path="/" render={() => <Redirect to="/login"/>}/>
 								<Route path="/relatorio" render={() => <Report logged={logged} role={user.role}/>}/>
+								<Route exact render={() => <Redirect to="/login"/>}/>
 							</Col>
 						</Row>
 					</Container>
 					<Footer/>
-				</div>
+				</Fragment>
 			</BrowserRouter>
 		);
   	}
