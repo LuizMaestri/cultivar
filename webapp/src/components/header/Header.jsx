@@ -6,11 +6,7 @@ import {
     NavItem,
     NavLink,
     NavbarToggler,
-    Collapse,
-    UncontrolledDropdown,
-    DropdownToggle,
-    DropdownMenu,
-    DropdownItem
+    Collapse
 } from 'reactstrap';
 import logo from './logo.png';
 import { Roles } from '../../model';
@@ -31,7 +27,7 @@ export default class extends Component{
         });
     }
     render() {
-        const { role, name, logged, logout } = this.props;
+        const { role, logged, logout } = this.props;
         return (
             <Navbar color="light" light expand="md">
                 <NavbarBrand tag="button" className="btn btn-outline-secondary" style={{ borderWidth: '0'} }>

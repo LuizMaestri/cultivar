@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Row, Col, Button } from 'reactstrap';
 import { Redirect } from 'react-router-dom';
 import { School, Company } from './documents';
-import ReactPDF from '@react-pdf/renderer';
 import { Roles } from '../../../model';
 import { getRequest } from '../../../utils/http';
 
@@ -30,16 +29,6 @@ export default class extends Component{
         this.setState({show});
     }
 
-    /*save(){
-        const { data, show } = this.state;
-        if(show.company){
-            ReactPDF.render(<Company data={data} />, `./report_empresa_${new Date().getTime()}`);
-        }
-        if (show.school) {
-            ReactPDF.render(<School data={data} />, `./report_escola_${new Date().getTime()}`);
-        }
-    }*/
-
     render(){
         const { role, logged } = this.props;
         const { data, show } = this.state;
@@ -58,18 +47,6 @@ export default class extends Component{
                                 </Col>
                             </Row>
                             <br/>
-                            { 
-                                /*(show.company || show.school) ?
-                                    (
-                                        <Row>
-                                            <Col md="4"/>
-                                            <Col>
-                                                <Button color="primary" onClick={this.save.bind(this)}>Salvar Relátório</Button>
-                                            </Col>
-                                            <Col md="4"/>
-                                        </Row>
-                                    ) : null*/
-                            }
                             <Row>
                                 <Col>
                                     {show.company && <Company data={data} />}

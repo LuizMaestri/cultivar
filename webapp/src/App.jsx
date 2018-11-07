@@ -38,7 +38,7 @@ export default class App extends Component {
 		return (
 			<BrowserRouter>
 				<div>
-					<Header role={user.role} logged={logged} logout={this.handlerLogout} name={user.name}/>
+					<Header role={user.role} logged={logged} logout={this.handlerLogout} />
 					<Container style={{ margin: '3% 0' }} fluid>
 						<Row>
 							<Col>

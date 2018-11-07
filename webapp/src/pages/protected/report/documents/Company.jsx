@@ -46,7 +46,7 @@ export default ({data}) =>{
             const element = data[key];
             if (!report[element.cnpj]) {
                 report[element.cnpj] = {
-                    company: element. company
+                    company: element.company
                 };
             }
             if (!report[element.cnpj].volunteers) {
