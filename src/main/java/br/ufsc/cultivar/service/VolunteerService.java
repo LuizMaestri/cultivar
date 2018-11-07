@@ -3,6 +3,7 @@ package br.ufsc.cultivar.service;
 import br.ufsc.cultivar.dto.PaginateList;
 import br.ufsc.cultivar.email.EmailClient;
 import br.ufsc.cultivar.exception.*;
+import br.ufsc.cultivar.model.Schooling;
 import br.ufsc.cultivar.model.Status;
 import br.ufsc.cultivar.model.Volunteer;
 import br.ufsc.cultivar.repository.*;
@@ -20,6 +21,7 @@ import org.thymeleaf.spring5.SpringTemplateEngine;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,8 +45,12 @@ public class VolunteerService {
 
     public void create(final Volunteer volunteer) throws ServiceException {
         val user = volunteer.getUser();
-        if (!ValidateUtils.isValid(user)) {
-            throw new InvalidException(null);
+        if (Objects.isNull(volunteer.getCompany().getCnpj())){
+            throw new InvalidException(null, null);
+        }
+        val schooling = volunteer.getSchooling();
+        if ((Schooling.UNIVERSITY_GRADUATE.equals(schooling)|| Schooling.POSTGRADUATE_STUDIES.equals(schooling)) && Objects.isNull(volunteer.getCourse())){
+            throw new InvalidException(null, null);
         }
         userService.create(user);
         volunteerRepository.create(volunteer);

@@ -25,15 +25,12 @@ public class Volunteer {
     @Valid
     @NotNull
     User user;
-    @Valid
     @NotNull
     Company company;
     @NotNull
     Schooling schooling;
     @NotNull
     Boolean conclusion;
-    @NotBlank
-    @NotNull
     String course;
     @NotBlank
     @NotNull

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Redirect } from 'react-router-dom';
 import { Row, Col, Form, Label } from 'reactstrap';
 import { Input, Wizard, DatePicker, MaskInput, Option, Switch, Required } from '../../../components';
 import { Volunteer, Schooling, Answer, Roles } from '../../../model';
@@ -10,6 +11,7 @@ export default class extends Component{
         super();
         this.state = {
             volunteer: new Volunteer(),
+            register: false,
             questions: [],
             companies: [],
             confirmPassword: ''
@@ -195,7 +197,7 @@ export default class extends Component{
         const { volunteer } = this.state;
         for (const answer of volunteer.answers) {
             if (answer.question.codQuestion === codQuestion){
-                answer.answer = event.target.value;
+                answer.comment = event.target.value;
                 break;
             }
         }
@@ -203,23 +205,39 @@ export default class extends Component{
     }
 
     handlerSubmit(){
-        const { afterSubmit } = this.props;
+        const { volunteer } = this.state;
+        const { user } = volunteer;
+        const { cpf, password } = user;
         postRequest(
             '/volunteer',
-            this.state.volunteer,
-            () => postRequest('/auth', {}, afterSubmit)
+            volunteer,
+            () => postRequest(
+                '/auth',
+                { cpf, password },
+                res => {
+                    this.props.afterSubmit(res.data.user);
+                    this.setState({register: true});
+                }
+            )
         );
     }
 
     render(){
+        if (this.state.register ) {
+            return <Redirect to="/dashboard"/>
+        }
+        if (this.state.cancel){
+            return <Redirect to="/login"/>
+        }
         const { questions, companies, volunteer, confirmPassword } = this.state;
         const { user, company } = volunteer;
+        const { address } = user;
         const maxDate = new Date().toJSON().split('T')[0];
         return (
             <Row>
                 <Col/>
                 <Col>
-                    <Wizard onCancel={()=> null} submitLabel="cadastrar" onSubmit={this.handlerSubmit}>
+                    <Wizard onCancel={()=> this.setState({cancel: true})} submitLabel="cadastrar" onSubmit={this.handlerSubmit}>
                         <div>
                             <h3>Dados do Voluntário</h3>
                             <Input id="nameReponsible" label="Nome Completo" invalidMessage="Nome Completo é obrigatório" value={user.name} onChange={this.handlerName} required />
@@ -290,14 +308,14 @@ export default class extends Component{
                         </div>
                         <div>
                             <h3>Enderço do Voluntário</h3>
-                            <Input id="city" label="Cidade" invalidMessage="Cidade é obrigatório" onChange={this.handlerCity} required />
-                            <Input id="neighborhood" label="Bairro" invalidMessage="Bairro é obrigatório" onChange={this.handlerNeighborhood} required />
+                            <Input id="city" label="Cidade" invalidMessage="Cidade é obrigatório" value={address.city} onChange={this.handlerCity} required />
+                            <Input id="neighborhood" label="Bairro" invalidMessage="Bairro é obrigatório" value={address.neighborhood} onChange={this.handlerNeighborhood} required />
                             <Row>
                                 <Col>
-                                    <Input id="street" label="Lougradouro" invalidMessage="Lougradouro é obrigatório" onChange={this.handlerStreet} required />
+                                    <Input id="street" label="Lougradouro" invalidMessage="Lougradouro é obrigatório" value={address.street} onChange={this.handlerStreet} required />
                                 </Col>
                                 <Col md="3">
-                                    <Input id="number" label="Número" onChange={this.handlerNumber} />
+                                    <Input id="number" label="Número" value={address.number} onChange={this.handlerNumber} />
                                 </Col>
                             </Row>
                         </div>
