@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Modal, ModalHeader, ModalBody, Row, Col } from 'reactstrap';
-import { Wizard, Switch } from '../../../../components';
-import { getRequest, putRequest } from '../../../../utils/http';
-import formatter from '../../../../utils/formatter';
-import { Roles, Answer, Status } from '../../../../model';
+import { Wizard, Switch } from '../../../../../components';
+import { getRequest, putRequest } from '../../../../../utils/http';
+import formatter from '../../../../../utils/formatter';
+import { Roles, Answer, Status } from '../../../../../model';
+import Downloader from './Downloader';
 import axios from 'axios';
 
 export default class extends Component{
@@ -26,7 +27,6 @@ export default class extends Component{
             getRequest(`/volunteer/${cpf}`, res => res.data),
             getRequest(`/question/${Roles.COMPANY_ADMIN}`, res => res.data)
         ]).then(res => {
-            
             this.setState({ 
                 volunteer: res[0],
                 questions: res[1],
@@ -51,7 +51,7 @@ export default class extends Component{
         const { answers } = this.state;
         for (const answer of answers) {
             if (answer.question.codQuestion === codQuestion) {
-                answer.answer = event.target.value;
+                answer.comment = event.target.value;
                 break;
             }
         }
@@ -60,7 +60,7 @@ export default class extends Component{
 
     handlerSubmit(){
         const { volunteer, answers, volunterAnswers } = this.state;
-        const { user } = volunteer;
+        const { user, company } = volunteer;
         const { afterSubmit } = this.props;
         user.status = Status.WAIT_STATEMENT;
         volunteer.user = user;
@@ -68,7 +68,7 @@ export default class extends Component{
         putRequest(
             `/volunteer/${user.cpf}`,
             volunteer,
-            afterSubmit,
+            () => afterSubmit(company),
             () =>{
                 user.status = Status.WAIT_COMPANY;
                 volunteer.answers = volunterAnswers;
@@ -82,7 +82,7 @@ export default class extends Component{
         const { volunteer, questions } = this.state;
         const { close, isOpen } = this.props;
         if(volunteer){
-            const { user } = volunteer;
+            const { user, answers, dispatches } = volunteer;
             return (
                 <Modal toggle={close} isOpen={isOpen} >
                     <ModalHeader toggle={close}>
@@ -94,8 +94,28 @@ export default class extends Component{
                     <ModalBody>
                         <Wizard onCancel={close} submitLabel="Recomendar" onSubmit={this.handlerSubmit}>
                             <div>
+                                <h3>Documentos Fornecidos pelo voluntário</h3>
+                                <Row>
+                                    {
+                                        dispatches.filter(dispatch => dispatch.send)
+                                            .map(
+                                                dispatch => {
+                                                    const { attachment } = dispatch;
+                                                    return (
+                                                        <Col md="3">
+                                                            <Downloader name={attachment.name} cpf={user.cpf} codAttachment={attachment.codAttachment}/>
+                                                        </Col>
+                                                    );
+                                                }
+                                            )
+                                    }
+                                </Row>
+                                <hr className="row"/>
+                            </div>
+                            <div>
+                                <h3>Respostas Fornecidas pelo voluntário</h3>
                                 {
-                                    volunteer.answers.map((answer, index) => (
+                                    answers.map((answer, index) => (
                                             <div key={answer.question.codQuestion}>
                                                 <Row >
                                                     <Col>

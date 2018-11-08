@@ -40,7 +40,7 @@ public class DispatchRepository {
             new MapSqlParameterSource()
                 .addValue("cod_cpf", cpf)
                 .addValue("cod_attachment", codAttachment),
-            (rs, i) -> this.build(rs)
+            this::build
         );
     }
 
@@ -49,11 +49,11 @@ public class DispatchRepository {
                 "select * from dispatch where cod_cpf=:cod_cpf",
                 new MapSqlParameterSource()
                         .addValue("cod_cpf", cpf),
-                (rs, i) -> this.build(rs)
+                this::build
         );
     }
 
-    private Dispatch build(ResultSet rs) throws SQLException {
+    private Dispatch build(ResultSet rs, int i) throws SQLException {
         return Dispatch.builder()
                 .attachment(
                         Attachment.builder()

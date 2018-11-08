@@ -2,8 +2,8 @@ import React, { Component } from 'react';
 import { Button, Label } from 'reactstrap';
 import { FaTrash } from 'react-icons/fa';
 import Details from './Details';
-import Recommend from './Recommend'
-import Paticipation from './Paricipations'
+import Recommend from './recommend';
+import Paticipation from './Paricipations';
 import formatter from '../../../../utils/formatter';
 import { deleteRequest } from '../../../../utils/http';
 import { Status } from '../../../../model';

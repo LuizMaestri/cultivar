@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter, Row, Col } from 'reactstrap';
-import Recommend from './Recommend.jsx'
+import Recommend from './recommend';
 import { getRequest } from '../../../../utils/http';
 import formatter from '../../../../utils/formatter';
 import { Address, Schooling, Status } from '../../../../model';

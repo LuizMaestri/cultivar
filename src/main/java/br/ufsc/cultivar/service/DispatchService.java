@@ -12,7 +12,9 @@ import br.ufsc.cultivar.utils.FileUtils;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,10 +37,23 @@ public class DispatchService {
 
     public Dispatch get(final String cpf, final Long codAttachment) throws NotFoundException {
         try {
-            return repository.get(cpf, codAttachment);
+            return repository.get(cpf, codAttachment)
+                .withAttachment(
+                    attachmentRepository.get(codAttachment)
+                );
         } catch (DataAccessException e){
             throw new NotFoundException(null, e);
         }
+    }
+
+    public FileSystemResource getFile(final String cpf, final Long codAttachment) throws NotFoundException{
+        val dispatch = get(cpf, codAttachment);
+        val path = String.format(
+                "./files/users/%s/attachments/%s.pdf",
+                cpf,
+                dispatch.getAttachment().getName().replaceAll(" ", "_")
+        );
+        return fileUtils.get(path);
     }
 
     public List<Dispatch> get(String cpf) throws ServiceException {

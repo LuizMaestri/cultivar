@@ -10,6 +10,7 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
@@ -77,8 +78,9 @@ public class VolunteerResource {
     }
 
     @GetMapping(path = "/{cpf}/attachment/{codAttachment}")
-    public Dispatch getDispatch(@PathVariable final String cpf, @PathVariable Long codAttachment) throws NotFoundException {
-        return dispatchService.get(cpf, codAttachment);
+    public FileSystemResource getDispatch(@PathVariable final String cpf,
+                                          @PathVariable Long codAttachment) throws NotFoundException {
+        return dispatchService.getFile(cpf, codAttachment);
     }
 
     @PostMapping(path="/{cpf}/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE,
