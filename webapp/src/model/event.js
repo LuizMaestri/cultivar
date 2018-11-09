@@ -4,7 +4,7 @@ import School from './school';
 export default class{
     constructor(codEvent, startOccurrence, endOccurrence, createAt, project, type = '', allDay,
          address = new Address(), school = new School(), trainings = [],
-         participants = [], ratings = []) {
+         participants = [], ratings = [], title='', details='') {
         this.codEvent = codEvent;
         this.startOccurrence = startOccurrence;
         this.endOccurrence = endOccurrence;
@@ -17,5 +17,7 @@ export default class{
         this.participants = participants;
         this.ratings = ratings;
         this.school = school;
+        this.title = title;
+        this.details = details;
     }
 }

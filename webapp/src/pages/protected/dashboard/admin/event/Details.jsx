@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import PropTypes from 'prop-types';
 import { getRequest, deleteRequest } from '../../../../../utils/http';
 import { Address } from '../../../../../model';
@@ -27,8 +27,18 @@ export default class extends Component{
         getRequest(
             `/event/${code}`,
             res => {
-                let eventDetails  = res.data;
-                eventDetails.title = eventDetails.type.name + ' - ' + new Date(eventDetails.startOccurrence).toLocaleString();
+                const { data: eventDetails } = res;
+                eventDetails.duration = Math.ceil(
+                    Math.abs(
+                        eventDetails.startOccurrence - eventDetails.endOccurrence
+                    ) / (1000 * 3600)
+                );
+                const { address: eventAddress, trainings: eventTrainings, type } = eventDetails;
+                const { trainings: typeTrainings } = type;
+                eventDetails.trainings = eventTrainings.concat(typeTrainings);
+                const address = new Address();
+                Object.assign(address, eventAddress);
+                eventDetails.address = address;
                 this.setState({ eventDetails });
             }
         );
@@ -43,19 +53,10 @@ export default class extends Component{
         const { isOpen, close } = this.props;
         const { eventDetails } = this.state;
         if (eventDetails){
-            const { address: eventAddress, trainings: eventTrainings, participants, type } = eventDetails;
-            const { trainings: typeTrainings } = type;
-            const trainings = eventTrainings.concat(typeTrainings);
-            const duration = Math.ceil(
-                Math.abs(
-                    eventDetails.startOccurrence - eventDetails.endOccurrence
-                ) / (1000 * 3600)
-            );
-            const address = new Address();
-            Object.assign(address, eventAddress);
+            const { address, trainings, participants, type, duration, title, details } = eventDetails;
             return (
                 <Modal toggle={close} isOpen={isOpen} >
-                    <ModalHeader toggle={close}>{eventDetails.title}</ModalHeader>
+                    <ModalHeader toggle={close}>{title}</ModalHeader>
                     <ModalBody>
                         <Row>
                             <Col>
@@ -90,6 +91,23 @@ export default class extends Component{
                                 )
                             }
                         </Row>
+                        {
+                            details ? (
+                                <Fragment>
+                                    <br/>
+                                    <Row>
+                                        <Col>
+                                            <strong>Lembretes:</strong>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <p>{details}</p>
+                                        </Col>
+                                    </Row>
+                                </Fragment>
+                            ) : null
+                        }
                         <br />
                         <Row>
                             <Col>

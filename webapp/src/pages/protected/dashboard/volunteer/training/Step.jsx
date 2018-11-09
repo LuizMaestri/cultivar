@@ -10,7 +10,6 @@ const mapEvents =
         event =>{
             event.end = new Date(event.endOccurrence);
             event.start = new Date(event.startOccurrence);
-            event.title = event.type.name + ' - ' + event.start.toLocaleString()
             return event
         }
     );

@@ -24,6 +24,8 @@ export default class extends Component {
             loading: false,
             success: false
         };
+        this.handlerTitle = this.handlerTitle.bind(this);
+        this.handlerDetails = this.handlerDetails.bind(this);
         this.handlerType = this.handlerType.bind(this);
         this.handlerProject = this.handlerProject.bind(this);
         this.handlerCity = this.handlerCity.bind(this);
@@ -64,6 +66,12 @@ export default class extends Component {
                 projects: res[2]
             })
         );
+    }
+
+    handlerTitle(userEvent){
+        const { event } = this.state;
+        event.title = userEvent.target.value;
+        this.setState({ event });
     }
 
     handlerEvaluate(value){
@@ -107,6 +115,12 @@ export default class extends Component {
                 () => this.setState({ trainingsOfType: [], event })
             );
         }
+    }
+
+    handlerDetails(userEvent){
+        const { event } = this.state;
+        event.details = userEvent.target.value;
+        this.setState({ event });
     }
 
     //address
@@ -276,7 +290,7 @@ export default class extends Component {
             event.startOccurrence.toLocaleString() : 
             event.startOccurrence.toLocaleString() + ' - ' + event.endOccurrence.toLocaleString();
         const { codSchool } = event.school;
-        const { trainings, type, address, project } = event;
+        const { trainings, type, address, project, title, details } = event;
         const codProject = project ? project.codProject : undefined;
         const codType = type ? type.type : undefined;
         return (
@@ -286,6 +300,7 @@ export default class extends Component {
                     <Wizard onCancel={close} submitLabel="cadastrar" onSubmit={this.handlerSubmit}>
                         <div>
                             <h3>Dados do evento</h3>
+                            <Input id="title" label="Título" invalidMessage="Título é obrigatório" value={title} onChange={this.handlerTitle} required/>
                             <Row>
                                 <Col>
                                     <Input id="type" type="select" label="Tipo de Evento" invalidMessage="Tipo de Evento é obrigatório" value={codType} onChange={this.handlerType} required >
@@ -297,7 +312,7 @@ export default class extends Component {
                                         }
                                     </Input>
                                 </Col>
-                                <Col md="3">
+                                <Col md="3" style={{paddingTop: '3%'}}>
                                     <Switch id="evaluate" label="Avaliado" value={event.evaluate} onChange={this.handlerEvaluate} />
                                 </Col>
                             </Row>
@@ -315,6 +330,10 @@ export default class extends Component {
                                     schools.map(school => <option key={school.codSchool} value={school.codSchool}>{school.name}</option>)
                                 }
                             </Input>
+                            <Input id="filter" type="textarea" label="Lembretes" value={details} onChange={this.handlerDetails}/>
+                        </div>
+                        <div>
+                            <h3>Endereço</h3>
                             <Input id="city" label="Cidade" invalidMessage="Cidade é obrigatório" value={address.city} disabled={!codSchool} onChange={this.handlerCity} required />
                             <Input id="neighborhood" label="Bairro" invalidMessage="Bairro é obrigatório" value={address.neighborhood} disabled={!codSchool} onChange={this.handlerNeighborhood} required />
                             <Row>

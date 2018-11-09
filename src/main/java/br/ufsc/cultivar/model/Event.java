@@ -25,6 +25,10 @@ import java.util.Optional;
 public class Event {
     Long codEvent;
     @NotNull
+    @NotBlank
+    String title;
+    String details;
+    @NotNull
     Date startOccurrence;
     @NotNull
     Date endOccurrence;

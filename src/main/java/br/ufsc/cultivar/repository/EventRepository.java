@@ -36,7 +36,9 @@ public class EventRepository {
                         "cod_address",
                         "fl_evaluate",
                         "cod_school",
-                        "cod_project"
+                        "cod_project",
+                        "dsc_details",
+                        "dsc_event"
                 ).executeAndReturnKey(getParams(event))
                 .longValue();
     }
@@ -84,7 +86,7 @@ public class EventRepository {
         jdbcTemplate.update(
                 "update event set dt_start_occurrence=:dt_start_occurrence, dt_end_occurrence=:dt_end_occurrence," +
                         "tp_event=:tp_event, fl_all_day=:fl_all_day, cod_address=:cod_address, fl_evaluate=:fl_evaluate," +
-                        "cod_school=:cod_school where cod_event=:cod_event",
+                        "cod_school=:cod_school, dsc_event=:dsc_event, dsc_details=:dsc_details where cod_event=:cod_event",
                 getParams(event)
         );
     }
@@ -93,6 +95,8 @@ public class EventRepository {
         val codProject = rs.getLong("cod_project");
         val isNull = rs.wasNull();
         return Event.builder()
+                .title(rs.getString("dsc_event"))
+                .details(rs.getString("dsc_details"))
                 .codEvent(rs.getLong("cod_event"))
                 .startOccurrence(DateUtils.toDate(rs.getTimestamp("dt_start_occurrence")))
                 .endOccurrence(DateUtils.toDate(rs.getTimestamp("dt_end_occurrence")))

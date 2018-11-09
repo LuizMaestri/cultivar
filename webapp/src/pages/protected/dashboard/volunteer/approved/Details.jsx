@@ -25,8 +25,18 @@ export default class extends Component{
         getRequest(
             `/event/${code}`,
             res => {
-                let eventDetails  = res.data;
-                eventDetails.title = eventDetails.type.name + ' - ' + new Date(eventDetails.startOccurrence).toLocaleString();
+                const { data: eventDetails } = res;
+                eventDetails.duration = Math.ceil(
+                    Math.abs(
+                        eventDetails.startOccurrence - eventDetails.endOccurrence
+                    ) / (1000 * 3600)
+                );
+                const { address: eventAddress, trainings: eventTrainings, type } = eventDetails;
+                const { trainings: typeTrainings } = type;
+                eventDetails.trainings = eventTrainings.concat(typeTrainings);
+                const address = new Address();
+                Object.assign(address, eventAddress);
+                eventDetails.address = address;
                 this.setState({ eventDetails });
             }
         );
@@ -36,16 +46,7 @@ export default class extends Component{
         const { isOpen, close } = this.props;
         const { eventDetails } = this.state;
         if (eventDetails) {
-            const { address: eventAddress, trainings: eventTrainings, type } = eventDetails;
-            const { trainings: typeTrainings } = type;
-            const trainings = eventTrainings.concat(typeTrainings);
-            const duration = Math.ceil(
-                Math.abs(
-                    eventDetails.startOccurrence - eventDetails.endOccurrence
-                ) / (1000 * 3600)
-            );
-            const address = new Address();
-            Object.assign(address, eventAddress);
+            const { address, trainings, type, duration } = eventDetails;
             return (
                 <Modal toggle={close} isOpen={isOpen} >
                     <ModalHeader toggle={close}>{eventDetails.title}</ModalHeader>
