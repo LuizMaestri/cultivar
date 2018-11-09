@@ -135,6 +135,8 @@ public class EventRepository {
                 .addValue("cod_address", event.getAddress().getCodAddress())
                 .addValue("cod_school", event.getSchool().getCodSchool())
                 .addValue("cod_event", event.getCodEvent())
+                .addValue("dsc_event", event.getTitle())
+                .addValue("dsc_details", event.getDetails())
                 .addValue("fl_evaluate", event.getEvaluate());
     }
 
