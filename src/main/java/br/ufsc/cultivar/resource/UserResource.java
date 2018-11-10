@@ -1,8 +1,10 @@
 package br.ufsc.cultivar.resource;
 
 import br.ufsc.cultivar.exception.ServiceException;
+import br.ufsc.cultivar.model.School;
 import br.ufsc.cultivar.model.User;
 import br.ufsc.cultivar.service.CompanyService;
+import br.ufsc.cultivar.service.SchoolService;
 import br.ufsc.cultivar.service.UserService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -24,6 +26,7 @@ import java.util.Map;
 public class UserResource {
 
     UserService service;
+    SchoolService schoolService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public List<User> get(@RequestParam final Map<String, Object> filter) throws ServiceException{
@@ -33,6 +36,11 @@ public class UserResource {
     @GetMapping(path = "/{cpf}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
     public User get(@PathVariable final String cpf) throws ServiceException{
         return service.get(cpf);
+    }
+
+    @GetMapping(path = "/{cpf}/school", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public School getSchool(@PathVariable final String cpf) throws ServiceException{
+        return schoolService.get(cpf);
     }
 
     @DeleteMapping(path = "/{cpf}", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)

@@ -81,4 +81,19 @@ public class SchoolService {
         }
         schoolRepository.update(school);
     }
+
+    public School get(String cpf) throws NotFoundException {
+        try {
+            val school = schoolRepository.get(cpf);
+            return school.withAddress(
+                    addressRepository.get(
+                            school.getAddress().getCodAddress()
+                    )
+            ).withResponsible(
+                    userService.get(cpf)
+            );
+        } catch (DataAccessException e){
+            throw new NotFoundException(null, e);
+        }
+    }
 }

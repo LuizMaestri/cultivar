@@ -53,7 +53,7 @@ public class UserService {
         }
     }
 
-    public User get(final String cpf) throws ServiceException {
+    public User get(final String cpf) throws NotFoundException {
         try {
             val user = userRepository.get(cpf);
             return user.withAddress(

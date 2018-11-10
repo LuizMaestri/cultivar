@@ -117,4 +117,12 @@ public class SchoolRepository {
                 )
                 .build();
     }
+
+    public School get(String cpf) {
+        return jdbcTemplate.queryForObject(
+                "select * from school where cod_cpf=:cod_cpf",
+                new MapSqlParameterSource("cod_cpf", cpf),
+                this::build
+        );
+    }
 }

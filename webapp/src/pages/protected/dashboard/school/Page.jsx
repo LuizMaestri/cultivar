@@ -16,7 +16,7 @@ export default class extends Component{
     }
     componentWillMount(){
         const { cpf } = this.props;
-        getRequest(`/school?cod_cpf=${cpf}`, res => this.setState({ school: res.data[0]}));
+        getRequest(`/user/${cpf}/school`, res => this.setState({ school: res.data}));
     }
     
     render() {
