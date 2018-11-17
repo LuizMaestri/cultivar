@@ -95,13 +95,10 @@ public class ProjectRepository {
 
     public List<Project> getProjectToEvaluateByVolunteer(String cpf) {
         val sql = "select p.* from project p" +
-                "  natural join event e" +
-                "  natural join participation p2" +
-                "  join project_volunteer pv on p.cod_project = pv.cod_project " +
-                "where p.dt_end < current_date" +
-                "      and p2.cod_cpf=:cod_cpf" +
-                "      and fl_school_evaluate = true" +
-                "      and pv.fl_evaluate = false;";
+                "  natural join project_volunteer " +
+                "where dt_end < current_date" +
+                "      and cod_cpf=:cod_cpf" +
+                "      and fl_evaluate = false;";
         return jdbcTemplate.query(sql, new MapSqlParameterSource("cod_cpf", cpf), this::build);
     }
 

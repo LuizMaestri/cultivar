@@ -58,4 +58,14 @@ public class ParticipationRepository {
                     .addValue("cod_event", codEvent)
         );
     }
+
+    public void updatePresence(Long codEvent, String cpf, boolean fault) {
+        jdbcTemplate.update(
+                "update participation set fl_fault=:fl_fault where cod_event=:cod_event and cod_cpf=:cod_cpf",
+                new MapSqlParameterSource()
+                        .addValue("cod_cpf", cpf)
+                        .addValue("cod_event", codEvent)
+                        .addValue("fl_fault", fault)
+        );
+    }
 }

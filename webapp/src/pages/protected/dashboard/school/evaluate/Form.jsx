@@ -45,7 +45,7 @@ export default class extends Component{
                         ),
                         ratings: res[0].participants.map(
                             participant => {
-                                return { participant, rating: new Rating() }
+                                return { participant, rating: new Rating(), presence:false }
                             }
                         ),
                         suggest: '',
@@ -74,6 +74,22 @@ export default class extends Component{
         const { evaluate } = this.state;
         const { ratings } = evaluate
         ratings[index].rating.comment = event.target.value;
+        this.setState({ evaluate });
+    }
+
+    handlerPresence(value, index) {
+        const { evaluate } = this.state;
+        const { ratings } = evaluate
+        ratings[index].presence = value;
+        if (!value) {
+            const e = {
+                target: {
+                    value: ''
+                }
+            }
+            this.selectRating(0, index);
+            this.handlerComment(e, index);
+        }
         this.setState({ evaluate });
     }
 
@@ -216,7 +232,9 @@ export default class extends Component{
                                         <Participant 
                                             participant={rating.participant}
                                             onRatingSelect={(nextValue, prevValue, name) => this.selectRating(nextValue, index)}
-                                            onComment={(event) => this.handlerComment(event, index)}
+                                            onComment={event => this.handlerComment(event, index)}
+                                            onPresenceChange={value => this.handlerPresence(value, index)}
+                                            presence={rating.presence}
                                             rating={rating.rating}
                                         />
                                 )

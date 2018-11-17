@@ -80,11 +80,12 @@ public class EvaluateService {
                 .forEach(
                         ratingDTO -> {
                             val cpf = ratingDTO.getParticipant().getCpf();
-                            val rating =  ratingDTO.getRating();
+                            val rating = ratingDTO.getRating();
                             if (evaluateSchoolDTO.getProject()) {
                                 ratingRepository.createRatingOnProject(rating, cpf, codProject);
                             } else {
                                 ratingRepository.createRatingOnEvent(rating, cpf, codEvent);
+                                participationRepository.updatePresence(codEvent, cpf, !ratingDTO.getPresence());
                             }
                         }
                 );
